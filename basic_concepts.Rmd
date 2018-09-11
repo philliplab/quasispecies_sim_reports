@@ -86,3 +86,33 @@ kable(
   genealogy_summary_table(x)
 )
 ```
+
+### Looking at only the last generation now
+
+```{r, include = FALSE}
+last_gen <-
+x %>%
+  filter(gen_num == max(gen_num))
+
+dmat <- stringdistmatrix(last_gen$the_seq, method = 'hamming')
+avg_hd <- mean(dmat)
+dvec <- as.numeric(dmat)/min(nchar(last_gen$the_seq))
+dd.f <- data.frame(dists = dvec)
+```
+
+The average pairwise HD is `r round(avg_hd, 2)` and normalized by the length of the sequence it is `r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`.
+
+```{r, results = 'asis'}
+ggplot(dd.f, aes(x = dists)) + geom_density()
+cat("\n\nFigure: Density plot of the pariwise distances in the last generation.\n\n")
+
+deciles <-
+data.frame(Decile = paste((0:10)*10, "%", sep = ''),
+           Value = quantile(dvec, (0:10)/10))
+row.names(deciles) <- NULL
+cat("\n\nTable: The Deciles of the pairwise HDs.\n\n")
+kable(
+  deciles
+)
+```
+
