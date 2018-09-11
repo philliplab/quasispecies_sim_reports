@@ -35,7 +35,30 @@ data.frame(arg = "Fitness Evaluator", val = args$fitness_evaluator$fun)
     )
   }
   row.names(arg_table) <- NULL
+  names(arg_table) <- c("Argument", "Value")
   return(arg_table)
+}
+
+genealogy_summary_table <- function(genealogy){
+  genealogy$ances_dist <- stringdist(genealogy[1,'the_seq'], genealogy[,'the_seq'])
+  genealogy_summary <-
+  genealogy %>% 
+  select(gen_num, ances_dist, the_seq, fitness_score) %>% 
+  group_by(gen_num) %>%
+  summarize(n = n(),
+            ances_dist = mean(ances_dist),
+            nor_ances_dist = mean(ances_dist) / min(nchar(the_seq)),
+            fitness_score = mean(fitness_score),
+            min_fitness_score = min(fitness_score))
+  names(genealogy_summary) <- c(
+    "Gen. Num.",
+    "n",
+    "Dist. to Ances.",
+    "Normalized Dist.",
+    "Fitness Score",
+    "Min. Fitness Score"
+  )
+  return(genealogy_summary)
 }
 ```
 
@@ -55,21 +78,11 @@ args <- list(
 
 x <- do.call(sim_pop, args)
 
-x$ances_dist <- stringdist(x[1,'the_seq'], x[,'the_seq'], method = 'hamming')
-
 cat("\n\nTable: Called sim_pop with the following arguments.\n\n")
 kable(sim_pop_arg_formatter(args))
 
 cat("\n\nTable: Individuals per generation and the average distance to the original ancestor for the generation.\n\n")
 kable(
-x %>% 
-  select(gen_num, ances_dist, the_seq, fitness_score) %>% 
-  group_by(gen_num) %>%
-  summarize(n = n(),
-            ances_dist = mean(ances_dist),
-            nor_ances_dist = mean(ances_dist) / min(nchar(the_seq)),
-            fitness_score = mean(fitness_score),
-            min_fitness_score = min(fitness_score))
-
+  genealogy_summary_table(x)
 )
 ```
