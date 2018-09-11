@@ -39,6 +39,8 @@ data.frame(arg = "Fitness Evaluator", val = args$fitness_evaluator$fun)
 }
 ```
 
+## Simple first simulation
+
 ```{r, results = 'asis'}
 args <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
@@ -61,11 +63,13 @@ kable(sim_pop_arg_formatter(args))
 cat("\n\nTable: Individuals per generation and the average distance to the original ancestor for the generation.\n\n")
 kable(
 x %>% 
-  select(gen_num, ances_dist, the_seq) %>% 
+  select(gen_num, ances_dist, the_seq, fitness_score) %>% 
   group_by(gen_num) %>%
   summarize(n = n(),
             ances_dist = mean(ances_dist),
-            nor_ances_dist = mean(ances_dist) / min(nchar(the_seq)))
+            nor_ances_dist = mean(ances_dist) / min(nchar(the_seq)),
+            fitness_score = mean(fitness_score),
+            min_fitness_score = min(fitness_score))
 
 )
 ```
