@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title></title>
+<title>Basic concepts of quasispecies simulation</title>
 
 <script type="text/javascript">
 window.onload = function() {
@@ -163,6 +163,54 @@ hr {
 </head>
 
 <body>
+<h1>Basic concepts of quasispecies simulation</h1>
+
+<p>Table: Called sim_pop with the following arguments.</p>
+
+<table><thead>
+<tr>
+<th align="left">arg</th>
+<th align="left">val</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">Number of Ancestors</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left">Sequence Length</td>
+<td align="left">500</td>
+</tr>
+<tr>
+<td align="left">r0</td>
+<td align="left">2</td>
+</tr>
+<tr>
+<td align="left">Number of Generations</td>
+<td align="left">9</td>
+</tr>
+<tr>
+<td align="left">Minimum Population Size</td>
+<td align="left">Inf</td>
+</tr>
+<tr>
+<td align="left">Mutator Function</td>
+<td align="left">mutator_uniform_fun</td>
+</tr>
+<tr>
+<td align="left">Mutator: mu</td>
+<td align="left">0.1</td>
+</tr>
+<tr>
+<td align="left">Fitness Evaluator</td>
+<td align="left">fitness_evaluator_uniform_fun</td>
+</tr>
+<tr>
+<td align="left">Additional Fitness Evaluator Arguments</td>
+<td align="left">None</td>
+</tr>
+</tbody></table>
+
 <p>Table: Individuals per generation and the average distance to the original ancestor for the generation.</p>
 
 <table><thead>
@@ -182,56 +230,56 @@ hr {
 <tr>
 <td align="right">1</td>
 <td align="right">2</td>
-<td align="right">50.5000</td>
-<td align="right">0.1010000</td>
+<td align="right">53.5000</td>
+<td align="right">0.1070000</td>
 </tr>
 <tr>
 <td align="right">2</td>
 <td align="right">4</td>
-<td align="right">90.0000</td>
-<td align="right">0.1800000</td>
+<td align="right">96.2500</td>
+<td align="right">0.1925000</td>
 </tr>
 <tr>
 <td align="right">3</td>
 <td align="right">8</td>
-<td align="right">128.0000</td>
-<td align="right">0.2560000</td>
+<td align="right">133.7500</td>
+<td align="right">0.2675000</td>
 </tr>
 <tr>
 <td align="right">4</td>
 <td align="right">16</td>
-<td align="right">164.8125</td>
-<td align="right">0.3296250</td>
+<td align="right">168.3750</td>
+<td align="right">0.3367500</td>
 </tr>
 <tr>
 <td align="right">5</td>
 <td align="right">32</td>
-<td align="right">191.8125</td>
-<td align="right">0.3836250</td>
+<td align="right">196.1562</td>
+<td align="right">0.3923125</td>
 </tr>
 <tr>
 <td align="right">6</td>
 <td align="right">64</td>
-<td align="right">215.3281</td>
-<td align="right">0.4306562</td>
+<td align="right">219.4844</td>
+<td align="right">0.4389688</td>
 </tr>
 <tr>
 <td align="right">7</td>
 <td align="right">128</td>
-<td align="right">236.3828</td>
-<td align="right">0.4727656</td>
+<td align="right">240.0156</td>
+<td align="right">0.4800312</td>
 </tr>
 <tr>
 <td align="right">8</td>
 <td align="right">256</td>
-<td align="right">254.4648</td>
-<td align="right">0.5089297</td>
+<td align="right">258.2344</td>
+<td align="right">0.5164688</td>
 </tr>
 <tr>
 <td align="right">9</td>
 <td align="right">512</td>
-<td align="right">270.6094</td>
-<td align="right">0.5412188</td>
+<td align="right">273.6309</td>
+<td align="right">0.5472617</td>
 </tr>
 </tbody></table>
 

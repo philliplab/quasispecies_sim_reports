@@ -6,17 +6,57 @@ library(knitr)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+```{r , include = FALSE}
+sim_pop_arg_formatter <- function(args){
+  arg_table <- data.frame(arg = character(0),
+                          val = character(0),
+                          stringsAsFactors = FALSE)
+  arg_table <- do.call(rbind, list(
+data.frame(arg = "Number of Ancestors", val = length(args$ancestors)),
+data.frame(arg = "Sequence Length",     val = paste(nchar(args$ancestors), collapse = ', ')),
+data.frame(arg = "r0",                  val = args$r0),
+data.frame(arg = "Number of Generations", val = args$n_gen),
+data.frame(arg = "Minimum Population Size", val = args$n_pop),
+data.frame(arg = "Mutator Function", val = args$mutator$fun),
+data.frame(arg = paste("Mutator: ", names(args$mutator$args), sep = ''),
+           val = unlist(args$mutator$args)),
+data.frame(arg = "Fitness Evaluator", val = args$fitness_evaluator$fun)
+))
+
+  if (is.null(args$fitness_evaluator$args)){
+    arg_table <- rbind(arg_table,
+      data.frame(arg = "Additional Fitness Evaluator Arguments",
+                 val = "None")
+      )
+  } else {
+    arg_table <- rbind(arg_table,
+      data.frame(arg = paste("Fitness Evaluator: ", names(args$fitness_evaluator$args), sep = ''),
+                 val = unlist(args$fitness_evaluator$args))
+    )
+  }
+  row.names(arg_table) <- NULL
+  return(arg_table)
+}
+```
+
 ```{r, results = 'asis'}
-x <- sim_pop(ancestors = paste(rep("A", 500), collapse = ''),
-             r0 = 2,
-             n_gen = 9,
-             n_pop = Inf,
-             mutator = list(fun = "mutator_uniform_fun",
-                            args = list(mu = 0.1)),
-             fitness_evaluator = list(fun = "fitness_evaluator_uniform_fun",
-                                      args = NULL))
+args <- list(
+  ancestors = paste(rep("A", 500), collapse = ''),
+  r0 = 2,
+  n_gen = 9,
+  n_pop = Inf,
+  mutator = list(fun = "mutator_uniform_fun",
+                 args = list(mu = 0.1)),
+  fitness_evaluator = list(fun = "fitness_evaluator_uniform_fun",
+                           args = NULL)
+)
+
+x <- do.call(sim_pop, args)
 
 x$ances_dist <- stringdist(x[1,'the_seq'], x[,'the_seq'], method = 'hamming')
+
+cat("\n\nTable: Called sim_pop with the following arguments.\n\n")
+kable(sim_pop_arg_formatter(args))
 
 cat("\n\nTable: Individuals per generation and the average distance to the original ancestor for the generation.\n\n")
 kable(
