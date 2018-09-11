@@ -4,7 +4,6 @@
 library(yasss)
 library(knitr)
 library(formattable)
-library(DT)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -105,10 +104,9 @@ g_sum_tab <- genealogy_summary_table(x)
 
 cat("\n\nTable: Individuals per generation and the average distance to the original ancestor for the generation.\n\n")
 format_table(g_sum_tab, format = 'html')
+
 cat("\n\nTable: Individuals per generation and the average distance to the original ancestor for the generation.\n\n")
 format_table(g_sum_tab, style_lister(g_sum_tab), align = 'c')
-cat("\n\nTable: Individuals per generation and the average distance to the original ancestor for the generation.\n\n")
-datatable(g_sum_tab)
 ```
 
 ### Looking at only the last generation now
