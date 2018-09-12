@@ -65,7 +65,15 @@ kable(
 )
 ```
 
-## Last Generation
+Our primary interested is restricted to the final generation which corresponds to the generation that we will obtain from sequencing a sample.
+Hence we need to capture some of the key information about the last generation and figure out ways to compare it to other simulations.
+Three key ways to look at this data is:
+
+- The average of all the pairwise distances between the sequences.
+- A density plot of the distribution of all the pairwise distances.
+- The deciles / quartiles / some other set of percentiles of the distribution.
+
+For now we will present all three. Once we have some solid results to argue about we can look at dropping some of these metrics.
 
 ```{r, include = FALSE}
 last_gen <-
@@ -78,16 +86,84 @@ dvec <- as.numeric(dmat)/min(nchar(last_gen$the_seq))
 dd.f <- data.frame(dists = dvec)
 ```
 
-The average pairwise HD is `r round(avg_hd, 2)` and normalized by the length of the sequence it is `r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`.
+The average pairwise HD is **`r round(avg_hd, 2)`** and normalized by the length of the sequence it is **`r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`**. The distribution is shown in Figure \@ref(fig:first-density-plot) and the deciles are listed in Table \@ref(tab:first-deciles).
 
-```{r, results = 'asis'}
+```{r first-density-plot, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
 ggplot(dd.f, aes(x = dists)) + geom_density()
-cat("\n\nFigure: Density plot of the pariwise distances in the last generation.\n\n")
+```
 
+```{r first-deciles, results = 'asis'}
 deciles <-
 data.frame(Decile = paste((0:10)*10, "%", sep = ''),
            Value = quantile(dvec, (0:10)/10))
 row.names(deciles) <- NULL
-cat("\n\nTable: The Deciles of the pairwise HDs.\n\n")
-kable(deciles)
+kable(
+  deciles,
+  booktabs = TRUE,
+  caption = "The deciles of the pairwise HDs"
+)
 ```
+
+# More realistic mu
+
+Note that the extremely high value of mu (0.1) produces sequences that rapidly diverge radically from the ancestor. To make the simulation a little more realistic, drop the mutation rate down to 1 in 1000 and try again.
+
+```{r sim-mu-1-1000, results = 'asis'}
+args <- list(
+  ancestors = paste(rep("A", 500), collapse = ''),
+  r0 = 2,
+  n_gen = 9,
+  n_pop = Inf,
+  mutator = list(fun = "mutator_uniform_fun",
+                 args = list(mu = 1/1e3)),
+  fitness_evaluator = list(fun = "fitness_evaluator_uniform_fun",
+                           args = NULL)
+)
+
+x <- do.call(sim_pop, args)
+
+kable(
+  sim_pop_arg_formatter(args),
+  booktabs = TRUE,
+  caption = "Configuration with which sim_pop was called."
+)
+```
+
+```{r mu-1-1000-sum-tab, results = 'asis'}
+g_sum_tab <- genealogy_summary_table(x)
+
+kable(
+  g_sum_tab,
+  booktabs = TRUE,
+  caption = "Individuals per generation and the average distance to the original ancestor for the generation."
+)
+```
+
+```{r, include = FALSE}
+last_gen <-
+x %>%
+  filter(gen_num == max(gen_num))
+
+dmat <- stringdistmatrix(last_gen$the_seq, method = 'hamming')
+avg_hd <- mean(dmat)
+dvec <- as.numeric(dmat)/min(nchar(last_gen$the_seq))
+dd.f <- data.frame(dists = dvec)
+```
+
+```{r mu-1-1000-density-plot, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
+ggplot(dd.f, aes(x = dists)) + geom_density()
+```
+
+```{r mu-1-1000-deciles, results = 'asis'}
+deciles <-
+data.frame(Decile = paste((0:10)*10, "%", sep = ''),
+           Value = quantile(dvec, (0:10)/10))
+row.names(deciles) <- NULL
+kable(
+  deciles,
+  booktabs = TRUE,
+  caption = "The deciles of the pairwise HDs"
+)
+```
+
+

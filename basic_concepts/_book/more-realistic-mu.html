@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
+<link rel="prev" href="simple-first-simulation.html">
 
-<link rel="next" href="more-realistic-mu.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -79,14 +79,11 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Basic concepts of quasispecies simulation</h1>
-</div>
-<div id="simple-first-simulation" class="section level1">
-<h1><span class="header-section-number">1</span> Simple first simulation</h1>
-<p>A first simulation to demonstrate the process and the measuring tools. Table <a href="simple-first-simulation.html#tab:sim-pop-config">1.1</a> shows the configuration that was used to call <code>sim_pop</code> from the <code>yasss</code> package. A high level summary of the entire genealogy is provided in Table <a href="simple-first-simulation.html#tab:first-sum-tab">1.2</a>.</p>
+<div id="more-realistic-mu" class="section level1">
+<h1><span class="header-section-number">2</span> More realistic mu</h1>
+<p>Note that the extremely high value of mu (0.1) produces sequences that rapidly diverge radically from the ancestor. To make the simulation a little more realistic, drop the mutation rate down to 1 in 1000 and try again.</p>
 <table>
-<caption><span id="tab:sim-pop-config">Table 1.1: </span>Configuration with which sim_pop was called.</caption>
+<caption><span id="tab:sim-mu-1-1000">Table 2.1: </span>Configuration with which sim_pop was called.</caption>
 <thead>
 <tr class="header">
 <th align="left">Argument</th>
@@ -120,7 +117,7 @@
 </tr>
 <tr class="odd">
 <td align="left">Mutator: mu</td>
-<td align="left">0.1</td>
+<td align="left">0.001</td>
 </tr>
 <tr class="even">
 <td align="left">Fitness Evaluator</td>
@@ -133,7 +130,7 @@
 </tbody>
 </table>
 <table>
-<caption><span id="tab:first-sum-tab">Table 1.2: </span>Individuals per generation and the average distance to the original ancestor for the generation.</caption>
+<caption><span id="tab:mu-1-1000-sum-tab">Table 2.2: </span>Individuals per generation and the average distance to the original ancestor for the generation.</caption>
 <thead>
 <tr class="header">
 <th align="right">Gen. Num.</th>
@@ -148,103 +145,93 @@
 <tr class="odd">
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">0.0000</td>
+<td align="right">0.000000</td>
 <td align="right">0.0000000</td>
-<td align="right">0.9513031</td>
-<td align="right">0.9513031</td>
+<td align="right">0.8012427</td>
+<td align="right">0.8012427</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">2</td>
-<td align="right">48.5000</td>
-<td align="right">0.0970000</td>
-<td align="right">0.4990133</td>
-<td align="right">0.4990133</td>
+<td align="right">0.000000</td>
+<td align="right">0.0000000</td>
+<td align="right">0.5710862</td>
+<td align="right">0.5710862</td>
 </tr>
 <tr class="odd">
 <td align="right">2</td>
 <td align="right">4</td>
-<td align="right">89.7500</td>
-<td align="right">0.1795000</td>
-<td align="right">0.5784840</td>
-<td align="right">0.5784840</td>
+<td align="right">0.000000</td>
+<td align="right">0.0000000</td>
+<td align="right">0.3816352</td>
+<td align="right">0.3816352</td>
 </tr>
 <tr class="even">
 <td align="right">3</td>
 <td align="right">8</td>
-<td align="right">129.1250</td>
-<td align="right">0.2582500</td>
-<td align="right">0.7406491</td>
-<td align="right">0.7406491</td>
+<td align="right">0.875000</td>
+<td align="right">0.0017500</td>
+<td align="right">0.6026169</td>
+<td align="right">0.6026169</td>
 </tr>
 <tr class="odd">
 <td align="right">4</td>
 <td align="right">16</td>
-<td align="right">161.3750</td>
-<td align="right">0.3227500</td>
-<td align="right">0.6194889</td>
-<td align="right">0.6194889</td>
+<td align="right">1.500000</td>
+<td align="right">0.0030000</td>
+<td align="right">0.4378331</td>
+<td align="right">0.4378331</td>
 </tr>
 <tr class="even">
 <td align="right">5</td>
 <td align="right">32</td>
-<td align="right">189.1250</td>
-<td align="right">0.3782500</td>
-<td align="right">0.5386744</td>
-<td align="right">0.5386744</td>
+<td align="right">2.187500</td>
+<td align="right">0.0043750</td>
+<td align="right">0.4942767</td>
+<td align="right">0.4942767</td>
 </tr>
 <tr class="odd">
 <td align="right">6</td>
 <td align="right">64</td>
-<td align="right">215.0000</td>
-<td align="right">0.4300000</td>
-<td align="right">0.4740851</td>
-<td align="right">0.4740851</td>
+<td align="right">2.640625</td>
+<td align="right">0.0052812</td>
+<td align="right">0.5292192</td>
+<td align="right">0.5292192</td>
 </tr>
 <tr class="even">
 <td align="right">7</td>
 <td align="right">128</td>
-<td align="right">236.4922</td>
-<td align="right">0.4729844</td>
-<td align="right">0.5541020</td>
-<td align="right">0.5541020</td>
+<td align="right">3.210938</td>
+<td align="right">0.0064219</td>
+<td align="right">0.5045761</td>
+<td align="right">0.5045761</td>
 </tr>
 <tr class="odd">
 <td align="right">8</td>
 <td align="right">256</td>
-<td align="right">253.9883</td>
-<td align="right">0.5079766</td>
-<td align="right">0.4839088</td>
-<td align="right">0.4839088</td>
+<td align="right">3.718750</td>
+<td align="right">0.0074375</td>
+<td align="right">0.5262254</td>
+<td align="right">0.5262254</td>
 </tr>
 <tr class="even">
 <td align="right">9</td>
 <td align="right">512</td>
-<td align="right">270.3105</td>
-<td align="right">0.5406211</td>
-<td align="right">0.4714241</td>
-<td align="right">0.4714241</td>
+<td align="right">4.207031</td>
+<td align="right">0.0084141</td>
+<td align="right">0.4808603</td>
+<td align="right">0.4808603</td>
 </tr>
 </tbody>
 </table>
-<p>Our primary interested is restricted to the final generation which corresponds to the generation that we will obtain from sequencing a sample.
-Hence we need to capture some of the key information about the last generation and figure out ways to compare it to other simulations.
-Three key ways to look at this data is:</p>
-<ul>
-<li>The average of all the pairwise distances between the sequences.</li>
-<li>A density plot of the distribution of all the pairwise distances.</li>
-<li>The deciles / quartiles / some other set of percentiles of the distribution.</li>
-</ul>
-<p>For now we will present all three. Once we have some solid results to argue about we can look at dropping some of these metrics.</p>
-<p>The average pairwise HD is <strong>332.53</strong> and normalized by the length of the sequence it is <strong>0.665</strong>. The distribution is shown in Figure <a href="simple-first-simulation.html#fig:first-density-plot">1.1</a> and the deciles are listed in Table <a href="simple-first-simulation.html#tab:first-deciles">1.3</a>.</p>
-<div class="figure"><span id="fig:first-density-plot"></span>
-<img src="_main_files/figure-html/first-density-plot-1.png" alt="Density plot of the pariwise distances in the last generation" width="672" />
+<div class="figure"><span id="fig:mu-1-1000-density-plot"></span>
+<img src="_main_files/figure-html/mu-1-1000-density-plot-1.png" alt="Density plot of the pariwise distances in the last generation" width="672" />
 <p class="caption">
-Figure 1.1: Density plot of the pariwise distances in the last generation
+Figure 2.1: Density plot of the pariwise distances in the last generation
 </p>
 </div>
 <table>
-<caption><span id="tab:first-deciles">Table 1.3: </span>The deciles of the pairwise HDs</caption>
+<caption><span id="tab:mu-1-1000-deciles">Table 2.3: </span>The deciles of the pairwise HDs</caption>
 <thead>
 <tr class="header">
 <th align="left">Decile</th>
@@ -254,58 +241,59 @@ Figure 1.1: Density plot of the pariwise distances in the last generation
 <tbody>
 <tr class="odd">
 <td align="left">0%</td>
-<td align="right">0.152</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">10%</td>
-<td align="right">0.618</td>
+<td align="right">0.008</td>
 </tr>
 <tr class="odd">
 <td align="left">20%</td>
-<td align="right">0.646</td>
+<td align="right">0.010</td>
 </tr>
 <tr class="even">
 <td align="left">30%</td>
-<td align="right">0.658</td>
+<td align="right">0.012</td>
 </tr>
 <tr class="odd">
 <td align="left">40%</td>
-<td align="right">0.668</td>
+<td align="right">0.014</td>
 </tr>
 <tr class="even">
 <td align="left">50%</td>
-<td align="right">0.676</td>
+<td align="right">0.016</td>
 </tr>
 <tr class="odd">
 <td align="left">60%</td>
-<td align="right">0.682</td>
+<td align="right">0.018</td>
 </tr>
 <tr class="even">
 <td align="left">70%</td>
-<td align="right">0.690</td>
+<td align="right">0.020</td>
 </tr>
 <tr class="odd">
 <td align="left">80%</td>
-<td align="right">0.698</td>
+<td align="right">0.022</td>
 </tr>
 <tr class="even">
 <td align="left">90%</td>
-<td align="right">0.708</td>
+<td align="right">0.026</td>
 </tr>
 <tr class="odd">
 <td align="left">100%</td>
-<td align="right">0.772</td>
+<td align="right">0.044</td>
 </tr>
 </tbody>
 </table>
+
 </div>
             </section>
 
           </div>
         </div>
       </div>
+<a href="simple-first-simulation.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="more-realistic-mu.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
