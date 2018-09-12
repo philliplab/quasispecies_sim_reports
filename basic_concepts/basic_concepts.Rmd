@@ -5,75 +5,34 @@ output:
     config:
       toc:
         collapse: subsection
+      sharing:
+        facebook: no
+        twitter: no
+      fontsettings:
+        theme: sepia
 ---
 
 ```{r, include=FALSE}
 library(yasss)
 library(knitr)
 library(rmarkdown)
+library(ggthemr)
+
 knitr::opts_chunk$set(echo = FALSE)
+ggthemr('lilac')
+
+c_theme <- theme_get()
+c_theme <- c_theme + theme(plot.background = element_rect(fill = "#F3EACB"))
+old_theme <- theme_set(c_theme)
 ```
 
 ```{r , include = FALSE}
 source('../utilities/reporting_utilities.R')
-#sim_pop_arg_formatter <- function(args){
-#  arg_table <- data.frame(arg = character(0),
-#                          val = character(0),
-#                          stringsAsFactors = FALSE)
-#  arg_table <- do.call(rbind, list(
-#data.frame(arg = "Number of Ancestors", val = length(args$ancestors)),
-#data.frame(arg = "Sequence Length",     val = paste(nchar(args$ancestors), collapse = ', ')),
-#data.frame(arg = "r0",                  val = args$r0),
-#data.frame(arg = "Number of Generations", val = args$n_gen),
-#data.frame(arg = "Minimum Population Size", val = args$n_pop),
-#data.frame(arg = "Mutator Function", val = args$mutator$fun),
-#data.frame(arg = paste("Mutator: ", names(args$mutator$args), sep = ''),
-#           val = unlist(args$mutator$args)),
-#data.frame(arg = "Fitness Evaluator", val = args$fitness_evaluator$fun)
-#))
-#
-#  if (is.null(args$fitness_evaluator$args)){
-#    arg_table <- rbind(arg_table,
-#      data.frame(arg = "Additional Fitness Evaluator Arguments",
-#                 val = "None")
-#      )
-#  } else {
-#    arg_table <- rbind(arg_table,
-#      data.frame(arg = paste("Fitness Evaluator: ", names(args$fitness_evaluator$args), sep = ''),
-#                 val = unlist(args$fitness_evaluator$args))
-#    )
-#  }
-#  row.names(arg_table) <- NULL
-#  names(arg_table) <- c("Argument", "Value")
-#  return(arg_table)
-#}
-#
-#genealogy_summary_table <- function(genealogy){
-#  genealogy$ances_dist <- stringdist(genealogy[1,'the_seq'], genealogy[,'the_seq'])
-#  genealogy_summary <-
-#  genealogy %>% 
-#  select(gen_num, ances_dist, the_seq, fitness_score) %>% 
-#  group_by(gen_num) %>%
-#  summarize(n = n(),
-#            ances_dist = mean(ances_dist),
-#            nor_ances_dist = mean(ances_dist) / min(nchar(the_seq)),
-#            fitness_score = mean(fitness_score),
-#            min_fitness_score = min(fitness_score))
-#  names(genealogy_summary) <- c(
-#    "Gen. Num.",
-#    "n",
-#    "Dist. to Ances.",
-#    "Normalized Dist.",
-#    "Fitness Score",
-#    "Min. Fitness Score"
-#  )
-#  return(genealogy_summary)
-#}
 ```
 
 # Simple first simulation
 
-A first simulation to demonstrate the process and the measuring tools. Table \@ref(tab:sim-pop-config) shows the configuration that was used to call `sim_pop` from the `yasss` package.
+A first simulation to demonstrate the process and the measuring tools. Table \@ref(tab:sim-pop-config) shows the configuration that was used to call `sim_pop` from the `yasss` package. A high level summary of the entire genealogy is provided in Table \@ref(tab:first-sum-tab).
 
 ```{r sim-pop-config, results = 'asis'}
 args <- list(
@@ -96,12 +55,14 @@ kable(
 )
 ```
 
-```{r, results = 'asis'}
-
+```{r first-sum-tab, results = 'asis'}
 g_sum_tab <- genealogy_summary_table(x)
 
-cat("\n\nTable: Individuals per generation and the average distance to the original ancestor for the generation.\n\n")
-kable(g_sum_tab)
+kable(
+  g_sum_tab,
+  booktabs = TRUE,
+  caption = "Individuals per generation and the average distance to the original ancestor for the generation."
+)
 ```
 
 ## Last Generation
