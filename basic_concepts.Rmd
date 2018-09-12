@@ -1,9 +1,13 @@
-# Basic concepts of quasispecies simulation
+---
+title: Basic concepts of quasispecies simulation
+output: html_document
+theme: default
+---
+
 
 ```{r, include=FALSE}
 library(yasss)
-library(knitr)
-library(formattable)
+library(rmarkdown)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -61,27 +65,9 @@ genealogy_summary_table <- function(genealogy){
   )
   return(genealogy_summary)
 }
-
-style_def <- function(x){
-  style(display = "inline-block",
-        direction = "rtl",
-        `border-radius` = "4px", 
-        `padding-right` = "15px", 
-        `padding-left` = "15px", 
-        `background-color` = csscolor("white")
-        )
-}
-
-style_lister <- function(df){
-  style_list <- list()
-  for (i in names(df)){
-    style_list[[i]] <- formatter(.tag = "span", style = style_def)
-  }
-  return(style_list)
-}
 ```
 
-## Simple first simulation
+# Simple first simulation
 
 ```{r, results = 'asis'}
 args <- list(
@@ -98,18 +84,15 @@ args <- list(
 x <- do.call(sim_pop, args)
 
 cat("\n\nTable: Called sim_pop with the following arguments.\n\n")
-format_table(sim_pop_arg_formatter(args), format = "html")
+kable(sim_pop_arg_formatter(args))
 
 g_sum_tab <- genealogy_summary_table(x)
 
 cat("\n\nTable: Individuals per generation and the average distance to the original ancestor for the generation.\n\n")
-format_table(g_sum_tab, format = 'html')
-
-cat("\n\nTable: Individuals per generation and the average distance to the original ancestor for the generation.\n\n")
-format_table(g_sum_tab, style_lister(g_sum_tab), align = 'c')
+kable(g_sum_tab)
 ```
 
-### Looking at only the last generation now
+## Looking at only the last generation now
 
 ```{r, include = FALSE}
 last_gen <-
@@ -133,14 +116,5 @@ data.frame(Decile = paste((0:10)*10, "%", sep = ''),
            Value = quantile(dvec, (0:10)/10))
 row.names(deciles) <- NULL
 cat("\n\nTable: The Deciles of the pairwise HDs.\n\n")
-format_table(deciles, list(
-  Decile = formatter(.tag = "span",
-    style = style_def
-    ),
-  Value = formatter(.tag = "span",
-    style = style_def
-    )
-  ),
-  align = 'c'
-)
+kable(deciles)
 ```
