@@ -1,12 +1,15 @@
 ---
 title: Basic concepts of quasispecies simulation
-output: html_document
-theme: default
+output: 
+  bookdown::gitbook:
+    config:
+      toc:
+        collapse: subsection
 ---
-
 
 ```{r, include=FALSE}
 library(yasss)
+library(knitr)
 library(rmarkdown)
 knitr::opts_chunk$set(echo = FALSE)
 ```
@@ -69,7 +72,9 @@ genealogy_summary_table <- function(genealogy){
 
 # Simple first simulation
 
-```{r, results = 'asis'}
+A first simulation to demonstrate the process and the measuring tools. Table \@ref(tab:sim-pop-config) shows the configuration that was used to call `sim_pop` from the `yasss` package.
+
+```{r sim-pop-config, results = 'asis'}
 args <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
@@ -83,8 +88,14 @@ args <- list(
 
 x <- do.call(sim_pop, args)
 
-cat("\n\nTable: Called sim_pop with the following arguments.\n\n")
-kable(sim_pop_arg_formatter(args))
+kable(
+  sim_pop_arg_formatter(args),
+  booktabs = TRUE,
+  caption = "Configuration with which sim_pop was called."
+)
+```
+
+```{r, results = 'asis'}
 
 g_sum_tab <- genealogy_summary_table(x)
 
@@ -92,7 +103,7 @@ cat("\n\nTable: Individuals per generation and the average distance to the origi
 kable(g_sum_tab)
 ```
 
-## Looking at only the last generation now
+## Last Generation
 
 ```{r, include = FALSE}
 last_gen <-
