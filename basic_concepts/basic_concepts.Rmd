@@ -89,7 +89,10 @@ dd.f <- data.frame(dists = dvec)
 The average pairwise HD is **`r round(avg_hd, 2)`** and normalized by the length of the sequence it is **`r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`**. The distribution is shown in Figure \@ref(fig:first-density-plot) and the deciles are listed in Table \@ref(tab:first-deciles).
 
 ```{r first-density-plot, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
-ggplot(dd.f, aes(x = dists)) + geom_density()
+n_uniq <- nrow(unique(dd.f))
+range_length <- max(dd.f$dists) - min(dd.f$dists)
+bw <- range_length / min((n_uniq*1.75), 200)
+ggplot(dd.f, aes(x = dists)) + geom_density(bw = bw)
 ```
 
 ```{r first-deciles, results = 'asis'}
@@ -151,7 +154,10 @@ dd.f <- data.frame(dists = dvec)
 ```
 
 ```{r mu-1-1000-density-plot, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
-ggplot(dd.f, aes(x = dists)) + geom_density()
+n_uniq <- nrow(unique(dd.f))
+range_length <- max(dd.f$dists) - min(dd.f$dists)
+bw <- range_length / min((n_uniq*1.75), 200)
+ggplot(dd.f, aes(x = dists)) + geom_density(bw = bw)
 ```
 
 ```{r mu-1-1000-deciles, results = 'asis'}
