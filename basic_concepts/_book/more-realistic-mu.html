@@ -82,8 +82,70 @@
 <div id="more-realistic-mu" class="section level1">
 <h1><span class="header-section-number">2</span> More realistic mu</h1>
 <p>Note that the extremely high value of mu (0.1) produces sequences that rapidly diverge radically from the ancestor. To make the simulation a little more realistic, drop the mutation rate down to 1 in 1000 and try again.</p>
+<p>The average pairwise HD is <strong>9.73</strong> and normalized by the length of the sequence it is <strong>0.019</strong>. The distribution is shown in the Figure below and the deciles are listed in the following Table. The last two tables in this section show the arguments used to call sim_pop and a summary of each genealogy.</p>
+<div class="figure"><span id="fig:unnamed-chunk-5"></span>
+<img src="_main_files/figure-html/unnamed-chunk-5-1.png" alt="Density plot of the pariwise distances in the last generation" width="672" />
+<p class="caption">
+Figure 2.1: Density plot of the pariwise distances in the last generation
+</p>
+</div>
 <table>
-<caption><span id="tab:sim-mu-1-1000">Table 2.1: </span>Configuration with which sim_pop was called.</caption>
+<caption><span id="tab:unnamed-chunk-6">Table 2.1: </span>The deciles of the pairwise HDs</caption>
+<thead>
+<tr class="header">
+<th align="left">Decile</th>
+<th align="right">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0%</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">10%</td>
+<td align="right">0.010</td>
+</tr>
+<tr class="odd">
+<td align="left">20%</td>
+<td align="right">0.014</td>
+</tr>
+<tr class="even">
+<td align="left">30%</td>
+<td align="right">0.016</td>
+</tr>
+<tr class="odd">
+<td align="left">40%</td>
+<td align="right">0.018</td>
+</tr>
+<tr class="even">
+<td align="left">50%</td>
+<td align="right">0.020</td>
+</tr>
+<tr class="odd">
+<td align="left">60%</td>
+<td align="right">0.022</td>
+</tr>
+<tr class="even">
+<td align="left">70%</td>
+<td align="right">0.022</td>
+</tr>
+<tr class="odd">
+<td align="left">80%</td>
+<td align="right">0.026</td>
+</tr>
+<tr class="even">
+<td align="left">90%</td>
+<td align="right">0.028</td>
+</tr>
+<tr class="odd">
+<td align="left">100%</td>
+<td align="right">0.046</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:unnamed-chunk-7">Table 2.2: </span>Configuration with which sim_pop was called.</caption>
 <thead>
 <tr class="header">
 <th align="left">Argument</th>
@@ -130,7 +192,7 @@
 </tbody>
 </table>
 <table>
-<caption><span id="tab:mu-1-1000-sum-tab">Table 2.2: </span>Individuals per generation and the average distance to the original ancestor for the generation.</caption>
+<caption><span id="tab:unnamed-chunk-8">Table 2.3: </span>Individuals per generation and the average distance to the original ancestor for the generation.</caption>
 <thead>
 <tr class="header">
 <th align="right">Gen. Num.</th>
@@ -147,141 +209,80 @@
 <td align="right">1</td>
 <td align="right">0.000000</td>
 <td align="right">0.0000000</td>
-<td align="right">0.2046460</td>
-<td align="right">0.2046460</td>
+<td align="right">0.5232042</td>
+<td align="right">0.5232042</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">2</td>
 <td align="right">0.500000</td>
 <td align="right">0.0010000</td>
-<td align="right">0.8878446</td>
-<td align="right">0.8878446</td>
+<td align="right">0.3371534</td>
+<td align="right">0.3371534</td>
 </tr>
 <tr class="odd">
 <td align="right">2</td>
 <td align="right">4</td>
 <td align="right">1.250000</td>
 <td align="right">0.0025000</td>
-<td align="right">0.6654219</td>
-<td align="right">0.6654219</td>
+<td align="right">0.7074385</td>
+<td align="right">0.7074385</td>
 </tr>
 <tr class="even">
 <td align="right">3</td>
 <td align="right">8</td>
-<td align="right">2.125000</td>
-<td align="right">0.0042500</td>
-<td align="right">0.5744388</td>
-<td align="right">0.5744388</td>
+<td align="right">1.750000</td>
+<td align="right">0.0035000</td>
+<td align="right">0.6070378</td>
+<td align="right">0.6070378</td>
 </tr>
 <tr class="odd">
 <td align="right">4</td>
 <td align="right">16</td>
-<td align="right">2.687500</td>
-<td align="right">0.0053750</td>
-<td align="right">0.6011765</td>
-<td align="right">0.6011765</td>
+<td align="right">2.562500</td>
+<td align="right">0.0051250</td>
+<td align="right">0.5051990</td>
+<td align="right">0.5051990</td>
 </tr>
 <tr class="even">
 <td align="right">5</td>
 <td align="right">32</td>
-<td align="right">3.406250</td>
-<td align="right">0.0068125</td>
-<td align="right">0.4602869</td>
-<td align="right">0.4602869</td>
+<td align="right">3.312500</td>
+<td align="right">0.0066250</td>
+<td align="right">0.5137917</td>
+<td align="right">0.5137917</td>
 </tr>
 <tr class="odd">
 <td align="right">6</td>
 <td align="right">64</td>
-<td align="right">3.890625</td>
-<td align="right">0.0077812</td>
-<td align="right">0.5417430</td>
-<td align="right">0.5417430</td>
+<td align="right">3.937500</td>
+<td align="right">0.0078750</td>
+<td align="right">0.5111301</td>
+<td align="right">0.5111301</td>
 </tr>
 <tr class="even">
 <td align="right">7</td>
 <td align="right">128</td>
-<td align="right">4.234375</td>
-<td align="right">0.0084688</td>
-<td align="right">0.5496094</td>
-<td align="right">0.5496094</td>
+<td align="right">4.507812</td>
+<td align="right">0.0090156</td>
+<td align="right">0.5289326</td>
+<td align="right">0.5289326</td>
 </tr>
 <tr class="odd">
 <td align="right">8</td>
 <td align="right">256</td>
-<td align="right">4.722656</td>
-<td align="right">0.0094453</td>
-<td align="right">0.5187453</td>
-<td align="right">0.5187453</td>
+<td align="right">4.984375</td>
+<td align="right">0.0099688</td>
+<td align="right">0.5145098</td>
+<td align="right">0.5145098</td>
 </tr>
 <tr class="even">
 <td align="right">9</td>
 <td align="right">512</td>
-<td align="right">5.236328</td>
-<td align="right">0.0104727</td>
-<td align="right">0.5028227</td>
-<td align="right">0.5028227</td>
-</tr>
-</tbody>
-</table>
-<div class="figure"><span id="fig:mu-1-1000-density-plot"></span>
-<img src="_main_files/figure-html/mu-1-1000-density-plot-1.png" alt="Density plot of the pariwise distances in the last generation" width="672" />
-<p class="caption">
-Figure 2.1: Density plot of the pariwise distances in the last generation
-</p>
-</div>
-<table>
-<caption><span id="tab:mu-1-1000-deciles">Table 2.3: </span>The deciles of the pairwise HDs</caption>
-<thead>
-<tr class="header">
-<th align="left">Decile</th>
-<th align="right">Value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">0%</td>
-<td align="right">0.000</td>
-</tr>
-<tr class="even">
-<td align="left">10%</td>
-<td align="right">0.010</td>
-</tr>
-<tr class="odd">
-<td align="left">20%</td>
-<td align="right">0.014</td>
-</tr>
-<tr class="even">
-<td align="left">30%</td>
-<td align="right">0.016</td>
-</tr>
-<tr class="odd">
-<td align="left">40%</td>
-<td align="right">0.018</td>
-</tr>
-<tr class="even">
-<td align="left">50%</td>
-<td align="right">0.018</td>
-</tr>
-<tr class="odd">
-<td align="left">60%</td>
-<td align="right">0.020</td>
-</tr>
-<tr class="even">
-<td align="left">70%</td>
-<td align="right">0.022</td>
-</tr>
-<tr class="odd">
-<td align="left">80%</td>
-<td align="right">0.024</td>
-</tr>
-<tr class="even">
-<td align="left">90%</td>
-<td align="right">0.026</td>
-</tr>
-<tr class="odd">
-<td align="left">100%</td>
-<td align="right">0.040</td>
+<td align="right">5.460938</td>
+<td align="right">0.0109219</td>
+<td align="right">0.5016488</td>
+<td align="right">0.5016488</td>
 </tr>
 </tbody>
 </table>
