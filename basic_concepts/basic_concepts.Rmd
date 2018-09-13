@@ -24,6 +24,7 @@ ggthemr('lilac')
 c_theme <- theme_get()
 c_theme <- c_theme + theme(plot.background = element_rect(fill = "#F3EACB"))
 old_theme <- theme_set(c_theme)
+options(scipen = 99)
 ```
 
 ```{r , include = FALSE}
@@ -131,3 +132,39 @@ sim_result <- list(args = args,
 
 ```{r test-child, child = '../utilities/single_sim_chunk.Rmd'}
 ```
+
+# Small number of simulations
+
+The goal is to compare different simulations to each other. First, we will start with a small number of simulations that we can still pay attention to each individual simulation. Note that here we only consider simulations performed with similar parameters since comparisons based on small number of examples for stochastic processes can be very misleading. The idea is just to expand the chunk that showcases a single simulation by adding in extra density curves and extra rows into the tables.
+
+```{r, include = FALSE}
+args <- list(
+  ancestors = paste(rep("A", 500), collapse = ''),
+  r0 = 2,
+  n_gen = 9,
+  n_pop = Inf,
+  mutator = list(fun = "mutator_uniform_fun",
+                 args = list(mu = 1/500)),
+  fitness_evaluator = list(fun = "fitness_evaluator_uniform_fun",
+                           args = NULL)
+)
+
+all_sim_results <- NULL
+
+i <- 1
+for (i in 1:10){
+  x <- do.call(sim_pop, args)
+  original_cols <- names(x)
+  x$sim_n <- i
+  x <- x %>% select(sim_n, original_cols)
+  all_sim_results <- rbind(all_sim_results, x)
+}
+```
+
+```{r test-child, child = '../utilities/few_sim_chunk.Rmd'}
+```
+
+
+
+
+
