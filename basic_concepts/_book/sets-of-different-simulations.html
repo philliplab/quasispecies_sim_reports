@@ -95,6 +95,382 @@
 <li>args: The list of arguments used with do.call to run sim_pop</li>
 </ul></li>
 </ul>
+<p>The following graphs and tables present a summary of a set of simulations that can be divided into 2 groups.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-17">Table 4.1: </span>The average pairwise HD in each group of simulations</caption>
+<thead>
+<tr class="header">
+<th align="left">group_label</th>
+<th align="right">avg_hd</th>
+<th align="right">n_avg_hd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="right">0.0334</td>
+<td align="right">0.0000669</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="right">0.0216</td>
+<td align="right">0.0000432</td>
+</tr>
+</tbody>
+</table>
+<div class="figure"><span id="fig:unnamed-chunk-18"></span>
+<img src="_main_files/figure-html/unnamed-chunk-18-1.png" alt="Density plot of the pariwise distances in the last generation" width="672" />
+<p class="caption">
+Figure 4.1: Density plot of the pariwise distances in the last generation
+</p>
+</div>
+<table>
+<caption><span id="tab:unnamed-chunk-19">Table 4.2: </span>The deciles of the pairwise HDs</caption>
+<thead>
+<tr class="header">
+<th align="left">Sim</th>
+<th align="left">0%</th>
+<th align="left">10%</th>
+<th align="left">20%</th>
+<th align="left">30%</th>
+<th align="left">40%</th>
+<th align="left">50%</th>
+<th align="left">60%</th>
+<th align="left">70%</th>
+<th align="left">80%</th>
+<th align="left">90%</th>
+<th align="left">100%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="left">0</td>
+<td align="left">0.02</td>
+<td align="left">0.026</td>
+<td align="left">0.028</td>
+<td align="left">0.03</td>
+<td align="left">0.034</td>
+<td align="left">0.036</td>
+<td align="left">0.038</td>
+<td align="left">0.042</td>
+<td align="left">0.046</td>
+<td align="left">0.082</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="left">0</td>
+<td align="left">0.012</td>
+<td align="left">0.016</td>
+<td align="left">0.018</td>
+<td align="left">0.02</td>
+<td align="left">0.022</td>
+<td align="left">0.024</td>
+<td align="left">0.026</td>
+<td align="left">0.028</td>
+<td align="left">0.032</td>
+<td align="left">0.058</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:unnamed-chunk-20">Table 4.3: </span>Configuration with which sim_pop was called for the group for each group of simulations.</caption>
+<thead>
+<tr class="header">
+<th align="left">group_label</th>
+<th align="left">Argument</th>
+<th align="left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="left">Number of Ancestors</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">mu_002</td>
+<td align="left">Sequence Length</td>
+<td align="left">500</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="left">r0</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">mu_002</td>
+<td align="left">Number of Generations</td>
+<td align="left">9</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="left">Minimum Population Size</td>
+<td align="left">Inf</td>
+</tr>
+<tr class="even">
+<td align="left">mu_002</td>
+<td align="left">Mutator Function</td>
+<td align="left">mutator_uniform_fun</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="left">Mutator: mu</td>
+<td align="left">0.002</td>
+</tr>
+<tr class="even">
+<td align="left">mu_002</td>
+<td align="left">Fitness Evaluator</td>
+<td align="left">fitness_evaluator_uniform_fun</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="left">Additional Fitness Evaluator Arguments</td>
+<td align="left">None</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="left">Number of Ancestors</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_0013</td>
+<td align="left">Sequence Length</td>
+<td align="left">500</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="left">r0</td>
+<td align="left">2</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_0013</td>
+<td align="left">Number of Generations</td>
+<td align="left">9</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="left">Minimum Population Size</td>
+<td align="left">Inf</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_0013</td>
+<td align="left">Mutator Function</td>
+<td align="left">mutator_uniform_fun</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="left">Mutator: mu</td>
+<td align="left">0.00133333333333333</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_0013</td>
+<td align="left">Fitness Evaluator</td>
+<td align="left">fitness_evaluator_uniform_fun</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="left">Additional Fitness Evaluator Arguments</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:unnamed-chunk-21">Table 4.4: </span>Individuals per generation and the average distance to the original ancestor for the generation for all simulations grouped by simulation group.</caption>
+<thead>
+<tr class="header">
+<th align="left">group_label</th>
+<th align="right">Gen. Num.</th>
+<th align="right">n</th>
+<th align="right">Dist. to Ances.</th>
+<th align="right">Normalized Dist.</th>
+<th align="right">Fitness Score</th>
+<th align="right">Min. Fitness Score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="right">0</td>
+<td align="right">10</td>
+<td align="right">0.000000</td>
+<td align="right">0.0000000</td>
+<td align="right">0.4900067</td>
+<td align="right">0.1078886</td>
+</tr>
+<tr class="even">
+<td align="left">mu_002</td>
+<td align="right">1</td>
+<td align="right">20</td>
+<td align="right">1.400000</td>
+<td align="right">0.0028000</td>
+<td align="right">0.5757264</td>
+<td align="right">0.0062575</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="right">2</td>
+<td align="right">40</td>
+<td align="right">2.600000</td>
+<td align="right">0.0052000</td>
+<td align="right">0.4978187</td>
+<td align="right">0.0074974</td>
+</tr>
+<tr class="even">
+<td align="left">mu_002</td>
+<td align="right">3</td>
+<td align="right">80</td>
+<td align="right">3.787500</td>
+<td align="right">0.0075750</td>
+<td align="right">0.5076845</td>
+<td align="right">0.0172826</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="right">4</td>
+<td align="right">160</td>
+<td align="right">4.743750</td>
+<td align="right">0.0094875</td>
+<td align="right">0.4793084</td>
+<td align="right">0.0036512</td>
+</tr>
+<tr class="even">
+<td align="left">mu_002</td>
+<td align="right">5</td>
+<td align="right">320</td>
+<td align="right">5.734375</td>
+<td align="right">0.0114688</td>
+<td align="right">0.4918998</td>
+<td align="right">0.0020557</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="right">6</td>
+<td align="right">640</td>
+<td align="right">6.715625</td>
+<td align="right">0.0134312</td>
+<td align="right">0.5036326</td>
+<td align="right">0.0018455</td>
+</tr>
+<tr class="even">
+<td align="left">mu_002</td>
+<td align="right">7</td>
+<td align="right">1280</td>
+<td align="right">7.685937</td>
+<td align="right">0.0153719</td>
+<td align="right">0.5004170</td>
+<td align="right">0.0000675</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_002</td>
+<td align="right">8</td>
+<td align="right">2560</td>
+<td align="right">8.686328</td>
+<td align="right">0.0173727</td>
+<td align="right">0.4940171</td>
+<td align="right">0.0000326</td>
+</tr>
+<tr class="even">
+<td align="left">mu_002</td>
+<td align="right">9</td>
+<td align="right">5120</td>
+<td align="right">9.681055</td>
+<td align="right">0.0193621</td>
+<td align="right">0.5013412</td>
+<td align="right">0.0002522</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_0013</td>
+<td align="right">0</td>
+<td align="right">10</td>
+<td align="right">0.000000</td>
+<td align="right">0.0000000</td>
+<td align="right">0.4482866</td>
+<td align="right">0.1082937</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="right">1</td>
+<td align="right">20</td>
+<td align="right">0.500000</td>
+<td align="right">0.0010000</td>
+<td align="right">0.4940136</td>
+<td align="right">0.0013722</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_0013</td>
+<td align="right">2</td>
+<td align="right">40</td>
+<td align="right">1.350000</td>
+<td align="right">0.0027000</td>
+<td align="right">0.5361688</td>
+<td align="right">0.0326238</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="right">3</td>
+<td align="right">80</td>
+<td align="right">2.062500</td>
+<td align="right">0.0041250</td>
+<td align="right">0.4558884</td>
+<td align="right">0.0051769</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_0013</td>
+<td align="right">4</td>
+<td align="right">160</td>
+<td align="right">2.731250</td>
+<td align="right">0.0054625</td>
+<td align="right">0.5376763</td>
+<td align="right">0.0183150</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="right">5</td>
+<td align="right">320</td>
+<td align="right">3.378125</td>
+<td align="right">0.0067562</td>
+<td align="right">0.5204569</td>
+<td align="right">0.0009316</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_0013</td>
+<td align="right">6</td>
+<td align="right">640</td>
+<td align="right">4.056250</td>
+<td align="right">0.0081125</td>
+<td align="right">0.5201966</td>
+<td align="right">0.0006530</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="right">7</td>
+<td align="right">1280</td>
+<td align="right">4.722656</td>
+<td align="right">0.0094453</td>
+<td align="right">0.4972584</td>
+<td align="right">0.0005616</td>
+</tr>
+<tr class="odd">
+<td align="left">mu_0013</td>
+<td align="right">8</td>
+<td align="right">2560</td>
+<td align="right">5.398047</td>
+<td align="right">0.0107961</td>
+<td align="right">0.5096068</td>
+<td align="right">0.0007339</td>
+</tr>
+<tr class="even">
+<td align="left">mu_0013</td>
+<td align="right">9</td>
+<td align="right">5120</td>
+<td align="right">6.062109</td>
+<td align="right">0.0121242</td>
+<td align="right">0.5025333</td>
+<td align="right">0.0000039</td>
+</tr>
+</tbody>
+</table>
 
 </div>
             </section>

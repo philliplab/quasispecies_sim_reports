@@ -229,6 +229,5 @@ for (c_sim_id in unique(group_membership$sim_id)){
 }
 ```
 
-
-
-
+```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
+```

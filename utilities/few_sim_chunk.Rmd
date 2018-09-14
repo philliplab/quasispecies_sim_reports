@@ -11,7 +11,7 @@ dd.f <- NULL
 for (i in unique(all_sim_results$sim_id)){
   dmat <- stringdistmatrix(last_gens$the_seq[last_gens$sim_id == i], method = 'hamming')
   avg_hd <- mean(dmat)
-  dvec <- as.numeric(dmat)/min(nchar(last_gen$the_seq))
+  dvec <- as.numeric(dmat)/min(nchar(last_gens$the_seq))
   dd.f <- rbind(dd.f,
     data.frame(sim_id = i,
                dists = dvec)
