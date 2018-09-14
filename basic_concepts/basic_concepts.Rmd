@@ -168,12 +168,66 @@ for (i in 1:10){
 
 The true goal is to compare sets of simulations where some parameter was varied to each other. Initially due to computational restraints (upgrades needed to yasss as well as some caching facilities), we will restrict this to comparisons of small numbers of simulations (~30) grouped into 2 to 4 groups. The goal here is to show how the distributions and the metrics diverge between the groups.
 
-Three data structures are used to track all this:
+Four data structures are used to track all this:
 
 - the all_sim_results data.frame - see the few_sim_chunk
-- the group_membership data.frame: sim_id, group_n, group_label and group description
-- arg_sets: A list indexed by group_id and each element is a argument set for sim_pop.
+- the group_membership data.frame: sim_id, group_id, group_label and group description
+- arg_sets: A list indexed by group_id. Each element is a list with three elements:
+    - group_label: The label used to describe the group
+    - group_desc: The full description of the group
+    - args: The list of arguments used with do.call to run sim_pop
 
+```{r, include=FALSE}
+group_membership <- data.frame(
+  sim_id = 1:20,
+  group_id = sort(rep(c(1,2), times = 10))
+)
+
+args1 <- list(
+  ancestors = paste(rep("A", 500), collapse = ''),
+  r0 = 2,
+  n_gen = 9,
+  n_pop = Inf,
+  mutator = list(fun = "mutator_uniform_fun",
+                 args = list(mu = 1/500)),
+  fitness_evaluator = list(fun = "fitness_evaluator_uniform_fun",
+                           args = NULL)
+)
+
+args2 <- list(
+  ancestors = paste(rep("A", 500), collapse = ''),
+  r0 = 2,
+  n_gen = 9,
+  n_pop = Inf,
+  mutator = list(fun = "mutator_uniform_fun",
+                 args = list(mu = 1/750)),
+  fitness_evaluator = list(fun = "fitness_evaluator_uniform_fun",
+                           args = NULL)
+)
+
+arg_sets <- list(`1` = list(group_label = "mu_002",
+                            group_desc = "with r0 = 2, 9 generations and mu equal to 1/500",
+                            args = args1),
+                 `2` = list(group_label = "mu_0013",
+                            group_desc = "with r0 = 2, 9 generations and mu equal to 1/750",
+                            args = args2))
+
+sim_id <- unique(group_membership$sim_id)[1]
+
+all_sim_results <- NULL
+for (c_sim_id in unique(group_membership$sim_id)){
+  c_group_id <- group_membership[group_membership$sim_id == c_sim_id, 'group_id']
+  c_group_label <- arg_sets[[which(names(arg_sets) == c_group_id)]]$group_label
+  c_args <- arg_sets[[which(names(arg_sets) == c_group_id)]]$args
+  
+  x <- do.call(sim_pop, c_args)
+  original_cols <- names(x)
+  x$sim_id <- c_sim_id
+  x$group_label <- c_group_label
+  x <- x %>% select(sim_id, group_label, original_cols)
+  all_sim_results <- rbind(all_sim_results, x)
+}
+```
 
 
 

@@ -84,11 +84,16 @@
 <div id="sets-of-different-simulations" class="section level1">
 <h1><span class="header-section-number">4</span> Sets of different simulations</h1>
 <p>The true goal is to compare sets of simulations where some parameter was varied to each other. Initially due to computational restraints (upgrades needed to yasss as well as some caching facilities), we will restrict this to comparisons of small numbers of simulations (~30) grouped into 2 to 4 groups. The goal here is to show how the distributions and the metrics diverge between the groups.</p>
-<p>Three data structures are used to track all this:</p>
+<p>Four data structures are used to track all this:</p>
 <ul>
 <li>the all_sim_results data.frame - see the few_sim_chunk</li>
-<li>the group_membership data.frame: sim_id, group_n, group_label and group description</li>
-<li>arg_sets: A list indexed by group_id and each element is a argument set for sim_pop.</li>
+<li>the group_membership data.frame: sim_id, group_id, group_label and group description</li>
+<li>arg_sets: A list indexed by group_id. Each element is a list with three elements:
+<ul>
+<li>group_label: The label used to describe the group</li>
+<li>group_desc: The full description of the group</li>
+<li>args: The list of arguments used with do.call to run sim_pop</li>
+</ul></li>
 </ul>
 
 </div>
