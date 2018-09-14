@@ -1,4 +1,4 @@
-The following tables show some summary metrics for `r length(unique(all_sim_results$sim_n))` simulations.
+The following tables show some summary metrics for `r length(unique(all_sim_results$sim_id))` simulations.
 
 ```{r, include = FALSE}
 seq_length <- nchar(all_sim_results[1,'the_seq'])
@@ -8,19 +8,19 @@ all_sim_results %>%
   filter(gen_num == max(gen_num))
 
 dd.f <- NULL
-for (i in unique(all_sim_results$sim_n)){
-  dmat <- stringdistmatrix(last_gens$the_seq[last_gens$sim_n == i], method = 'hamming')
+for (i in unique(all_sim_results$sim_id)){
+  dmat <- stringdistmatrix(last_gens$the_seq[last_gens$sim_id == i], method = 'hamming')
   avg_hd <- mean(dmat)
   dvec <- as.numeric(dmat)/min(nchar(last_gen$the_seq))
   dd.f <- rbind(dd.f,
-    data.frame(sim_n = i,
+    data.frame(sim_id = i,
                dists = dvec)
   )
 }
 
 kable(
   dd.f %>%
-    group_by(sim_n) %>%
+    group_by(sim_id) %>%
     summarize(avg_hd = round(mean(dists),4),
               n_avg_hd = round(mean(dists)/seq_length, 7)),
   booktabs = TRUE,
@@ -33,17 +33,17 @@ n_uniq <- length(unique(dd.f$dists))
 range_length <- max(dd.f$dists) - min(dd.f$dists)
 bw <- range_length / min((n_uniq*1.75), 200)
 ggplot(dd.f, aes(x = dists, 
-                 col = as.factor(sim_n))) + 
+                 col = as.factor(sim_id))) + 
       geom_density(bw = bw)
 ```
 
 ```{r, results = 'asis'}
-all_deciles <- data.frame(matrix(0, ncol = 12, nrow = max(all_sim_results$sim_n)))
+all_deciles <- data.frame(matrix(0, ncol = 12, nrow = max(all_sim_results$sim_id)))
 names(all_deciles) <- c('Sim', paste((0:10)*10, "%", sep = ''))
 
-for (i in 1:max(all_sim_results$sim_n)){
+for (i in 1:max(all_sim_results$sim_id)){
   deciles <-
-    quantile(dd.f$dists[dd.f$sim_n == i], (0:10)/10)
+    quantile(dd.f$dists[dd.f$sim_id == i], (0:10)/10)
 
   all_deciles[i,] <- c(i, deciles)
 }
@@ -65,7 +65,7 @@ kable(
 ```
 
 ```{r, results = 'asis'}
-g_sum_tab <- genealogy_summary_table(all_sim_results[all_sim_results$sim_n == 1, -1])
+g_sum_tab <- genealogy_summary_table(all_sim_results[all_sim_results$sim_id == 1, -1])
 
 kable(
   g_sum_tab,

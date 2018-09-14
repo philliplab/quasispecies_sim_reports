@@ -63,6 +63,7 @@
 <li class="chapter" data-level="1" data-path="simple-first-simulation.html"><a href="simple-first-simulation.html"><i class="fa fa-check"></i><b>1</b> Simple first simulation</a></li>
 <li class="chapter" data-level="2" data-path="more-realistic-mu.html"><a href="more-realistic-mu.html"><i class="fa fa-check"></i><b>2</b> More realistic mu</a></li>
 <li class="chapter" data-level="3" data-path="small-number-of-simulations.html"><a href="small-number-of-simulations.html"><i class="fa fa-check"></i><b>3</b> Small number of simulations</a></li>
+<li class="chapter" data-level="4" data-path="sets-of-different-simulations.html"><a href="sets-of-different-simulations.html"><i class="fa fa-check"></i><b>4</b> Sets of different simulations</a></li>
 </ul>
 
       </nav>
@@ -83,7 +84,7 @@
 <div id="more-realistic-mu" class="section level1">
 <h1><span class="header-section-number">2</span> More realistic mu</h1>
 <p>Note that the extremely high value of mu (0.1) produces sequences that rapidly diverge radically from the ancestor. To make the simulation a little more realistic, drop the mutation rate down to 1 in 1000 and try again.</p>
-<p>The average pairwise HD is <strong>8.51</strong> and normalized by the length of the sequence it is <strong>0.017</strong>. The distribution is shown in the Figure below and the deciles are listed in the following Table. The last two tables in this section show the arguments used to call sim_pop and a summary of each genealogy.</p>
+<p>The average pairwise HD is <strong>7.89</strong> and normalized by the length of the sequence it is <strong>0.016</strong>. The distribution is shown in the Figure below and the deciles are listed in the following Table. The last two tables in this section show the arguments used to call sim_pop and a summary of each genealogy.</p>
 <div class="figure"><span id="fig:unnamed-chunk-6"></span>
 <img src="_main_files/figure-html/unnamed-chunk-6-1.png" alt="Density plot of the pariwise distances in the last generation" width="672" />
 <p class="caption">
@@ -113,35 +114,35 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 </tr>
 <tr class="even">
 <td align="left">30%</td>
-<td align="right">0.014</td>
+<td align="right">0.012</td>
 </tr>
 <tr class="odd">
 <td align="left">40%</td>
-<td align="right">0.016</td>
+<td align="right">0.014</td>
 </tr>
 <tr class="even">
 <td align="left">50%</td>
-<td align="right">0.018</td>
+<td align="right">0.016</td>
 </tr>
 <tr class="odd">
 <td align="left">60%</td>
-<td align="right">0.018</td>
+<td align="right">0.016</td>
 </tr>
 <tr class="even">
 <td align="left">70%</td>
-<td align="right">0.020</td>
+<td align="right">0.018</td>
 </tr>
 <tr class="odd">
 <td align="left">80%</td>
-<td align="right">0.022</td>
+<td align="right">0.020</td>
 </tr>
 <tr class="even">
 <td align="left">90%</td>
-<td align="right">0.024</td>
+<td align="right">0.022</td>
 </tr>
 <tr class="odd">
 <td align="left">100%</td>
-<td align="right">0.040</td>
+<td align="right">0.042</td>
 </tr>
 </tbody>
 </table>
@@ -210,80 +211,80 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 <td align="right">1</td>
 <td align="right">0.000000</td>
 <td align="right">0.0000000</td>
-<td align="right">0.0189286</td>
-<td align="right">0.0189286</td>
+<td align="right">0.8786059</td>
+<td align="right">0.8786059</td>
 </tr>
 <tr class="even">
 <td align="right">1</td>
 <td align="right">2</td>
-<td align="right">0.500000</td>
-<td align="right">0.0010000</td>
-<td align="right">0.4715640</td>
-<td align="right">0.3499008</td>
+<td align="right">0.000000</td>
+<td align="right">0.0000000</td>
+<td align="right">0.4703541</td>
+<td align="right">0.1840021</td>
 </tr>
 <tr class="odd">
 <td align="right">2</td>
 <td align="right">4</td>
-<td align="right">1.250000</td>
-<td align="right">0.0025000</td>
-<td align="right">0.5640968</td>
-<td align="right">0.4337406</td>
+<td align="right">0.500000</td>
+<td align="right">0.0010000</td>
+<td align="right">0.5094669</td>
+<td align="right">0.0964329</td>
 </tr>
 <tr class="even">
 <td align="right">3</td>
 <td align="right">8</td>
-<td align="right">2.250000</td>
-<td align="right">0.0045000</td>
-<td align="right">0.5198671</td>
-<td align="right">0.0072164</td>
+<td align="right">1.250000</td>
+<td align="right">0.0025000</td>
+<td align="right">0.4111367</td>
+<td align="right">0.0724550</td>
 </tr>
 <tr class="odd">
 <td align="right">4</td>
 <td align="right">16</td>
-<td align="right">2.687500</td>
-<td align="right">0.0053750</td>
-<td align="right">0.4371577</td>
-<td align="right">0.0400082</td>
+<td align="right">1.750000</td>
+<td align="right">0.0035000</td>
+<td align="right">0.5180557</td>
+<td align="right">0.1412758</td>
 </tr>
 <tr class="even">
 <td align="right">5</td>
 <td align="right">32</td>
-<td align="right">3.000000</td>
-<td align="right">0.0060000</td>
-<td align="right">0.3848068</td>
-<td align="right">0.0019797</td>
+<td align="right">2.187500</td>
+<td align="right">0.0043750</td>
+<td align="right">0.4959503</td>
+<td align="right">0.0395287</td>
 </tr>
 <tr class="odd">
 <td align="right">6</td>
 <td align="right">64</td>
-<td align="right">3.437500</td>
-<td align="right">0.0068750</td>
-<td align="right">0.4528055</td>
-<td align="right">0.0090414</td>
+<td align="right">2.734375</td>
+<td align="right">0.0054688</td>
+<td align="right">0.5609378</td>
+<td align="right">0.0030736</td>
 </tr>
 <tr class="even">
 <td align="right">7</td>
 <td align="right">128</td>
-<td align="right">3.953125</td>
-<td align="right">0.0079062</td>
-<td align="right">0.5235626</td>
-<td align="right">0.0057746</td>
+<td align="right">3.281250</td>
+<td align="right">0.0065625</td>
+<td align="right">0.5215620</td>
+<td align="right">0.0020678</td>
 </tr>
 <tr class="odd">
 <td align="right">8</td>
 <td align="right">256</td>
-<td align="right">4.406250</td>
-<td align="right">0.0088125</td>
-<td align="right">0.4863032</td>
-<td align="right">0.0030726</td>
+<td align="right">3.773438</td>
+<td align="right">0.0075469</td>
+<td align="right">0.4953000</td>
+<td align="right">0.0006268</td>
 </tr>
 <tr class="even">
 <td align="right">9</td>
 <td align="right">512</td>
-<td align="right">4.880859</td>
-<td align="right">0.0097617</td>
-<td align="right">0.5135757</td>
-<td align="right">0.0021328</td>
+<td align="right">4.230469</td>
+<td align="right">0.0084609</td>
+<td align="right">0.5012812</td>
+<td align="right">0.0036371</td>
 </tr>
 </tbody>
 </table>
