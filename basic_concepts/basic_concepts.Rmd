@@ -164,6 +164,11 @@ for (i in 1:10){
 ```{r test-child, child = '../utilities/few_sim_chunk.Rmd'}
 ```
 
+# Sets of different simulations
+
+The true goal is to compare sets of simulations where some parameter was varied to each other. Initially due to computational restraints (upgrades needed to yasss as well as some caching facilities), we will restrict this to comparisons of small numbers of simulations (~30) grouped into 2 to 4 groups. The goal here is to show how the distributions and the metrics diverge between the groups.
+
+This needs another new and more complex datastructure. It needs to track the different groupings of the the simulations. Design this next.
 
 
 

@@ -1,0 +1,50 @@
+```{r, include = FALSE}
+last_gen <-
+sim_result$genealogy %>%
+  filter(gen_num == max(gen_num))
+
+dmat <- stringdistmatrix(last_gen$the_seq, method = 'hamming')
+avg_hd <- mean(dmat)
+dvec <- as.numeric(dmat)/min(nchar(last_gen$the_seq))
+dd.f <- data.frame(dists = dvec)
+```
+
+The average pairwise HD is **`r round(avg_hd, 2)`** and normalized by the length of the sequence it is **`r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`**. The distribution is shown in the Figure below and the deciles are listed in the following Table. The last two tables in this section show the arguments used to call sim_pop and a summary of each genealogy.
+
+```{r, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
+n_uniq <- nrow(unique(dd.f))
+range_length <- max(dd.f$dists) - min(dd.f$dists)
+bw <- range_length / min((n_uniq*1.75), 200)
+ggplot(dd.f, aes(x = dists)) + geom_density(bw = bw)
+```
+
+```{r, results = 'asis'}
+deciles <-
+data.frame(Decile = paste((0:10)*10, "%", sep = ''),
+           Value = quantile(dvec, (0:10)/10))
+row.names(deciles) <- NULL
+kable(
+  deciles,
+  booktabs = TRUE,
+  caption = "The deciles of the pairwise HDs"
+)
+```
+
+```{r, results = 'asis'}
+kable(
+  sim_pop_arg_formatter(sim_result$args),
+  booktabs = TRUE,
+  caption = "Configuration with which sim_pop was called."
+)
+```
+
+```{r, results = 'asis'}
+g_sum_tab <- genealogy_summary_table(sim_result$genealogy)
+
+kable(
+  g_sum_tab,
+  booktabs = TRUE,
+  caption = "Individuals per generation and the average distance to the original ancestor for the generation."
+)
+```
+

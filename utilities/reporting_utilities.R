@@ -39,7 +39,7 @@ genealogy_summary_table <- function(genealogy){
   summarize(n = n(),
             ances_dist = mean(ances_dist),
             nor_ances_dist = mean(ances_dist) / min(nchar(the_seq)),
-            fitness_score = mean(fitness_score),
+            avg_fitness_score = mean(fitness_score),
             min_fitness_score = min(fitness_score))
   names(genealogy_summary) <- c(
     "Gen. Num.",
