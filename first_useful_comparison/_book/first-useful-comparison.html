@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="overview.html">
+
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -60,8 +60,7 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="overview.html"><a href="overview.html"><i class="fa fa-check"></i><b>1</b> Overview</a></li>
-<li class="chapter" data-level="2" data-path="details.html"><a href="details.html"><i class="fa fa-check"></i><b>2</b> Details</a></li>
+<li class="chapter" data-level="1" data-path="first_useful_comparison.html"><a href="#first-useful-comparison"><i class="fa fa-check"></i><b>1</b> First useful comparison</a></li>
 </ul>
 
       </nav>
@@ -79,11 +78,21 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="details" class="section level1">
-<h1><span class="header-section-number">2</span> Details</h1>
+<div id="header">
+<h1 class="title">Simplest possible version that contains some killing of molecules.</h1>
+</div>
+<div id="first-useful-comparison" class="section level1">
+<h1><span class="header-section-number">1</span> First useful comparison</h1>
+<p>Comparing populations with a fitness contraint to populations with no fitness constraint.</p>
+<p>Simulate 10 datasets with 1024 individuals and uniformly assigned fitness scores.</p>
+<p>Assign the first 1+2+4+8=15 sequences a fitness of 1 - to prevent massive parts of the dataset from getting excluded.</p>
+<p>Then, do a fitness based selection with a score of 0.05.</p>
+<p>Assign that as sim_id n to group 1.</p>
+<p>Next select that same number of individuals from the last generation completely ignoring the fitness score and assign that as sim_id n+1 to group 2.</p>
+<p>Repeat until 10 simulations in each dataset.</p>
 <p>The following graphs and tables present a summary of a set of simulations that can be divided into 2 groups.</p>
 <table>
-<caption><span id="tab:unnamed-chunk-5">Table 2.1: </span>The average pairwise HD in each group of simulations</caption>
+<caption><span id="tab:unnamed-chunk-5">Table 1.1: </span>The average pairwise HD in each group of simulations</caption>
 <thead>
 <tr class="header">
 <th align="left">group_label</th>
@@ -94,24 +103,24 @@
 <tbody>
 <tr class="odd">
 <td align="left">restricted</td>
-<td align="right">0.0347</td>
-<td align="right">0.0000695</td>
+<td align="right">0.0354</td>
+<td align="right">0.0000707</td>
 </tr>
 <tr class="even">
 <td align="left">unrestricted</td>
-<td align="right">0.0347</td>
-<td align="right">0.0000694</td>
+<td align="right">0.0356</td>
+<td align="right">0.0000712</td>
 </tr>
 </tbody>
 </table>
 <div class="figure"><span id="fig:unnamed-chunk-6"></span>
 <img src="_main_files/figure-html/unnamed-chunk-6-1.png" alt="Density plot of the pariwise distances in the last generation" width="672" />
 <p class="caption">
-Figure 2.1: Density plot of the pariwise distances in the last generation
+Figure 1.1: Density plot of the pariwise distances in the last generation
 </p>
 </div>
 <table>
-<caption><span id="tab:unnamed-chunk-7">Table 2.2: </span>The deciles of the pairwise HDs</caption>
+<caption><span id="tab:unnamed-chunk-7">Table 1.2: </span>The deciles of the pairwise HDs</caption>
 <thead>
 <tr class="header">
 <th align="left">Sim</th>
@@ -133,34 +142,34 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 <td align="left">restricted</td>
 <td align="left">0</td>
 <td align="left">0.022</td>
-<td align="left">0.026</td>
+<td align="left">0.028</td>
 <td align="left">0.03</td>
-<td align="left">0.032</td>
 <td align="left">0.034</td>
+<td align="left">0.036</td>
 <td align="left">0.038</td>
 <td align="left">0.04</td>
 <td align="left">0.044</td>
 <td align="left">0.048</td>
-<td align="left">0.08</td>
+<td align="left">0.076</td>
 </tr>
 <tr class="even">
 <td align="left">unrestricted</td>
 <td align="left">0</td>
-<td align="left">0.022</td>
-<td align="left">0.026</td>
+<td align="left">0.024</td>
+<td align="left">0.028</td>
 <td align="left">0.03</td>
-<td align="left">0.032</td>
 <td align="left">0.034</td>
+<td align="left">0.036</td>
 <td align="left">0.038</td>
 <td align="left">0.04</td>
-<td align="left">0.042</td>
+<td align="left">0.044</td>
 <td align="left">0.048</td>
-<td align="left">0.08</td>
+<td align="left">0.076</td>
 </tr>
 </tbody>
 </table>
 <table>
-<caption><span id="tab:unnamed-chunk-8">Table 2.3: </span>Configuration with which sim_pop was called for the group for each group of simulations.</caption>
+<caption><span id="tab:unnamed-chunk-8">Table 1.3: </span>Configuration with which sim_pop was called for the group for each group of simulations.</caption>
 <thead>
 <tr class="header">
 <th align="left">group_label</th>
@@ -262,7 +271,7 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 </tbody>
 </table>
 <table>
-<caption><span id="tab:unnamed-chunk-9">Table 2.4: </span>Individuals per generation and the average distance to the original ancestor for the generation for all simulations grouped by simulation group.</caption>
+<caption><span id="tab:unnamed-chunk-9">Table 1.4: </span>Individuals per generation and the average distance to the original ancestor for the generation for all simulations grouped by simulation group.</caption>
 <thead>
 <tr class="header">
 <th align="left">group_label</th>
@@ -288,8 +297,8 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 <td align="left">restricted</td>
 <td align="right">1</td>
 <td align="right">20</td>
-<td align="right">1.150000</td>
-<td align="right">0.0023000</td>
+<td align="right">0.950000</td>
+<td align="right">0.0019000</td>
 <td align="right">1.0000000</td>
 <td align="right">1.0000000</td>
 </tr>
@@ -297,8 +306,8 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 <td align="left">restricted</td>
 <td align="right">2</td>
 <td align="right">40</td>
-<td align="right">1.950000</td>
-<td align="right">0.0039000</td>
+<td align="right">2.025000</td>
+<td align="right">0.0040500</td>
 <td align="right">1.0000000</td>
 <td align="right">1.0000000</td>
 </tr>
@@ -306,73 +315,73 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 <td align="left">restricted</td>
 <td align="right">3</td>
 <td align="right">80</td>
-<td align="right">2.937500</td>
-<td align="right">0.0058750</td>
+<td align="right">2.950000</td>
+<td align="right">0.0059000</td>
 <td align="right">1.0000000</td>
 <td align="right">1.0000000</td>
 </tr>
 <tr class="odd">
 <td align="left">restricted</td>
 <td align="right">4</td>
-<td align="right">146</td>
-<td align="right">3.945206</td>
-<td align="right">0.0078904</td>
-<td align="right">0.5683850</td>
-<td align="right">0.1072539</td>
+<td align="right">140</td>
+<td align="right">3.871429</td>
+<td align="right">0.0077429</td>
+<td align="right">0.5868523</td>
+<td align="right">0.1049498</td>
 </tr>
 <tr class="even">
 <td align="left">restricted</td>
 <td align="right">5</td>
-<td align="right">263</td>
-<td align="right">4.897338</td>
-<td align="right">0.0097947</td>
-<td align="right">0.5269703</td>
-<td align="right">0.1001227</td>
+<td align="right">247</td>
+<td align="right">4.935223</td>
+<td align="right">0.0098704</td>
+<td align="right">0.5534817</td>
+<td align="right">0.1000878</td>
 </tr>
 <tr class="odd">
 <td align="left">restricted</td>
 <td align="right">6</td>
-<td align="right">473</td>
-<td align="right">5.974630</td>
-<td align="right">0.0119493</td>
-<td align="right">0.5614957</td>
-<td align="right">0.1034299</td>
+<td align="right">447</td>
+<td align="right">6.006711</td>
+<td align="right">0.0120134</td>
+<td align="right">0.5532725</td>
+<td align="right">0.1004554</td>
 </tr>
 <tr class="even">
 <td align="left">restricted</td>
 <td align="right">7</td>
-<td align="right">842</td>
-<td align="right">6.953682</td>
-<td align="right">0.0139074</td>
-<td align="right">0.5550410</td>
-<td align="right">0.1000771</td>
+<td align="right">816</td>
+<td align="right">6.979167</td>
+<td align="right">0.0139583</td>
+<td align="right">0.5509704</td>
+<td align="right">0.1008429</td>
 </tr>
 <tr class="odd">
 <td align="left">restricted</td>
 <td align="right">8</td>
-<td align="right">1520</td>
-<td align="right">7.898684</td>
-<td align="right">0.0157974</td>
-<td align="right">0.5468504</td>
-<td align="right">0.1004646</td>
+<td align="right">1454</td>
+<td align="right">7.986245</td>
+<td align="right">0.0159725</td>
+<td align="right">0.5581272</td>
+<td align="right">0.1004215</td>
 </tr>
 <tr class="even">
 <td align="left">restricted</td>
 <td align="right">9</td>
-<td align="right">2715</td>
-<td align="right">8.857827</td>
-<td align="right">0.0177157</td>
-<td align="right">0.5465959</td>
-<td align="right">0.1001857</td>
+<td align="right">2607</td>
+<td align="right">8.960107</td>
+<td align="right">0.0179202</td>
+<td align="right">0.5499719</td>
+<td align="right">0.1001034</td>
 </tr>
 <tr class="odd">
 <td align="left">restricted</td>
 <td align="right">10</td>
-<td align="right">4851</td>
-<td align="right">9.851783</td>
-<td align="right">0.0197036</td>
-<td align="right">0.5472605</td>
-<td align="right">0.1003771</td>
+<td align="right">4684</td>
+<td align="right">9.932963</td>
+<td align="right">0.0198659</td>
+<td align="right">0.5458030</td>
+<td align="right">0.1000234</td>
 </tr>
 <tr class="even">
 <td align="left">unrestricted</td>
@@ -387,8 +396,8 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 <td align="left">unrestricted</td>
 <td align="right">1</td>
 <td align="right">20</td>
-<td align="right">1.150000</td>
-<td align="right">0.0023000</td>
+<td align="right">0.950000</td>
+<td align="right">0.0019000</td>
 <td align="right">1.0000000</td>
 <td align="right">1.0000000</td>
 </tr>
@@ -396,8 +405,8 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 <td align="left">unrestricted</td>
 <td align="right">2</td>
 <td align="right">40</td>
-<td align="right">1.950000</td>
-<td align="right">0.0039000</td>
+<td align="right">2.025000</td>
+<td align="right">0.0040500</td>
 <td align="right">1.0000000</td>
 <td align="right">1.0000000</td>
 </tr>
@@ -405,8 +414,8 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 <td align="left">unrestricted</td>
 <td align="right">3</td>
 <td align="right">80</td>
-<td align="right">2.937500</td>
-<td align="right">0.0058750</td>
+<td align="right">2.950000</td>
+<td align="right">0.0059000</td>
 <td align="right">1.0000000</td>
 <td align="right">1.0000000</td>
 </tr>
@@ -414,64 +423,64 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
 <td align="left">unrestricted</td>
 <td align="right">4</td>
 <td align="right">160</td>
-<td align="right">3.937500</td>
-<td align="right">0.0078750</td>
-<td align="right">0.5233787</td>
-<td align="right">0.0105072</td>
+<td align="right">3.856250</td>
+<td align="right">0.0077125</td>
+<td align="right">0.5204538</td>
+<td align="right">0.0042208</td>
 </tr>
 <tr class="odd">
 <td align="left">unrestricted</td>
 <td align="right">5</td>
 <td align="right">320</td>
-<td align="right">4.843750</td>
-<td align="right">0.0096875</td>
-<td align="right">0.4765871</td>
-<td align="right">0.0060075</td>
+<td align="right">4.896875</td>
+<td align="right">0.0097937</td>
+<td align="right">0.4977948</td>
+<td align="right">0.0000485</td>
 </tr>
 <tr class="even">
 <td align="left">unrestricted</td>
 <td align="right">6</td>
 <td align="right">640</td>
-<td align="right">5.853125</td>
-<td align="right">0.0117063</td>
-<td align="right">0.5034474</td>
-<td align="right">0.0031141</td>
+<td align="right">5.939063</td>
+<td align="right">0.0118781</td>
+<td align="right">0.5104938</td>
+<td align="right">0.0006458</td>
 </tr>
 <tr class="odd">
 <td align="left">unrestricted</td>
 <td align="right">7</td>
 <td align="right">1280</td>
-<td align="right">6.861719</td>
-<td align="right">0.0137234</td>
-<td align="right">0.4985110</td>
-<td align="right">0.0001333</td>
+<td align="right">6.925000</td>
+<td align="right">0.0138500</td>
+<td align="right">0.5068454</td>
+<td align="right">0.0002163</td>
 </tr>
 <tr class="even">
 <td align="left">unrestricted</td>
 <td align="right">8</td>
 <td align="right">2560</td>
-<td align="right">7.825000</td>
-<td align="right">0.0156500</td>
-<td align="right">0.4942690</td>
-<td align="right">0.0005546</td>
+<td align="right">7.937109</td>
+<td align="right">0.0158742</td>
+<td align="right">0.5040621</td>
+<td align="right">0.0002787</td>
 </tr>
 <tr class="odd">
 <td align="left">unrestricted</td>
 <td align="right">9</td>
 <td align="right">5120</td>
-<td align="right">8.796094</td>
-<td align="right">0.0175922</td>
-<td align="right">0.4953082</td>
-<td align="right">0.0005026</td>
+<td align="right">8.920703</td>
+<td align="right">0.0178414</td>
+<td align="right">0.4938154</td>
+<td align="right">0.0001840</td>
 </tr>
 <tr class="even">
 <td align="left">unrestricted</td>
 <td align="right">10</td>
-<td align="right">4851</td>
-<td align="right">9.760049</td>
-<td align="right">0.0195201</td>
-<td align="right">0.4957406</td>
-<td align="right">0.0002144</td>
+<td align="right">4684</td>
+<td align="right">9.944492</td>
+<td align="right">0.0198890</td>
+<td align="right">0.4949138</td>
+<td align="right">0.0003608</td>
 </tr>
 </tbody>
 </table>
@@ -482,7 +491,7 @@ Figure 2.1: Density plot of the pariwise distances in the last generation
           </div>
         </div>
       </div>
-<a href="overview.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
 
     </div>
   </div>

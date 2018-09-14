@@ -1,5 +1,5 @@
 ---
-title: Simplest possible version that contains some killing of molecules.
+title: First useful simulation.
 output: 
   bookdown::gitbook:
     config:
@@ -19,11 +19,6 @@ library(rmarkdown)
 library(ggthemr)
 
 knitr::opts_chunk$set(echo = FALSE)
-ggthemr('lilac')
-
-c_theme <- theme_get()
-c_theme <- c_theme + theme(plot.background = element_rect(fill = "#F3EACB"))
-old_theme <- theme_set(c_theme)
 options(scipen = 99)
 ```
 
@@ -31,7 +26,7 @@ options(scipen = 99)
 source('../utilities/reporting_utilities.R')
 ```
 
-# Overview
+# Simulation Description
 
 Comparing populations with a fitness contraint to populations with no fitness constraint.
 
@@ -109,7 +104,7 @@ for (i in 1:10){
 }
 ```
 
-# Details
+# Simulation Results
 
 ```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
 ```

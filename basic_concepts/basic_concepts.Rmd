@@ -19,11 +19,6 @@ library(rmarkdown)
 library(ggthemr)
 
 knitr::opts_chunk$set(echo = FALSE)
-ggthemr('lilac')
-
-c_theme <- theme_get()
-c_theme <- c_theme + theme(plot.background = element_rect(fill = "#F3EACB"))
-old_theme <- theme_set(c_theme)
 options(scipen = 99)
 ```
 
