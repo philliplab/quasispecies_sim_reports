@@ -20,6 +20,7 @@ library(ggthemr)
 
 knitr::opts_chunk$set(echo = FALSE)
 options(scipen = 99)
+setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/repo/quasispecies_sim_reports/first_useful_comparison/simpleCache")
 ```
 
 ```{r , include = FALSE}
@@ -66,7 +67,8 @@ group_membership <- NULL
 all_sim_results <- NULL
 i <- 0
 for (i in 1:10){
-  x <- do.call(sim_pop, args1)
+#  x <- do.call(sim_pop, args1)
+  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'first_useful', seed = i)
   x$fitness_score[1:15] <- 1
   y <- get_fit_offspring(x, 0.1)
   original_col <- names(y)
