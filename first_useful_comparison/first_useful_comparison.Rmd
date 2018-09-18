@@ -18,9 +18,10 @@ library(knitr)
 library(rmarkdown)
 library(ggthemr)
 
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE,
+                      base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/simpleCache/figures")
 options(scipen = 99)
-setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/repo/quasispecies_sim_reports/first_useful_comparison/simpleCache")
+setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/simpleCache")
 ```
 
 ```{r , include = FALSE}
