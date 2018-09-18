@@ -22,6 +22,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/simpleCache/figures")
 options(scipen = 99)
 setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/simpleCache")
+set.seed(1)
 ```
 
 ```{r , include = FALSE}
@@ -67,9 +68,12 @@ arg_sets <- list(`1` = list(group_label = "restricted",
 group_membership <- NULL
 all_sim_results <- NULL
 i <- 0
+md5s <- NULL
 for (i in 1:10){
 #  x <- do.call(sim_pop, args1)
+  suppressMessages({
   x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'first_useful', seed = i)
+  })
   x$fitness_score[1:15] <- 1
   y <- get_fit_offspring(x, 0.1)
   original_col <- names(y)
@@ -105,9 +109,118 @@ for (i in 1:10){
   }
 
 }
+print(md5s)
 ```
 
 # Simulation Results
+The following graphs and tables present a summary of a set of simulations that can be divided into `r length(unique(group_membership$group_id))` groups. 
+
+```{r, include = FALSE}
+seq_length <- nchar(all_sim_results[1,'the_seq'])
+
+last_gens <-
+all_sim_results %>%
+  filter(gen_num == max(gen_num))
+
+dd.f <- NULL
+for (c_sim_id in unique(all_sim_results$sim_id)){
+  c_group_label <- unique(last_gens$group_label[last_gens$sim_id == c_sim_id])
+  stopifnot(length(c_group_label) == 1)
+  dmat <- stringdistmatrix(last_gens$the_seq[last_gens$sim_id == c_sim_id], method = 'hamming')
+  avg_hd <- mean(dmat)
+  dvec <- as.numeric(dmat)/min(nchar(last_gens$the_seq))
+  dd.f <- rbind(dd.f,
+    data.frame(sim_id = c_sim_id,
+               group_label = c_group_label,
+               dists = dvec)
+  )
+}
+```
+```{r, results = 'asis'}
+
+kable(
+  dd.f %>%
+    group_by(group_label) %>%
+    summarize(avg_hd = round(mean(dists),4),
+              n_avg_hd = round(mean(dists)/seq_length, 7)),
+  booktabs = TRUE,
+  caption = "The average pairwise HD in each group of simulations"
+)
+```
+
+```{r, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
+n_uniq <- length(unique(dd.f$dists))
+range_length <- max(dd.f$dists) - min(dd.f$dists)
+bw <- range_length / min((n_uniq*1.75), 200)
+ggplot(dd.f, aes(x = dists, 
+                 col = group_label,
+                 group = as.factor(sim_id))) + 
+      geom_density(bw = bw)
+```
+
+```{r, results = 'asis'}
+all_deciles <- data.frame(matrix(0, ncol = 12, nrow = length(unique(all_sim_results$group_label))))
+names(all_deciles) <- c('Sim', paste((0:10)*10, "%", sep = ''))
+
+i <- 0
+for (c_group_label in unique(all_sim_results$group_label)){
+  i <- i + 1
+  deciles <-
+    quantile(dd.f$dists[dd.f$group_label == c_group_label], (0:10)/10)
+
+  all_deciles[i,] <- c(c_group_label, deciles)
+}
+row.names(all_deciles) <- NULL
+
+kable(
+  all_deciles,
+  booktabs = TRUE,
+  caption = "The deciles of the pairwise HDs"
+)
+```
+
+```{r, results = 'asis'}
+arg_tab <- NULL
+for (c_group_id in names(arg_sets)){
+  c_arg_tab <- sim_pop_arg_formatter(arg_sets[[c_group_id]]$args)
+  original_cols <- names(c_arg_tab)
+  c_arg_tab$group_label <- arg_sets[[c_group_id]]$group_label
+  c_arg_tab <- c_arg_tab %>% select(group_label, original_cols)
+  if (is.null(arg_tab)){
+    arg_tab <- c_arg_tab
+  } else {
+    arg_tab <- rbind(arg_tab, c_arg_tab)
+  }
+}
+
+kable(
+  arg_tab,
+  booktabs = TRUE,
+  caption = "Configuration with which sim_pop was called for the group for each group of simulations."
+)
+```
+
+```{r, results = 'asis'}
+all_sum_tabs <- NULL
+for (c_group_label in unique(all_sim_results$group_label)){
+  g_sum_tab <- genealogy_summary_table(all_sim_results[all_sim_results$group_label == c_group_label, c(-1,-2)])
+  original_cols <- names(g_sum_tab)
+  g_sum_tab$group_label <- c_group_label
+  g_sum_tab <- g_sum_tab %>% select(group_label, original_cols)
+  if (is.null(all_sum_tabs)){
+    all_sum_tabs <- g_sum_tab
+  } else {
+    all_sum_tabs <- rbind(all_sum_tabs, g_sum_tab)
+  }
+}
+
+kable(
+  all_sum_tabs,
+  booktabs = TRUE,
+  caption = "Individuals per generation and the average distance to the original ancestor for the generation for all simulations grouped by simulation group."
+)
+```
+
 
 ```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
 ```
