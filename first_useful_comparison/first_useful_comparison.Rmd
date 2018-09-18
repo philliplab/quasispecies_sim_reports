@@ -1,5 +1,5 @@
 ---
-title: First useful simulation.
+title: First useful comparison
 output: 
   bookdown::gitbook:
     config:
@@ -29,7 +29,9 @@ set.seed(1)
 source('../utilities/reporting_utilities.R')
 ```
 
-# Simulation Description
+# First useful comparison
+
+## Description
 
 Comparing populations with a fitness contraint to populations with no fitness constraint.
 
@@ -112,7 +114,7 @@ for (i in 1:10){
 print(md5s)
 ```
 
-# Simulation Results
+## Simulation Results
 The following graphs and tables present a summary of a set of simulations that can be divided into `r length(unique(group_membership$group_id))` groups. 
 
 ```{r, include = FALSE}
