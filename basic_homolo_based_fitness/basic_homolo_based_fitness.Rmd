@@ -33,35 +33,32 @@ source('../utilities/reporting_utilities.R')
 
 ## Description
 
-Comparing populations with a fitness contraint to populations with no fitness constraint.
+A first basic report exploring the effects of assigning fitness based on homology.
 
-Simulate 10 datasets with 1024 individuals and uniformly assigned fitness scores.
+Start with an ancestor of only As and then run two comparisons:
 
-Assign the first 1+2+4+8=15 sequences a fitness of 1 - to prevent massive parts of the dataset from getting excluded.
-
-Then, do a fitness based selection with a score of 0.05.
-
-Assign that as sim_id n to group 1.
-
-Next select that same number of individuals from the last generation completely ignoring the fitness score and assign that as sim_id n+1 to group 2.
-
-Repeat until 10 simulations in each dataset.
+- One against a comparator that is only As and Xs - lets say 20% A - using the
+  current fitness selection tools this will not work since the ancestor will
+  die. Hack around it by assigning the first couple of generations perfect
+  fitness. (currently the first 63 rows)
+- One against a similat comparator, but with the As replaced with Cs
 
 ```{r, include=FALSE}
 
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
-  n_gen = 10,
+  n_gen = 12,
   n_pop = Inf,
   mutator = list(fun = "mutator_uniform_fun",
-                 args = list(mu = 1/500)),
-  fitness_evaluator = list(fun = "fitness_evaluator_uniform_fun",
-                           args = NULL)
+                 args = list(mu = 1/250)),
+  fitness_evaluator = list(fun = "fitness_evaluator_homology_fun",
+                           args = list(comparators = paste(rep('XXXXA', 100), collapse = ''),
+                                       h2fs = "h2fs_univariate_linear_fun"))
 )
 
 arg_sets <- list(`1` = list(group_label = "restricted",
-                            group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and required fitness of 0.05",
+                            group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and required fitness of 0.03",
                             args = args1),
                  `2` = list(group_label = "unrestricted",
                             group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and a random sample to match the size of the fitness restricted version",
@@ -69,14 +66,14 @@ arg_sets <- list(`1` = list(group_label = "restricted",
 
 group_membership <- NULL
 all_sim_results <- NULL
-i <- 0
+i <- 1
 for (i in 1:10){
 #  x <- do.call(sim_pop, args1)
   suppressMessages({
-  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'first_useful', seed = i)
+  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'basic_homolo', seed = i)
   })
-  x$fitness_score[1:15] <- 1
-  y <- get_fit_offspring(x, 0.1)
+  x$fitness_score[1:255] <- 1
+  y <- get_fit_offspring(x, 0.02)
   original_col <- names(y)
   y$sim_id <- i*2-1
   y$group_label <- 'restricted'
