@@ -92,6 +92,11 @@ i <- 1
 library(profvis)
 profvis({
 
+# refactor the following into a function
+# sim_fit_unfit_pairs
+# verbosity control needed for timing
+
+## number of datasets
 for (i in 1:10){
 #  x <- do.call(sim_pop, args1)
   print('===============================')
@@ -99,13 +104,17 @@ for (i in 1:10){
   print(proc.time() - ptm)
   print(proc.time() - ltm)
   ltm <- proc.time()
+  ## the cacheName
   suppressMessages({
   x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'basic_homolo', seed = i)
   })
+  ## number of generations with perfect fitness
   x$fitness_score[1:255] <- 1
+  ## required fitness
   y <- get_fit_offspring(x, 0.02)
   original_col <- names(y)
   y$sim_id <- i*2-1
+  ## label 1
   y$group_label <- 'restricted_A'
   y <- y %>% select(sim_id, group_label, original_col)
 
@@ -117,9 +126,11 @@ for (i in 1:10){
   stopifnot(x2_last_gen_size == y_last_gen_size)
 
   x2$sim_id <- i*2
+  ## label 2
   x2$group_label <- "unrestricted_A"
   x2 <- x2 %>% select(sim_id, group_label, original_col)
 
+  ## pre construct all_sim_results
   if (is.null(all_sim_results)){
     all_sim_results <- rbind(y, x2)
   } else {
@@ -127,9 +138,12 @@ for (i in 1:10){
                              rbind(y, x2))
   }
 
+  ## pre construct group_membership
   if (is.null(group_membership)){
+    ## the ids
     group_membership <- data.frame(sim_id = 1:2, group_id = 1:2)
   } else {
+    ## the ids
     group_membership <- rbind(group_membership,
       data.frame(sim_id = c(i*2-1, i*2), 
                  group_id = 1:2)
