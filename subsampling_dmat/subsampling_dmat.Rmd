@@ -17,6 +17,7 @@ library(yasss)
 library(knitr)
 library(rmarkdown)
 library(ggthemr)
+library(tidyr)
 
 knitr::opts_chunk$set(echo = FALSE,
                       base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/subsampling_dmat/figures")
@@ -174,4 +175,7 @@ normalized_tab %>%
             sd_10 = sd(`10%`),
             sd_50 = sd(`50%`),
             sd_90 = sd(`90%`))
+
+long_metrics_tab <-
+gather(metrics_tab, metric, value, -size)
 ```
