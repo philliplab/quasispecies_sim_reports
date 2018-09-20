@@ -8,11 +8,22 @@ all_sim_results %>%
   filter(gen_num == max(gen_num))
 
 dd.f <- NULL
+down_selection_for_dmats <- NULL
+c_sim_id <- unique(all_sim_results$sim_id)[1]
 for (c_sim_id in unique(all_sim_results$sim_id)){
   print(c_sim_id)
   c_group_label <- unique(last_gens$group_label[last_gens$sim_id == c_sim_id])
   stopifnot(length(c_group_label) == 1)
-  dmat <- stringdistmatrix(last_gens$the_seq[last_gens$sim_id == c_sim_id], method = 'hamming')
+  c_gen <- last_gens$the_seq[last_gens$sim_id == c_sim_id]
+  if (length(c_gen) > 10000){
+    ds_gen <- c_gen[sample(1:nrow(c_gen), 10000)]
+  } else {
+    ds_gen <- c_gen
+  }
+  down_selection_for_dmats <- rbind(down_selection_for_dmats,
+    data.frame(true_gen_size = length(c_gen),
+               seqs_used_for_dmat = length(ds_gen)))
+  dmat <- stringdistmatrix(ds_gen, method = 'hamming')
   avg_hd <- mean(dmat)
   dvec <- as.numeric(dmat)/min(nchar(last_gens$the_seq))
   dd.f <- rbind(dd.f,
@@ -22,6 +33,14 @@ for (c_sim_id in unique(all_sim_results$sim_id)){
   )
 }
 ```
+
+```{r, results = 'asis'}
+kable(down_selection_for_dmats,
+      booktabs = TRUE,
+      caption = "Number of sequences used to compute distance matrices")
+```
+
+
 ```{r, results = 'asis'}
 kable(
   dd.f %>%

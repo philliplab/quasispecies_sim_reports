@@ -158,9 +158,6 @@ sim_fit_unfit_pairs <- function(args, n_of_pairs,
               group_membership = group_membership))
 }
 
-library(profvis)
-profvis({
-
 sim_result <- sim_fit_unfit_pairs(args = arg_sets[[1]]$args, 
                                   n_of_pairs = 10,
                                   group1_label = arg_sets[[1]]$group_label,
@@ -190,56 +187,6 @@ sim_result <- sim_fit_unfit_pairs(args = arg_sets[[3]]$args,
 
 all_sim_results <- sim_result$all_sim_results
 group_membership <- sim_result$group_membership
-
-})
-
-#for (i in 11:20){
-##  x <- do.call(sim_pop, args1)
-#  print('===============================')
-#  print(i)
-#  print(proc.time() - ptm)
-#  print(proc.time() - ltm)
-#  ltm <- proc.time()
-#  suppressMessages({
-#  x <- memoiseCache(fun = 'sim_pop', args = args2, cacheName = 'basic_homolo', seed = i)
-#  })
-#  x$fitness_score[1:255] <- 1
-#  y <- get_fit_offspring(x, 0.02)
-#  original_col <- names(y)
-#  y$sim_id <- i*2-1
-#  y$group_label <- 'restricted_C'
-#  y <- y %>% select(sim_id, group_label, original_col)
-#
-#  y_last_gen_size <- nrow(y %>% filter(gen_num == max(gen_num)))
-#  x_last_gen_size <- nrow(x %>% filter(gen_num == max(gen_num)))
-#  x1 <- (x %>% filter(gen_num == max(gen_num)))[sample(1:x_last_gen_size, y_last_gen_size),]
-#  x2 <- rbind((x %>% filter(gen_num != max(gen_num))), x1)
-#  x2_last_gen_size <- nrow(x2 %>% filter(gen_num == max(gen_num)))
-#  stopifnot(x2_last_gen_size == y_last_gen_size)
-#
-#  x2$sim_id <- i*2
-#  x2$group_label <- "unrestricted_C"
-#  x2 <- x2 %>% select(sim_id, group_label, original_col)
-#
-#  if (is.null(all_sim_results)){
-#    all_sim_results <- rbind(y, x2)
-#  } else {
-#    all_sim_results <- rbind(all_sim_results,
-#                             rbind(y, x2))
-#  }
-#
-#  if (is.null(group_membership)){
-#    group_membership <- data.frame(sim_id = 1:2, group_id = 1:2)
-#  } else {
-#    group_membership <- rbind(group_membership,
-#      data.frame(sim_id = c(i*2-1, i*2), 
-#                 group_id = 3:4)
-#      )
-#  }
-#}
-#
-#})
-
 ```
 
 ## Simulation Results
