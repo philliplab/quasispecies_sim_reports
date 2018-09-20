@@ -39,7 +39,9 @@ Storing large distance matrices consumes too much memory.
 
 Can you subsample say 1 million observations from a distance matrix and discard everything else and still get a highly accurate density plot, decile estimates and average pairwise distance estimates?
 
-```{r, include=FALSE}
+The computational code block is set to not evaluate since it takes so long to run. The default way to use this report is to just load precomputed results.
+
+```{r, include=FALSE, eval = FALSE}
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
@@ -52,11 +54,6 @@ args1 <- list(
                                        h2fs = "h2fs_univariate_linear_fun"))
 )
 
-x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'subsampling_dmat', 
-                  seed = 1)
-```
-
-```{r, include = FALSE}
 make_comp_df <- function(x, label = 1){
   last_gen <- x %>% filter(gen_num == max(gen_num))
 
@@ -132,9 +129,7 @@ make_comp_df <- function(x, label = 1){
   }
   return(dmat_comp_tab)
 }
-```
 
-```{r}
 dmat_comp_tab <- NULL
 for (i in 1:10){
   print(paste("==== ", i, " ====", sep = ''))
@@ -144,6 +139,9 @@ for (i in 1:10){
 }
 
 print(dmat_comp_tab)
+names(dmat_comp_tab) <- c("label", "size", "avg_hd", "calc_time", "X0.",
+                          "X10.", "X20.", "X30.", "X40.", "X50.", "X60.",
+                          "X70.", "X80.", "X90.", "X100.")
 
 #write.csv(dmat_comp_tab, "/home/phillipl/projects/quasispecies_sim_reports/builds/subsampling_dmat/dmat_comp_tab_gen13_n10.csv", row.names = FALSE)
 #write.csv(dmat_comp_tab, "/home/phillipl/projects/quasispecies_sim_reports/builds/subsampling_dmat/dmat_comp_tab_gen14_n10.csv", row.names = FALSE)
@@ -156,6 +154,8 @@ Note that in practice we will always subsample down to at most 5000 since that i
 Some plots comparing the distance summaries
 
 ```{r}
+dmat_comp_tab <- read.csv("/home/phillipl/projects/quasispecies_sim_reports/builds/subsampling_dmat/dmat_comp_tab_gen14_n10.csv")
+
 normalized_tab <- dmat_comp_tab[0,]
 i <- unique(dmat_comp_tab$label)[1]
 for (i in unique(dmat_comp_tab$label)){
@@ -166,19 +166,23 @@ for (i in unique(dmat_comp_tab$label)){
                           new_rows)
 }
 
+kable(
 metrics_tab <-
 normalized_tab %>% 
   group_by(size) %>%
-  summarize(avg = mean(avg_hd),
+  summarize(avg = mean(avg_hd-1),
             sd = sd(avg_hd),
             calc_time = mean(calc_time),
-            sd_10 = sd(`10%`),
-            sd_50 = sd(`50%`),
-            sd_90 = sd(`90%`))
+            sd_10 = sd(X10.),
+            sd_50 = sd(X50.),
+            sd_90 = sd(X90.))
+)
 
 long_metrics_tab <-
 gather(metrics_tab, metric, value, -size)
+```
 
+```{r fig.height=14, fig.width=5}
 ggplot(long_metrics_tab, aes(x = as.factor(size), y = value)) +
   geom_bar(stat = 'identity') +
   facet_grid(rows = vars(metric), scales = 'free')
