@@ -188,37 +188,51 @@ ggplot(long_metrics_tab, aes(x = as.factor(size), y = value)) +
   facet_grid(rows = vars(metric), scales = 'free')
 ```
 
-Investigating the caching of distance matrices.
+Investigating the caching of distance matrices. Massive speed up and a 14gen dmat only uses 110MB so cache'em from now on.
 
 ```{r}
-time_comp_dmat <- NULL
+#time_comp_dmat <- NULL
+#
+#for (i in 1:10){
+#  ltm <- proc.time()
+#  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'subsampling_dmat', 
+#                    seed = i)
+#  genea_time <- (proc.time() - ltm)[1]
+#  
+#  last_gen <- x %>% filter(gen_num == max(gen_num))
+#  ltm <- proc.time()
+#  dmat <- memoiseCache(fun = 'stringdistmatrix',
+#                       args = list(last_gen$the_seq, method = 'hamming'),
+#                       cacheName = 'an_actual_dmat',
+#                       seed = i)
+#  dmat_time <- (proc.time() - ltm)[1]
+#  
+#  ltm <- proc.time()
+#  dmat <- memoiseCache(fun = 'stringdistmatrix',
+#                       args = list(last_gen$the_seq, method = 'hamming'),
+#                       cacheName = 'an_actual_dmat',
+#                       seed = i)
+#  load_time <- (proc.time() - ltm)[1]
+#
+#  time_comp_dmat <- rbind(time_comp_dmat,
+#                          data.frame(genea_time = genea_time,
+#                                     dmat_time = dmat_time,
+#                                     load_time = load_time))
+#}
+#
+#print(time_comp_dmat)
 
-for (i in 1:10){
-  ltm <- proc.time()
-  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'subsampling_dmat', 
-                    seed = i)
-  genea_time <- (proc.time() - ltm)[1]
-  
-  last_gen <- x %>% filter(gen_num == max(gen_num))
-  ltm <- proc.time()
-  dmat <- memoiseCache(fun = 'stringdistmatrix',
-                       args = list(last_gen$the_seq, method = 'hamming'),
-                       cacheName = 'an_actual_dmat',
-                       seed = i)
-  dmat_time <- (proc.time() - ltm)[1]
-  
-  ltm <- proc.time()
-  dmat <- memoiseCache(fun = 'stringdistmatrix',
-                       args = list(last_gen$the_seq, method = 'hamming'),
-                       cacheName = 'an_actual_dmat',
-                       seed = i)
-  load_time <- (proc.time() - ltm)[1]
+time_comp_dmat <-structure(list(genea_time = c(0.0879999999997381, 0.0840000000007421,
+0.091999999998734, 0.0879999999997381, 0.091999999998734, 0.0879999999997381,
+0.092000000000553, 0.100000000000364, 0.0959999999995489, 0.0879999999997381
+), dmat_time = c(550.484, 543.156000000001, 546.072, 546.172,
+544.296, 556.444, 565.960000000001, 545.915999999999, 565.544,
+551.843999999999), load_time = c(3.33200000000033, 3.37199999999939,
+3.35199999999895, 3.36800000000039, 3.34799999999996, 3.65200000000004,
+3.61599999999999, 3.48400000000038, 3.64400000000023, 3.44399999999951
+)), .Names = c("genea_time", "dmat_time", "load_time"), row.names = c("user.self",
+"user.self1", "user.self2", "user.self3", "user.self4", "user.self5",
+"user.self6", "user.self7", "user.self8", "user.self9"), class = "data.frame")
 
-  time_comp_dmat <- rbind(time_comp_dmat,
-                          data.frame(genea_time = genea_time,
-                                     dmat_time = dmat_time,
-                                     load_time = load_time))
-}
-
-print(time_comp_dmat)
+kable(time_comp_dmat)
 ```
