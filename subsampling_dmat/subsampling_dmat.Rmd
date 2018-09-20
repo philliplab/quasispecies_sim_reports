@@ -164,4 +164,14 @@ for (i in unique(dmat_comp_tab$label)){
   normalized_tab <- rbind(normalized_tab,
                           new_rows)
 }
+
+metrics_tab <-
+normalized_tab %>% 
+  group_by(size) %>%
+  summarize(avg = mean(avg_hd),
+            sd = sd(avg_hd),
+            calc_time = mean(calc_time),
+            sd_10 = sd(`10%`),
+            sd_50 = sd(`50%`),
+            sd_90 = sd(`90%`))
 ```
