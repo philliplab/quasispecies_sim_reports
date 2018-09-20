@@ -48,7 +48,7 @@ Start with an ancestor of only As and then run two comparisons:
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
-  n_gen = 12,
+  n_gen = 10,
   n_pop = Inf,
   mutator = list(fun = "mutator_uniform_fun",
                  args = list(mu = 1/250)),
@@ -56,10 +56,11 @@ args1 <- list(
                            args = list(comparators = paste(rep('XXXXA', 100), collapse = ''),
                                        h2fs = "h2fs_univariate_linear_fun"))
 )
+
 args2 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
-  n_gen = 12,
+  n_gen = 10,
   n_pop = Inf,
   mutator = list(fun = "mutator_uniform_fun",
                  args = list(mu = 1/250)),
@@ -67,7 +68,6 @@ args2 <- list(
                            args = list(comparators = paste(rep('XXXXC', 100), collapse = ''),
                                        h2fs = "h2fs_univariate_linear_fun"))
 )
-
 
 arg_sets <- list(`1` = list(group_label = "restricted_A",
                             group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and required fitness of 0.03 vs A",
@@ -81,9 +81,6 @@ arg_sets <- list(`1` = list(group_label = "restricted_A",
                  `4` = list(group_label = "unrestricted_C",
                             group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and a random sample to match the size of the fitness restricted version vs C",
                             args = args2))
-
-ptm <- proc.time()
-ltm <- proc.time()
 
 group_membership <- data.frame(sim_id = numeric(0), 
                                group_id = integer(0))
@@ -101,122 +98,147 @@ all_sim_results <- data.frame(sim_id = numeric(0),
                               recomb_muts = numeric(0), 
                               fitness_score = numeric(0))
 
-sim_fit_unfit_pairs <- function(args, group1_label, group2_label, 
+sim_fit_unfit_pairs <- function(args, n_of_pairs,
+                                group1_label, group2_label, 
                                 group1_id, group2_id, 
-                                all_sim_results, group_membership, 
+                                all_sim_results, group_membership,
                                 req_fitness = 0.02, n_perfect_fit = 15, 
-                                cacheName = NULL){
+                                cacheName = NULL, verbose = FALSE){
+  ptm <- proc.time()
+  ltm <- proc.time()
+  if (nrow(all_sim_results) == 0){
+    index_offset <- 0
+  } else {
+    index_offset <- max(all_sim_results$sim_id)
+  }
+  for (i in 1:n_of_pairs){
+    if (verbose){
+      print('===============================')
+      print(paste(i * 2 + index_offset - 1,
+                  " and ",
+                  i * 2 + index_offset,
+                  sep = ''))
+      print(proc.time() - ptm)
+      print(proc.time() - ltm)
+      ltm <- proc.time()
+    }
+    suppressMessages({
+      x <- memoiseCache(fun = 'sim_pop', args = args, cacheName = cacheName, 
+                        seed = i+index_offset/2)
+    })
+    x$fitness_score[1:n_perfect_fit] <- 1
+    y <- get_fit_offspring(x, req_fitness)
+    
+    original_col <- names(y)
+    y$sim_id <- (i*2+index_offset)-1
+
+    y$group_label <- group1_label
+    y <- y %>% select(sim_id, group_label, original_col)
+
+    y_last_gen_size <- nrow(y %>% filter(gen_num == max(gen_num)))
+    x_last_gen_size <- nrow(x %>% filter(gen_num == max(gen_num)))
+    x1 <- (x %>% filter(gen_num == max(gen_num)))[sample(1:x_last_gen_size, y_last_gen_size),]
+    x2 <- rbind((x %>% filter(gen_num != max(gen_num))), x1)
+    x2_last_gen_size <- nrow(x2 %>% filter(gen_num == max(gen_num)))
+    stopifnot(x2_last_gen_size == y_last_gen_size)
+  
+    x2$sim_id <- (i * 2 + index_offset)
+    x2$group_label <- group2_label
+    x2 <- x2 %>% select(sim_id, group_label, original_col)
+
+    all_sim_results <- rbind(all_sim_results,
+                             rbind(y, x2))
+    
+    group_membership <- rbind(group_membership,
+      data.frame(sim_id = c(i * 2 + index_offset-1, i*2+index_offset), 
+                 group_id = c(group1_id, group2_id))
+      )
+  }
+  return(list(all_sim_results = all_sim_results,
+              group_membership = group_membership))
 }
 
 library(profvis)
 profvis({
 
-# refactor the following into a function
-# sim_fit_unfit_pairs
-# verbosity control needed for timing
+sim_result <- sim_fit_unfit_pairs(args = arg_sets[[1]]$args, 
+                                  n_of_pairs = 10,
+                                  group1_label = arg_sets[[1]]$group_label,
+                                  group2_label = arg_sets[[2]]$group_label,
+                                  group1_id = 1, group2_id = 2,
+                                  all_sim_results = all_sim_results,
+                                  group_membership = group_membership,
+                                  req_fitness = 0.02, 
+                                  n_perfect_fit = 255,
+                                  cacheName = 'basic_homolo',
+                                  verbose = TRUE)
 
-## number of datasets
-for (i in 1:10){
-#  x <- do.call(sim_pop, args1)
-  print('===============================')
-  print(i)
-  print(proc.time() - ptm)
-  print(proc.time() - ltm)
-  ltm <- proc.time()
-  ## the cacheName
-  suppressMessages({
-  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'basic_homolo', seed = i)
-  })
-  ## number of generations with perfect fitness
-  x$fitness_score[1:255] <- 1
-  ## required fitness
-  y <- get_fit_offspring(x, 0.02)
-  original_col <- names(y)
-  y$sim_id <- i*2-1
-  ## label 1
-  y$group_label <- 'restricted_A'
-  y <- y %>% select(sim_id, group_label, original_col)
+all_sim_results <- sim_result$all_sim_results
+group_membership <- sim_result$group_membership
 
-  y_last_gen_size <- nrow(y %>% filter(gen_num == max(gen_num)))
-  x_last_gen_size <- nrow(x %>% filter(gen_num == max(gen_num)))
-  x1 <- (x %>% filter(gen_num == max(gen_num)))[sample(1:x_last_gen_size, y_last_gen_size),]
-  x2 <- rbind((x %>% filter(gen_num != max(gen_num))), x1)
-  x2_last_gen_size <- nrow(x2 %>% filter(gen_num == max(gen_num)))
-  stopifnot(x2_last_gen_size == y_last_gen_size)
+sim_result <- sim_fit_unfit_pairs(args = arg_sets[[3]]$args, 
+                                  n_of_pairs = 10,
+                                  group1_label = arg_sets[[3]]$group_label,
+                                  group2_label = arg_sets[[4]]$group_label,
+                                  group1_id = 3, group2_id = 4,
+                                  all_sim_results = all_sim_results,
+                                  group_membership = group_membership,
+                                  req_fitness = 0.02, 
+                                  n_perfect_fit = 255,
+                                  cacheName = 'basic_homolo',
+                                  verbose = TRUE)
 
-  x2$sim_id <- i*2
-  ## label 2
-  x2$group_label <- "unrestricted_A"
-  x2 <- x2 %>% select(sim_id, group_label, original_col)
-
-  ## pre construct all_sim_results
-  if (is.null(all_sim_results)){
-    all_sim_results <- rbind(y, x2)
-  } else {
-    all_sim_results <- rbind(all_sim_results,
-                             rbind(y, x2))
-  }
-
-  ## pre construct group_membership
-  if (is.null(group_membership)){
-    ## the ids
-    group_membership <- data.frame(sim_id = 1:2, group_id = 1:2)
-  } else {
-    ## the ids
-    group_membership <- rbind(group_membership,
-      data.frame(sim_id = c(i*2-1, i*2), 
-                 group_id = 1:2)
-      )
-  }
-
-}
-
-for (i in 11:20){
-#  x <- do.call(sim_pop, args1)
-  print('===============================')
-  print(i)
-  print(proc.time() - ptm)
-  print(proc.time() - ltm)
-  ltm <- proc.time()
-  suppressMessages({
-  x <- memoiseCache(fun = 'sim_pop', args = args2, cacheName = 'basic_homolo', seed = i)
-  })
-  x$fitness_score[1:255] <- 1
-  y <- get_fit_offspring(x, 0.02)
-  original_col <- names(y)
-  y$sim_id <- i*2-1
-  y$group_label <- 'restricted_C'
-  y <- y %>% select(sim_id, group_label, original_col)
-
-  y_last_gen_size <- nrow(y %>% filter(gen_num == max(gen_num)))
-  x_last_gen_size <- nrow(x %>% filter(gen_num == max(gen_num)))
-  x1 <- (x %>% filter(gen_num == max(gen_num)))[sample(1:x_last_gen_size, y_last_gen_size),]
-  x2 <- rbind((x %>% filter(gen_num != max(gen_num))), x1)
-  x2_last_gen_size <- nrow(x2 %>% filter(gen_num == max(gen_num)))
-  stopifnot(x2_last_gen_size == y_last_gen_size)
-
-  x2$sim_id <- i*2
-  x2$group_label <- "unrestricted_C"
-  x2 <- x2 %>% select(sim_id, group_label, original_col)
-
-  if (is.null(all_sim_results)){
-    all_sim_results <- rbind(y, x2)
-  } else {
-    all_sim_results <- rbind(all_sim_results,
-                             rbind(y, x2))
-  }
-
-  if (is.null(group_membership)){
-    group_membership <- data.frame(sim_id = 1:2, group_id = 1:2)
-  } else {
-    group_membership <- rbind(group_membership,
-      data.frame(sim_id = c(i*2-1, i*2), 
-                 group_id = 3:4)
-      )
-  }
-}
+all_sim_results <- sim_result$all_sim_results
+group_membership <- sim_result$group_membership
 
 })
+
+#for (i in 11:20){
+##  x <- do.call(sim_pop, args1)
+#  print('===============================')
+#  print(i)
+#  print(proc.time() - ptm)
+#  print(proc.time() - ltm)
+#  ltm <- proc.time()
+#  suppressMessages({
+#  x <- memoiseCache(fun = 'sim_pop', args = args2, cacheName = 'basic_homolo', seed = i)
+#  })
+#  x$fitness_score[1:255] <- 1
+#  y <- get_fit_offspring(x, 0.02)
+#  original_col <- names(y)
+#  y$sim_id <- i*2-1
+#  y$group_label <- 'restricted_C'
+#  y <- y %>% select(sim_id, group_label, original_col)
+#
+#  y_last_gen_size <- nrow(y %>% filter(gen_num == max(gen_num)))
+#  x_last_gen_size <- nrow(x %>% filter(gen_num == max(gen_num)))
+#  x1 <- (x %>% filter(gen_num == max(gen_num)))[sample(1:x_last_gen_size, y_last_gen_size),]
+#  x2 <- rbind((x %>% filter(gen_num != max(gen_num))), x1)
+#  x2_last_gen_size <- nrow(x2 %>% filter(gen_num == max(gen_num)))
+#  stopifnot(x2_last_gen_size == y_last_gen_size)
+#
+#  x2$sim_id <- i*2
+#  x2$group_label <- "unrestricted_C"
+#  x2 <- x2 %>% select(sim_id, group_label, original_col)
+#
+#  if (is.null(all_sim_results)){
+#    all_sim_results <- rbind(y, x2)
+#  } else {
+#    all_sim_results <- rbind(all_sim_results,
+#                             rbind(y, x2))
+#  }
+#
+#  if (is.null(group_membership)){
+#    group_membership <- data.frame(sim_id = 1:2, group_id = 1:2)
+#  } else {
+#    group_membership <- rbind(group_membership,
+#      data.frame(sim_id = c(i*2-1, i*2), 
+#                 group_id = 3:4)
+#      )
+#  }
+#}
+#
+#})
 
 ```
 
