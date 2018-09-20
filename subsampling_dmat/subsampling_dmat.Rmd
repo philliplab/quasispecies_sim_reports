@@ -187,3 +187,38 @@ ggplot(long_metrics_tab, aes(x = as.factor(size), y = value)) +
   geom_bar(stat = 'identity') +
   facet_grid(rows = vars(metric), scales = 'free')
 ```
+
+Investigating the caching of distance matrices.
+
+```{r}
+time_comp_dmat <- NULL
+
+for (i in 1:10){
+  ltm <- proc.time()
+  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'subsampling_dmat', 
+                    seed = i)
+  genea_time <- (proc.time() - ltm)[1]
+  
+  last_gen <- x %>% filter(gen_num == max(gen_num))
+  ltm <- proc.time()
+  dmat <- memoiseCache(fun = 'stringdistmatrix',
+                       args = list(last_gen$the_seq, method = 'hamming'),
+                       cacheName = 'an_actual_dmat',
+                       seed = i)
+  dmat_time <- (proc.time() - ltm)[1]
+  
+  ltm <- proc.time()
+  dmat <- memoiseCache(fun = 'stringdistmatrix',
+                       args = list(last_gen$the_seq, method = 'hamming'),
+                       cacheName = 'an_actual_dmat',
+                       seed = i)
+  load_time <- (proc.time() - ltm)[1]
+
+  time_comp_dmat <- rbind(time_comp_dmat,
+                          data.frame(genea_time = genea_time,
+                                     dmat_time = dmat_time,
+                                     load_time = load_time))
+}
+
+print(time_comp_dmat)
+```
