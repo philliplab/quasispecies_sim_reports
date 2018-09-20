@@ -178,4 +178,8 @@ normalized_tab %>%
 
 long_metrics_tab <-
 gather(metrics_tab, metric, value, -size)
+
+ggplot(long_metrics_tab, aes(x = as.factor(size), y = value)) +
+  geom_bar(stat = 'identity') +
+  facet_grid(rows = vars(metric), scales = 'free')
 ```
