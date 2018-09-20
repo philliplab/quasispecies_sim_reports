@@ -56,56 +56,97 @@ x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'subsampling_dmat',
 ```
 
 ```{r, include = FALSE}
-last_gen <- x %>% filter(gen_num == max(gen_num))
-dmat <- stringdistmatrix(last_gen$the_seq, method = 'hamming')
+make_comp_df <- function(x, label = 1){
+  last_gen <- x %>% filter(gen_num == max(gen_num))
 
-dmat_comp_tab <- data.frame(size = numeric(0),
-                            avg_hd = numeric(0),
-                            p000 = numeric(0),
-                            p010 = numeric(0),
-                            p020 = numeric(0),
-                            p030 = numeric(0),
-                            p040 = numeric(0),
-                            p050 = numeric(0),
-                            p060 = numeric(0),
-                            p070 = numeric(0),
-                            p080 = numeric(0),
-                            p090 = numeric(0),
-                            p100 = numeric(0)
-                            )
-
-for (i in 4:8){
-  print(i)
-  if (10^i < length(dmat)){
-    subsam <- sample(as.numeric(dmat), 10^i)
-    avg_hd <- mean(subsam)
-    deciles <- t(data.frame(quantile(subsam, (0:10)/10)))
-    names(deciles) <- c("p000", "p010", "p020", "p030", "p040", "p050", "p060",
-                        "p070", "p080", "p090", "p100")
-    row.names(deciles) <- NULL
-    dmat_comp_tab <- rbind(dmat_comp_tab,
-                           cbind(data.frame(size = i, 
-                                            avg_hd = avg_hd),
-                                 deciles))
-
-  } else {
-    avg_hd <- mean(dmat)
-    deciles <- t(data.frame(quantile(dmat, (0:10)/10)))
-    names(deciles) <- c("p000", "p010", "p020", "p030", "p040", "p050", "p060",
-                        "p070", "p080", "p090", "p100")
-    row.names(deciles) <- NULL
-    dmat_comp_tab <- rbind(dmat_comp_tab,
-                           cbind(data.frame(size = length(dmat), 
-                                            avg_hd = avg_hd),
-                                 deciles))
-    break
+  ltm <- proc.time()
+  dmat <- stringdistmatrix(last_gen$the_seq, method = 'hamming')
+  calc_time <- (proc.time() - ltm)[1]
+  
+  dmat_comp_tab <- data.frame(label = numeric(0),
+                              size = numeric(0),
+                              avg_hd = numeric(0),
+                              p000 = numeric(0),
+                              p010 = numeric(0),
+                              p020 = numeric(0),
+                              p030 = numeric(0),
+                              p040 = numeric(0),
+                              p050 = numeric(0),
+                              p060 = numeric(0),
+                              p070 = numeric(0),
+                              p080 = numeric(0),
+                              p090 = numeric(0),
+                              p100 = numeric(0)
+                              )
+  
+  avg_hd <- mean(dmat)
+  deciles <- t(data.frame(quantile(dmat, (0:10)/10, type = 4)))
+  names(deciles) <- c("p000", "p010", "p020", "p030", "p040", "p050", "p060",
+                      "p070", "p080", "p090", "p100")
+  row.names(deciles) <- NULL
+  dmat_comp_tab <- rbind(dmat_comp_tab,
+                         cbind(data.frame(label = label,
+                                          size = length(dmat), 
+                                          avg_hd = avg_hd,
+                                          calc_time = calc_time),
+                               deciles))
+  
+  for (i in 4:8){
+    print(i)
+    if (10^i < length(dmat)){
+      subsam <- sample(as.numeric(dmat), 10^i)
+      avg_hd <- mean(subsam)
+      deciles <- t(data.frame(quantile(subsam, (0:10)/10, type = 4)))
+      names(deciles) <- c("p000", "p010", "p020", "p030", "p040", "p050", "p060",
+                          "p070", "p080", "p090", "p100")
+      row.names(deciles) <- NULL
+      dmat_comp_tab <- rbind(dmat_comp_tab,
+                             cbind(data.frame(label = label,
+                                              size = i, 
+                                              avg_hd = avg_hd,
+                                              calc_time = 0),
+                                   deciles))
+    }
   }
+  i <- 1000
+  for (i in c(100, 500, 1000, 2000, 5000, 10000)){
+    if (i < length(last_gen$the_seq)){
+      c_the_seq <- sample(last_gen$the_seq, i, replace = FALSE)
+      ltm <- proc.time()
+      c_dmat <- stringdistmatrix(c_the_seq, method = 'hamming')
+      calc_time <- (proc.time() - ltm)[1]
+      subsam <- as.numeric(c_dmat)
+      avg_hd <- mean(subsam)
+      deciles <- t(data.frame(quantile(subsam, (0:10)/10, type = 4)))
+      names(deciles) <- c("p000", "p010", "p020", "p030", "p040", "p050", "p060",
+                          "p070", "p080", "p090", "p100")
+      row.names(deciles) <- NULL
+      dmat_comp_tab <- rbind(dmat_comp_tab,
+                             cbind(data.frame(label = label,
+                                              size = i, 
+                                              avg_hd = avg_hd,
+                                              calc_time = calc_time),
+                                   deciles))
+    }
+  }
+  return(dmat_comp_tab)
+}
+```
+
+```{r}
+dmat_comp_tab <- NULL
+for (i in 1:10){
+  print(paste("==== ", i, " ====", sep = ''))
+  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'subsampling_dmat', 
+                    seed = i)
+  dmat_comp_tab <- rbind(dmat_comp_tab, make_comp_df(x, i))
 }
 print(dmat_comp_tab)
+
+#write.csv(dmat_comp_tab, "/home/phillipl/projects/quasispecies_sim_reports/builds/subsampling_dmat/dmat_comp_tab_gen13_n10.csv", row.names = FALSE)
 ```
 
 What about subsampling on the sequences to speed up the computation of the distance matrix?
 
-```{r}
-```
+Note that in practice we will always subsample down to at most 5000 since that is the limitation of the sequencing.
 
