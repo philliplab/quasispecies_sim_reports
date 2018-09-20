@@ -85,9 +85,28 @@ arg_sets <- list(`1` = list(group_label = "restricted_A",
 ptm <- proc.time()
 ltm <- proc.time()
 
-group_membership <- NULL
-all_sim_results <- NULL
-i <- 1
+group_membership <- data.frame(sim_id = numeric(0), 
+                               group_id = integer(0))
+
+all_sim_results <- data.frame(sim_id = numeric(0), 
+                              group_label = character(0), 
+                              gen_num = numeric(0), 
+                              id = numeric(0), 
+                              parent_id = numeric(0), 
+                              the_seq = character(0), 
+                              n_mut = numeric(0), 
+                              recomb_pos = numeric(0), 
+                              recomb_replaced = character(0), 
+                              recomb_partner = numeric(0), 
+                              recomb_muts = numeric(0), 
+                              fitness_score = numeric(0))
+
+sim_fit_unfit_pairs <- function(args, group1_label, group2_label, 
+                                group1_id, group2_id, 
+                                all_sim_results, group_membership, 
+                                req_fitness = 0.02, n_perfect_fit = 15, 
+                                cacheName = NULL){
+}
 
 library(profvis)
 profvis({
