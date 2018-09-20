@@ -23,7 +23,13 @@ for (c_sim_id in unique(all_sim_results$sim_id)){
   down_selection_for_dmats <- rbind(down_selection_for_dmats,
     data.frame(true_gen_size = length(c_gen),
                seqs_used_for_dmat = length(ds_gen)))
-  dmat <- stringdistmatrix(ds_gen, method = 'hamming')
+  
+  dmat <- memoiseCache(fun = 'stringdistmatrix',
+                       args = list(a = ds_gen,
+                                   method = 'hamming'),
+                       cacheName = 'dmat')
+#  dmat <- stringdistmatrix(ds_gen, method = 'hamming')
+
   avg_hd <- mean(dmat)
   dvec <- as.numeric(dmat)/min(nchar(last_gens$the_seq))
   dd.f <- rbind(dd.f,
