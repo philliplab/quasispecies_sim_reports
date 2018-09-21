@@ -33,14 +33,14 @@ data.frame(arg = "Fitness Evaluator", val = args$fitness_evaluator$fun)
 genealogy_summary_table <- function(genealogy){
   genealogy$ances_dist <- stringdist(genealogy[1,'the_seq'], genealogy[,'the_seq'])
   genealogy_summary <-
-  genealogy %>% 
-  select(gen_num, ances_dist, the_seq, fitness_score) %>% 
-  group_by(gen_num) %>%
-  summarize(n = n(),
-            ances_dist = mean(ances_dist),
-            nor_ances_dist = mean(ances_dist) / min(nchar(the_seq)),
-            avg_fitness_score = mean(fitness_score),
-            min_fitness_score = min(fitness_score))
+    genealogy %>% 
+    select(gen_num, ances_dist, the_seq, fitness_score) %>% 
+    group_by(gen_num) %>%
+    summarize(n = n(),
+              ances_dist = mean(ances_dist),
+              nor_ances_dist = mean(ances_dist) / min(nchar(the_seq)),
+              avg_fitness_score = mean(fitness_score),
+              min_fitness_score = min(fitness_score))
   names(genealogy_summary) <- c(
     "Gen. Num.",
     "n",

@@ -1,22 +1,31 @@
 The following graphs and tables present a summary of a set of simulations that can be divided into `r length(unique(group_membership$group_id))` groups. 
 
 ```{r, include = FALSE}
+chunk_seed <- 1000000
 seq_length <- nchar(all_sim_results[1,'the_seq'])
 
 last_gens <-
 all_sim_results %>%
   filter(gen_num == max(gen_num))
 
-dd.f <- NULL
+dmat_metrics <- data.frame(sim_id = numeric(0),
+                           group_label = character(0),
+                           metric = character(0),
+                           value = numeric(0))
+
+dmat_distributions <- list()
+
+#dd.f <- NULL
 down_selection_for_dmats <- NULL
 c_sim_id <- unique(all_sim_results$sim_id)[1]
 for (c_sim_id in unique(all_sim_results$sim_id)){
+  set.seed(report_seed + chunk_seed + c_sim_id)
   print(c_sim_id)
   c_group_label <- unique(last_gens$group_label[last_gens$sim_id == c_sim_id])
   stopifnot(length(c_group_label) == 1)
   c_gen <- last_gens$the_seq[last_gens$sim_id == c_sim_id]
   if (length(c_gen) > 10000){
-    ds_gen <- c_gen[sample(1:nrow(c_gen), 10000)]
+    ds_gen <- c_gen[sample(1:length(c_gen), 10000)]
   } else {
     ds_gen <- c_gen
   }
@@ -28,15 +37,23 @@ for (c_sim_id in unique(all_sim_results$sim_id)){
                        args = list(a = ds_gen,
                                    method = 'hamming'),
                        cacheName = 'dmat')
-#  dmat <- stringdistmatrix(ds_gen, method = 'hamming')
 
   avg_hd <- mean(dmat)
-  dvec <- as.numeric(dmat)/min(nchar(last_gens$the_seq))
-  dd.f <- rbind(dd.f,
-    data.frame(sim_id = c_sim_id,
-               group_label = c_group_label,
-               dists = dvec)
-  )
+  deciles <- quantile(dmat, (0:10)/10)
+  dmat_metrics <- rbind(dmat_metrics,
+    data.frame(
+      sim_id = c_sim_id,
+      group_label = c_group_label,
+      metric = c("avg_hd", gsub("^", "p", gsub("\\.", "_", gsub("\\%", "", names(deciles))))),
+      value = c(avg_hd, deciles)))
+
+  dmat_distributions[[c_sim_id]] <- density(dmat)
+#  dvec <- as.numeric(dmat)/min(nchar(last_gens$the_seq))
+#  dd.f <- rbind(dd.f,
+#    data.frame(sim_id = c_sim_id,
+#               group_label = c_group_label,
+#               dists = dvec)
+#  )
 }
 ```
 
