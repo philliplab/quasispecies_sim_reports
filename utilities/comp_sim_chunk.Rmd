@@ -47,7 +47,7 @@ for (c_sim_id in unique(all_sim_results$sim_id)){
       metric = c("avg_hd", gsub("^", "p", gsub("\\.", "_", gsub("\\%", "", names(deciles))))),
       value = c(avg_hd, deciles)))
 
-  dmat_distributions[[c_sim_id]] <- density(dmat)
+  dmat_distributions[[as.character(c_sim_id)]] <- density(dmat)
 #  dvec <- as.numeric(dmat)/min(nchar(last_gens$the_seq))
 #  dd.f <- rbind(dd.f,
 #    data.frame(sim_id = c_sim_id,
@@ -77,6 +77,25 @@ kable(
 ```
 
 ```{r, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
+#  dmat_distributions[[c_sim_id]] <- density(dmat)
+dmat_distributions_df <- NULL
+i <- 1
+for (j in names(dmat_distributions)){
+  i <- as.numeric(j)
+  group_id <- group_membership %>% filter(sim_id == i) %>% select(group_id)
+  group_id <- group_id[1,1]
+  group_label <- arg_sets[[group_id]]$group_label
+  dmat_distributions_df <- rbind(dmat_distributions_df,
+    data.frame(sim_id = i,
+               group_label = group_label,
+               x = dmat_distributions[[i]]$x,
+               y = dmat_distributions[[i]]$y)
+    )
+}
+
+
+
+
 n_uniq <- length(unique(dd.f$dists))
 range_length <- max(dd.f$dists) - min(dd.f$dists)
 bw <- range_length / min((n_uniq*1.75), 200)
