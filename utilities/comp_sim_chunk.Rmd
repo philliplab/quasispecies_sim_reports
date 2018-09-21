@@ -66,10 +66,11 @@ kable(down_selection_for_dmats,
 
 ```{r, results = 'asis'}
 kable(
-  dd.f %>%
+  dmat_metrics %>% 
+    filter(metric == 'avg_hd') %>%
     group_by(group_label) %>%
-    summarize(avg_hd = round(mean(dists),4),
-              n_avg_hd = round(mean(dists)/seq_length, 7)),
+    summarize(avg_hd = mean(value),
+              n_avg_hd = mean(value) / seq_length),
   booktabs = TRUE,
   caption = "The average pairwise HD in each group of simulations"
 )
