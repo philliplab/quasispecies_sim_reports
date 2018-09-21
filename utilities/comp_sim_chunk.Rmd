@@ -110,23 +110,6 @@ dmat_metrics %>%
 all_deciles <-
 spread(deciles, metric, value)
 
-
-
-
-
-all_deciles <- data.frame(matrix(0, ncol = 12, nrow = length(unique(all_sim_results$group_label))))
-names(all_deciles) <- c('Sim', paste((0:10)*10, "%", sep = ''))
-
-i <- 0
-for (c_group_label in unique(all_sim_results$group_label)){
-  i <- i + 1
-  deciles <-
-    quantile(dd.f$dists[dd.f$group_label == c_group_label], (0:10)/10)
-
-  all_deciles[i,] <- c(c_group_label, deciles)
-}
-row.names(all_deciles) <- NULL
-
 kable(
   all_deciles,
   booktabs = TRUE,
