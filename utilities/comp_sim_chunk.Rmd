@@ -93,16 +93,8 @@ for (j in names(dmat_distributions)){
     )
 }
 
-
-
-
-n_uniq <- length(unique(dd.f$dists))
-range_length <- max(dd.f$dists) - min(dd.f$dists)
-bw <- range_length / min((n_uniq*1.75), 200)
-ggplot(dd.f, aes(x = dists, 
-                 col = group_label,
-                 group = as.factor(sim_id))) + 
-      geom_density(bw = bw)
+ggplot(dmat_distributions_df, aes(x = x, y = y, group = sim_id, color = group_label)) +
+  geom_smooth(se = FALSE, size = 0.75, span = 0.1)
 ```
 
 ```{r, results = 'asis'}
