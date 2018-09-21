@@ -98,6 +98,22 @@ ggplot(dmat_distributions_df, aes(x = x, y = y, group = sim_id, color = group_la
 ```
 
 ```{r, results = 'asis'}
+
+deciles <-
+dmat_metrics %>% 
+  filter(grepl("^p", metric)) %>%
+  group_by(group_label, metric) %>%
+  summarize(
+    value = mean(value)
+   )
+
+all_deciles <-
+spread(deciles, metric, value)
+
+
+
+
+
 all_deciles <- data.frame(matrix(0, ncol = 12, nrow = length(unique(all_sim_results$group_label))))
 names(all_deciles) <- c('Sim', paste((0:10)*10, "%", sep = ''))
 

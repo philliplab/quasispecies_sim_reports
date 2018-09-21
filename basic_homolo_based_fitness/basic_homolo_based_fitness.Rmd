@@ -17,6 +17,7 @@ library(yasss)
 library(knitr)
 library(rmarkdown)
 library(ggthemr)
+library(tidyr)
 
 knitr::opts_chunk$set(echo = FALSE,
                       base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/basic_homolo_based_fitness/figures")
