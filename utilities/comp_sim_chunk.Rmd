@@ -130,6 +130,11 @@ for (c_group_id in names(arg_sets)){
     arg_tab <- rbind(arg_tab, c_arg_tab)
   }
 }
+for (i in 1:nrow(arg_tab)){
+  if (nchar(arg_tab$Value[i]) > 50){
+    arg_tab$Value[i] <- paste(substr(arg_tab$Value[i], 1, 50), '...', sep = '')
+  }
+}
 
 kable(
   arg_tab,
