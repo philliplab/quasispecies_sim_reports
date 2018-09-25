@@ -48,7 +48,7 @@ Start with an ancestor of only As and then run two comparisons:
 
 ```{r, include=FALSE}
 chunk_seed <- 2000000
-n_gen <- 12
+n_gen <- 14
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
