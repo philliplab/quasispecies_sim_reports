@@ -10,7 +10,6 @@ output:
 library(yasss)
 library(knitr)
 library(rmarkdown)
-library(ggthemr)
 library(tidyr)
 
 knitr::opts_chunk$set(echo = FALSE,
