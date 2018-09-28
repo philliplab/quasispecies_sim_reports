@@ -1,6 +1,6 @@
 The following graphs and tables present a summary of a set of simulations that can be divided into `r length(unique(group_membership$group_id))` groups. 
 
-```{r, include = FALSE}
+```{r dmat-computation, include = FALSE}
 chunk_seed <- 1000000
 seq_length <- nchar(all_sim_results[1,'the_seq'])
 
@@ -57,7 +57,7 @@ for (c_sim_id in unique(all_sim_results$sim_id)){
 }
 ```
 
-```{r, results = 'asis'}
+```{r down-selection-tables, results = 'asis'}
 down_selection_for_dmats_for_kable <- down_selection_for_dmats
 
 names(down_selection_for_dmats_for_kable) <- c(
@@ -71,7 +71,7 @@ kable(down_selection_for_dmats_for_kable,
 ```
 
 
-```{r, results = 'asis'}
+```{r avg-hd-summary-table, results = 'asis'}
 avg_hd_summary_table <- dmat_metrics %>% 
     filter(metric == 'avg_hd') %>%
     group_by(group_label) %>%
@@ -89,7 +89,7 @@ kable(avg_hd_summary_table,
 )
 ```
 
-```{r, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
+```{r density-plots, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
 #  dmat_distributions[[c_sim_id]] <- density(dmat)
 dmat_distributions_df <- NULL
 i <- 1
@@ -113,7 +113,7 @@ ggplot(dmat_distributions_df, aes(x = x, y = y, group = sim_id, color = group_la
   xlab("Pairwise Hamming Distance")
 ```
 
-```{r, results = 'asis'}
+```{r deciles, results = 'asis'}
 deciles <-
 dmat_metrics %>% 
   filter(grepl("^p", metric)) %>%
@@ -135,7 +135,7 @@ kable(
 )
 ```
 
-```{r, results = 'asis'}
+```{r arguments-table, results = 'asis'}
 arg_tab <- NULL
 for (c_group_id in names(arg_sets)){
   c_arg_tab <- sim_pop_arg_formatter(arg_sets[[c_group_id]]$args)
@@ -163,7 +163,7 @@ kable(
 )
 ```
 
-```{r, results = 'asis'}
+```{r generation-summary-table, results = 'asis'}
 all_sum_tabs <- NULL
 for (c_group_label in unique(all_sim_results$group_label)){
   g_sum_tab <- genealogy_summary_table(all_sim_results[all_sim_results$group_label == c_group_label, c(-1,-2)])
