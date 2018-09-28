@@ -1,15 +1,9 @@
 ---
 title: First useful comparison
 output: 
-  bookdown::gitbook:
-    config:
-      toc:
-        collapse: subsection
-      sharing:
-        facebook: no
-        twitter: no
-      fontsettings:
-        theme: sepia
+  html_document:
+    toc: false
+    theme: cerulean
 ---
 
 ```{r, include=FALSE}
@@ -17,21 +11,21 @@ library(yasss)
 library(knitr)
 library(rmarkdown)
 library(ggthemr)
+library(tidyr)
 
 knitr::opts_chunk$set(echo = FALSE,
                       base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/figures")
 options(scipen = 99)
 setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/simpleCache")
-set.seed(1)
+report_seed <- 1000
+set.seed(report_seed)
 ```
 
 ```{r , include = FALSE}
 source('../utilities/reporting_utilities.R')
 ```
 
-# First useful comparison
-
-## Description
+# Description
 
 Comparing populations with a fitness contraint to populations with no fitness constraint.
 
@@ -48,7 +42,7 @@ Next select that same number of individuals from the last generation completely 
 Repeat until 10 simulations in each dataset.
 
 ```{r, include=FALSE}
-
+chunk_seed <- 2000000
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
@@ -67,54 +61,87 @@ arg_sets <- list(`1` = list(group_label = "restricted",
                             group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and a random sample to match the size of the fitness restricted version",
                             args = args1))
 
-group_membership <- NULL
-all_sim_results <- NULL
-i <- 0
-md5s <- NULL
-for (i in 1:10){
-#  x <- do.call(sim_pop, args1)
-  suppressMessages({
-  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'first_useful', seed = i)
-  })
-  x$fitness_score[1:15] <- 1
-  y <- get_fit_offspring(x, 0.1)
-  original_col <- names(y)
-  y$sim_id <- i*2-1
-  y$group_label <- 'restricted'
-  y <- y %>% select(sim_id, group_label, original_col)
+group_membership <- data.frame(sim_id = numeric(0), 
+                               group_id = integer(0))
 
-  y_last_gen_size <- nrow(y %>% filter(gen_num == max(gen_num)))
-  x_last_gen_size <- nrow(x %>% filter(gen_num == max(gen_num)))
-  x1 <- (x %>% filter(gen_num == max(gen_num)))[sample(1:x_last_gen_size, y_last_gen_size),]
-  x2 <- rbind((x %>% filter(gen_num != max(gen_num))), x1)
-  x2_last_gen_size <- nrow(x2 %>% filter(gen_num == max(gen_num)))
-  stopifnot(x2_last_gen_size == y_last_gen_size)
+all_sim_results <- data.frame(sim_id = numeric(0), 
+                              group_label = character(0), 
+                              gen_num = numeric(0), 
+                              id = numeric(0), 
+                              parent_id = numeric(0), 
+                              the_seq = character(0), 
+                              n_mut = numeric(0), 
+                              recomb_pos = numeric(0), 
+                              recomb_replaced = character(0), 
+                              recomb_partner = numeric(0), 
+                              recomb_muts = numeric(0), 
+                              fitness_score = numeric(0))
 
-  x2$sim_id <- i*2
-  x2$group_label <- "unrestricted"
-  x2 <- x2 %>% select(sim_id, group_label, original_col)
+sim_result <- sim_fit_unfit_pairs(args = arg_sets[[1]]$args, 
+                                  n_of_pairs = 10,
+                                  group1_label = arg_sets[[1]]$group_label,
+                                  group2_label = arg_sets[[2]]$group_label,
+                                  group1_id = 1, group2_id = 2,
+                                  all_sim_results = all_sim_results,
+                                  group_membership = group_membership,
+                                  seed_offset = report_seed + chunk_seed,
+                                  req_fitness = 0.1, 
+                                  n_perfect_fit = 15,
+                                  cacheName = 'first_useful',
+                                  verbose = TRUE)
 
-  if (is.null(all_sim_results)){
-    all_sim_results <- rbind(y, x2)
-  } else {
-    all_sim_results <- rbind(all_sim_results,
-                             rbind(y, x2))
-  }
+all_sim_results <- sim_result$all_sim_results
+group_membership <- sim_result$group_membership
 
-  if (is.null(group_membership)){
-    group_membership <- data.frame(sim_id = 1:2, group_id = 1:2)
-  } else {
-    group_membership <- rbind(group_membership,
-      data.frame(sim_id = c(i*2-1, i*2), 
-                 group_id = 1:2)
-      )
-  }
 
-}
-print(md5s)
+
+#
+#group_membership <- NULL
+#all_sim_results <- NULL
+#i <- 0
+#for (i in 1:10){
+##  x <- do.call(sim_pop, args1)
+#  suppressMessages({
+#  x <- memoiseCache(fun = 'sim_pop', args = args1, cacheName = 'first_useful', seed = i)
+#  })
+#  x$fitness_score[1:15] <- 1
+#  y <- get_fit_offspring(x, 0.1)
+#  original_col <- names(y)
+#  y$sim_id <- i*2-1
+#  y$group_label <- 'restricted'
+#  y <- y %>% select(sim_id, group_label, original_col)
+#
+#  y_last_gen_size <- nrow(y %>% filter(gen_num == max(gen_num)))
+#  x_last_gen_size <- nrow(x %>% filter(gen_num == max(gen_num)))
+#  x1 <- (x %>% filter(gen_num == max(gen_num)))[sample(1:x_last_gen_size, y_last_gen_size),]
+#  x2 <- rbind((x %>% filter(gen_num != max(gen_num))), x1)
+#  x2_last_gen_size <- nrow(x2 %>% filter(gen_num == max(gen_num)))
+#  stopifnot(x2_last_gen_size == y_last_gen_size)
+#
+#  x2$sim_id <- i*2
+#  x2$group_label <- "unrestricted"
+#  x2 <- x2 %>% select(sim_id, group_label, original_col)
+#
+#  if (is.null(all_sim_results)){
+#    all_sim_results <- rbind(y, x2)
+#  } else {
+#    all_sim_results <- rbind(all_sim_results,
+#                             rbind(y, x2))
+#  }
+#
+#  if (is.null(group_membership)){
+#    group_membership <- data.frame(sim_id = 1:2, group_id = 1:2)
+#  } else {
+#    group_membership <- rbind(group_membership,
+#      data.frame(sim_id = c(i*2-1, i*2), 
+#                 group_id = 1:2)
+#      )
+#  }
+#
+#}
 ```
 
-## Simulation Results
+# Simulation Results
 
 ```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
 ```

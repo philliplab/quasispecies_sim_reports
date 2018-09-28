@@ -51,3 +51,64 @@ genealogy_summary_table <- function(genealogy){
   )
   return(genealogy_summary)
 }
+
+sim_fit_unfit_pairs <- function(args, n_of_pairs,
+                                group1_label, group2_label, 
+                                group1_id, group2_id, 
+                                all_sim_results, group_membership,
+                                seed_offset,
+                                req_fitness = 0.02, n_perfect_fit = 15, 
+                                cacheName = NULL, verbose = FALSE){
+  ptm <- proc.time()
+  ltm <- proc.time()
+  if (nrow(all_sim_results) == 0){
+    index_offset <- 0
+  } else {
+    index_offset <- max(all_sim_results$sim_id)
+  }
+  for (i in 1:n_of_pairs){
+    if (verbose){
+      print('===============================')
+      print(paste(i * 2 + index_offset - 1,
+                  " and ",
+                  i * 2 + index_offset,
+                  sep = ''))
+      print(proc.time() - ptm)
+      print(proc.time() - ltm)
+      ltm <- proc.time()
+    }
+    suppressMessages({
+      x <- memoiseCache(fun = 'sim_pop', args = args, cacheName = cacheName, 
+                        seed = seed_offset + i + index_offset/2)
+    })
+    x$fitness_score[1:n_perfect_fit] <- 1
+    y <- get_fit_offspring(x, req_fitness)
+    
+    original_col <- names(y)
+    y$sim_id <- (i*2+index_offset)-1
+
+    y$group_label <- group1_label
+    y <- y %>% select(sim_id, group_label, original_col)
+
+    y_last_gen_size <- nrow(y %>% filter(gen_num == max(gen_num)))
+    x_last_gen_size <- nrow(x %>% filter(gen_num == max(gen_num)))
+    x1 <- (x %>% filter(gen_num == max(gen_num)))[sample(1:x_last_gen_size, y_last_gen_size),]
+    x2 <- rbind((x %>% filter(gen_num != max(gen_num))), x1)
+    x2_last_gen_size <- nrow(x2 %>% filter(gen_num == max(gen_num)))
+    stopifnot(x2_last_gen_size == y_last_gen_size)
+  
+    x2$sim_id <- (i * 2 + index_offset)
+    x2$group_label <- group2_label
+    x2 <- x2 %>% select(sim_id, group_label, original_col)
+
+    all_sim_results <- rbind(all_sim_results,
+                             rbind(y, x2))
+    
+    group_membership <- rbind(group_membership,
+      data.frame(sim_id = c(i * 2 + index_offset-1, i*2+index_offset), 
+                 group_id = c(group1_id, group2_id))
+      )
+  }
+  return(list(all_sim_results = all_sim_results,
+              group_membership = group_membership))
+}
