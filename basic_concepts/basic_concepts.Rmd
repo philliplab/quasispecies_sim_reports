@@ -25,7 +25,10 @@ source('../utilities/reporting_utilities.R')
 
 # Simple first simulation
 
-A first simulation to demonstrate the process and the measuring tools. The following table shows the configuration that was used to call `sim_pop` from the `yasss` package. A high level summary of the entire genealogy is provided in the second table.
+A first simulation to demonstrate the process and the measuring tools. The
+following table shows the configuration that was used to call `sim_pop` from
+the `yasss` package. A high level summary of the entire genealogy is provided
+in the second table.
 
 ```{r sim-pop-config, results = 'asis'}
 args <- list(
@@ -127,7 +130,7 @@ sim_result <- list(args = args,
 
 # Small number of simulations
 
-The goal is to compare different simulations to each other. First, we will start with a small number of simulations that we can still pay attention to each individual simulation. Note that here we only consider simulations performed with similar parameters since comparisons based on small number of examples for stochastic processes can be very misleading. The idea is just to expand the chunk that showcases a single simulation by adding in extra density curves and extra rows into the tables.
+The goal is to compare different simulations to each other. First, we will start with a small number of simulations that we can still pay attention to each individual simulation.
 
 ```{r, include = FALSE}
 args <- list(
@@ -160,7 +163,7 @@ for (i in 1:10){
 
 The true goal is to compare sets of simulations where some parameter was varied to each other. Initially due to computational restraints (upgrades needed to yasss as well as some caching facilities), we will restrict this to comparisons of small numbers of simulations (~30) grouped into 2 to 4 groups. The goal here is to show how the distributions and the metrics diverge between the groups.
 
-Four data structures are used to track all this:
+Three data structures are used to track all this:
 
 - the all_sim_results data.frame - see the few_sim_chunk
 - the group_membership data.frame: sim_id, group_id, group_label and group description
