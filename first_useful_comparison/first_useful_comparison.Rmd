@@ -13,8 +13,9 @@ library(rmarkdown)
 library(ggthemr)
 library(tidyr)
 
-knitr::opts_chunk$set(echo = FALSE,
-                      base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/figures")
+knitr::opts_chunk$set(echo = FALSE)
+#knitr::opts_chunk$set(echo = FALSE,
+#                      base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/figures")
 options(scipen = 99)
 setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/simpleCache")
 report_seed <- 1000

@@ -34,7 +34,8 @@ range_length <- max(dd.f$dists) - min(dd.f$dists)
 bw <- range_length / min((n_uniq*1.75), 200)
 ggplot(dd.f, aes(x = dists, 
                  col = as.factor(sim_id))) + 
-      geom_density(bw = bw)
+      geom_density(bw = bw) +
+  guides(color = guide_legend(title = "Sim. ID"))
 ```
 
 ```{r, results = 'asis'}
