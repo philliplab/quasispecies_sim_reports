@@ -29,6 +29,19 @@ yasss:::restart_r()
 
 A first basic report exploring the effects of assigning fitness based on homology.
 
+The ancestral sequence is specified as a sequences of only As.
+
+A (very unrealistic) epitope is then specified as a sequence in which every 5th character is an A.
+
+The fitness is based on the number of matches between the epitope and the sequence. A fitness of zero is assigned if the sequence perfectly matches the epitope and a fitness of one is assigned if there is no match at any point. For sequences that does neither perfectly match the epitope nor perfectly mismatch the epitope, fitness is assigned linearly beased on the number of matches.
+
+Using this epitope, 10 pairs of datasets were generated.
+
+First the entire quasispecies was simulated without taking fitness into account. Then, a copy is made of this genealogy and all individuals across all generations (excluding the first x generations) that has a fitness score lower than a cutoff were identified. These unfit individuals and ALL their decendents were then removed from the genealogy. The remaining individuals in the last generation of this dataset were then selected as a dataset.
+
+To constract the partner of the dataset described above, a number of individuals are randomly selected
+
+
 Start with an ancestor of only As and then run two comparisons:
 
 - One against a comparator that is only As and Xs - 4 Xs and then an A repeated - using the
@@ -36,6 +49,37 @@ Start with an ancestor of only As and then run two comparisons:
   die. Hack around it by assigning the first couple of generations perfect
   fitness. (currently the first 63 rows)
 - One against a similar comparator, but with the As replaced with Cs
+
+basic_homolo_report
+
+Here I made the fitness mechanism more realistic:
+All simulations start with an ancestor that is just 500 As
+An 'epitope' is specified and the fitness of the individual is based on the presence of this epitope.
+The epitope is just that each 5th base is an A, so initially the epitope is present in all the sequences. To keep them all from getting removed summarily from the simulation, the first 6 generations are granted perfect fitness.
+
+After the simulation is completed, two datasets are generated from each simulation:
+The first dataset is constructed by removing all the unfit individuals and all the individuals that have an unfit ancestor from the dataset. The remaining members of the last generation are then taken to be the dataset.
+A second dataset is made by sampling a random number of individuals from the last generation of the simulation irrespective of any fitness consideration. The number sampled is that same at the number of individuals in the first dataset.
+
+This same process was repeated, but using an epitope in which each 5th letter is a C, thus the original ancestor does not match this epitope at all.
+
+The datasets based on the every 5th is an A epitope show large differences. The average pairwise HD in the restricted datasets was 43 (out of 500) and 48 on the unrestricted datasets.
+
+No difference was observed for the C-based epitopes. But this is a side effect of the way the fitness cutoffs were chosen.
+
+The same pattern was observed for the deciles.
+
+In the final table in the report you can see that no sequecnes were removed in any of the simulations for the c-based epitopes - so poor parameter choices on my part.
+
+Here are many next steps to explore:
+1) Run it for more generations
+2) Run it with a larger R0 (more offspring per individual)
+3) Tweak the fitness parameters / implement alternative fitness functions (maybe add a little mroe noise into the process?)
+4) Pick more realisitc epitopes? But do we really care about this? We just want to see the effect of any immune pressure?
+5) Play more with the templates used to generate the reports - I just picked the first one from a textbook and it defintely is not the optimal one
+6) Carefully state the hypotheses we want to test (I think this should be the first next step)
+7) Set up a readme file for the project that links to the report files (and store the primary results in the repo itself also) - just make the results more reachable.
+
 
 ```{r, include=FALSE}
 chunk_seed <- 2000000
