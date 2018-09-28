@@ -30,7 +30,9 @@ for (c_sim_id in unique(all_sim_results$sim_id)){
     ds_gen <- c_gen
   }
   down_selection_for_dmats <- rbind(down_selection_for_dmats,
-    data.frame(true_gen_size = length(c_gen),
+    data.frame(sim_id = c_sim_id,
+               group_label = c_group_label,
+               true_gen_size = length(c_gen),
                seqs_used_for_dmat = length(ds_gen)))
   
   dmat <- memoiseCache(fun = 'stringdistmatrix',
@@ -61,6 +63,8 @@ for (c_sim_id in unique(all_sim_results$sim_id)){
 down_selection_for_dmats_for_kable <- down_selection_for_dmats
 
 names(down_selection_for_dmats_for_kable) <- c(
+  "Sim. ID",
+  "Group Label",
   "Number of sequences in simulated dataset",
   "Number of sequences included in distance matrix"
   )
