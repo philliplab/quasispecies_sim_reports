@@ -154,6 +154,8 @@ for (i in 1:nrow(arg_tab)){
   }
 }
 
+names(arg_tab)[1] <- "Group Label"
+
 kable(
   arg_tab,
   booktabs = TRUE,
@@ -174,6 +176,8 @@ for (c_group_label in unique(all_sim_results$group_label)){
     all_sum_tabs <- rbind(all_sum_tabs, g_sum_tab)
   }
 }
+
+names(all_sum_tabs)[1] <- "Group Label"
 
 kable(
   all_sum_tabs,
