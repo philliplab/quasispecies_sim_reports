@@ -1,15 +1,9 @@
 ---
 title: Basic homology based fitness
 output: 
-  bookdown::gitbook:
-    config:
-      toc:
-        collapse: subsection
-      sharing:
-        facebook: no
-        twitter: no
-      fontsettings:
-        theme: sepia
+  html_document:
+    toc: false
+    theme: cerulean
 ---
 
 ```{r, include=FALSE}
@@ -32,23 +26,21 @@ set.seed(report_seed)
 yasss:::restart_r()
 ```
 
-# Basic homology based fitness
-
-## Description
+# Description
 
 A first basic report exploring the effects of assigning fitness based on homology.
 
 Start with an ancestor of only As and then run two comparisons:
 
-- One against a comparator that is only As and Xs - lets say 20% A - using the
+- One against a comparator that is only As and Xs - 4 Xs and then an A repeated - using the
   current fitness selection tools this will not work since the ancestor will
   die. Hack around it by assigning the first couple of generations perfect
   fitness. (currently the first 63 rows)
-- One against a similat comparator, but with the As replaced with Cs
+- One against a similar comparator, but with the As replaced with Cs
 
 ```{r, include=FALSE}
 chunk_seed <- 2000000
-n_gen <- 14
+n_gen <- 11
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
@@ -193,7 +185,7 @@ all_sim_results <- sim_result$all_sim_results
 group_membership <- sim_result$group_membership
 ```
 
-## Simulation Results
+# Simulation Results
 
 ```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
 ```

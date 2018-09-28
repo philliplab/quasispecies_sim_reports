@@ -94,7 +94,7 @@ for (j in names(dmat_distributions)){
 }
 
 ggplot(dmat_distributions_df, aes(x = x, y = y, group = sim_id, color = group_label)) +
-  geom_smooth(se = FALSE, size = 0.75, span = 0.1)
+  geom_smooth(se = FALSE, size = 0.75, span = 0.1, method = 'loess')
 ```
 
 ```{r, results = 'asis'}
