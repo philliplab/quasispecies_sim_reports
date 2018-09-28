@@ -58,19 +58,32 @@ for (c_sim_id in unique(all_sim_results$sim_id)){
 ```
 
 ```{r, results = 'asis'}
-kable(down_selection_for_dmats,
+down_selection_for_dmats_for_kable <- down_selection_for_dmats
+
+names(down_selection_for_dmats_for_kable) <- c(
+  "Number of sequences in simulated dataset",
+  "Number of sequences included in distance matrix"
+  )
+
+kable(down_selection_for_dmats_for_kable,
       booktabs = TRUE,
       caption = "Number of sequences used to compute distance matrices")
 ```
 
 
 ```{r, results = 'asis'}
-kable(
-  dmat_metrics %>% 
+avg_hd_summary_table <- dmat_metrics %>% 
     filter(metric == 'avg_hd') %>%
     group_by(group_label) %>%
     summarize(avg_hd = mean(value),
-              n_avg_hd = mean(value) / seq_length),
+              n_avg_hd = mean(value) / seq_length)
+
+names(avg_hd_summary_table) <- c(
+  "Group Label",
+  "Average Pairwise HD.",
+  "Normalized Average Pairwise HD.")
+
+kable(avg_hd_summary_table,
   booktabs = TRUE,
   caption = "The average pairwise HD in each group of simulations"
 )
