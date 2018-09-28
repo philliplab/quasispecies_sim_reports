@@ -1,25 +1,22 @@
 ---
 title: Basic concepts of quasispecies simulation
 output: 
-  bookdown::gitbook:
-    config:
-      toc:
-        collapse: subsection
-      sharing:
-        facebook: no
-        twitter: no
-      fontsettings:
-        theme: sepia
+  html_document:
+    toc: false
+    theme: cerulean
 ---
 
 ```{r, include=FALSE}
 library(yasss)
 library(knitr)
 library(rmarkdown)
-library(ggthemr)
+library(tidyr)
 
 knitr::opts_chunk$set(echo = FALSE)
 options(scipen = 99)
+
+report_seed <- 1000
+set.seed(report_seed)
 ```
 
 ```{r , include = FALSE}
@@ -28,7 +25,7 @@ source('../utilities/reporting_utilities.R')
 
 # Simple first simulation
 
-A first simulation to demonstrate the process and the measuring tools. Table \@ref(tab:sim-pop-config) shows the configuration that was used to call `sim_pop` from the `yasss` package. A high level summary of the entire genealogy is provided in Table \@ref(tab:first-sum-tab).
+A first simulation to demonstrate the process and the measuring tools. The following table shows the configuration that was used to call `sim_pop` from the `yasss` package. A high level summary of the entire genealogy is provided in the second table.
 
 ```{r sim-pop-config, results = 'asis'}
 args <- list(
@@ -82,7 +79,7 @@ dvec <- as.numeric(dmat)/min(nchar(last_gen$the_seq))
 dd.f <- data.frame(dists = dvec)
 ```
 
-The average pairwise HD is **`r round(avg_hd, 2)`** and normalized by the length of the sequence it is **`r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`**. The distribution is shown in Figure \@ref(fig:first-density-plot) and the deciles are listed in Table \@ref(tab:first-deciles).
+The average pairwise HD is **`r round(avg_hd, 2)`** and normalized by the length of the sequence it is **`r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`**. The distribution is shown in the figure below and the deciles are listed in a table below the figure.
 
 ```{r first-density-plot, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
 n_uniq <- nrow(unique(dd.f))
