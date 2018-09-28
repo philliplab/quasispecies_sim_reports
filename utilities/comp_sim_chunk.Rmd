@@ -114,7 +114,6 @@ ggplot(dmat_distributions_df, aes(x = x, y = y, group = sim_id, color = group_la
 ```
 
 ```{r, results = 'asis'}
-
 deciles <-
 dmat_metrics %>% 
   filter(grepl("^p", metric)) %>%
@@ -125,6 +124,9 @@ dmat_metrics %>%
 
 all_deciles <-
 spread(deciles, metric, value)
+
+names(all_deciles) <-
+c("Group Label", paste((0:10)*10, "%", sep = ""))
 
 kable(
   all_deciles,
