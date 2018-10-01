@@ -19,6 +19,8 @@ setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/builds/basic_homol
 source('../utilities/reporting_utilities.R')
 report_seed <- 3000
 set.seed(report_seed)
+
+report_start_time <- proc.time()
 ```
 
 ```{r debugging-chunk, eval = FALSE}
@@ -234,4 +236,9 @@ group_membership <- sim_result$group_membership
 # Simulation Results
 
 ```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
+```
+
+# Total Running Time
+```{r}
+print(proc.time() - report_start_time)
 ```

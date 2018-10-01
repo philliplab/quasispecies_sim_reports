@@ -19,6 +19,8 @@ options(scipen = 99)
 setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/simpleCache")
 report_seed <- 1000
 set.seed(report_seed)
+
+report_start_time <- proc.time()
 ```
 
 ```{r , include = FALSE}
@@ -46,7 +48,7 @@ chunk_seed <- 2000000
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
-  n_gen = 16,
+  n_gen = 18,
   n_pop = Inf,
   mutator = list(fun = "mutator_uniform_fun",
                  args = list(mu = 1/500)),
@@ -144,4 +146,9 @@ group_membership <- sim_result$group_membership
 # Simulation Results
 
 ```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
+```
+
+# Total Running Time
+```{r}
+print(proc.time() - report_start_time)
 ```

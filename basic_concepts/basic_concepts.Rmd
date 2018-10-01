@@ -17,6 +17,8 @@ options(scipen = 99)
 
 report_seed <- 1000
 set.seed(report_seed)
+
+report_start_time <- proc.time()
 ```
 
 ```{r , include = FALSE}
@@ -225,4 +227,9 @@ for (c_sim_id in unique(group_membership$sim_id)){
 ```
 
 ```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
+```
+
+# Total Running Time
+```{r}
+print(proc.time() - report_start_time)
 ```
