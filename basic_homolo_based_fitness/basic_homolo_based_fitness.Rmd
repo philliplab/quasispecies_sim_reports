@@ -29,9 +29,11 @@ yasss:::restart_r()
 
 # Description
 
+## Data generation
+
 A first basic report exploring the effects of assigning fitness based on homology.
 
-The ancestral sequence is specified as a sequences of only As.
+The ancestral sequence is specified as a sequence of only As.
 
 A (very unrealistic) epitope is then specified as a sequence in which every 5th character is an A.
 
@@ -41,37 +43,41 @@ Using this epitope, 10 pairs of datasets were generated.
 
 First the entire quasispecies was simulated without taking fitness into account. Then, a copy is made of this genealogy and all individuals across all generations (excluding the first x generations) that has a fitness score lower than a cutoff were identified. These unfit individuals and ALL their decendents were then removed from the genealogy. The remaining individuals in the last generation of this dataset were then selected as a dataset.
 
-To constract the partner of the dataset described above, a number of individuals are randomly selected
+To construct the partner of the dataset described above, a number of individuals are randomly selected from the last generation independent of any fitness considerations so that the same number of sequences are in each dataset.
 
+This process was repeated to generate another 10 pairs, but with an epitope based on Cs. In this case instead of letting every 5th letter be an A, we used a C instead.
 
-Start with an ancestor of only As and then run two comparisons:
+## A-based epitope
 
-- One against a comparator that is only As and Xs - 4 Xs and then an A repeated - using the
-  current fitness selection tools this will not work since the ancestor will
-  die. Hack around it by assigning the first couple of generations perfect
-  fitness. (currently the first 63 rows)
-- One against a similar comparator, but with the As replaced with Cs
+Since the ancestor perfectly matches the epitope, this produced a very high level of pressure which can be seen from the small size of the datasets.
 
-basic_homolo_report
+The fitness requirement was set to 0.02. Given that the sequences are of length 500 and every 5th letter was part of the epitope, the epitope contains 100 positions. From the linear nature of the way fitness is computed, the fitness requirement of 0.02 translates to 2 positions. So if the sequence has non-As at more than 2 of the 100 epitope positions, then the sequence will be seen as fit.
 
-Here I made the fitness mechanism more realistic:
-All simulations start with an ancestor that is just 500 As
-An 'epitope' is specified and the fitness of the individual is based on the presence of this epitope.
-The epitope is just that each 5th base is an A, so initially the epitope is present in all the sequences. To keep them all from getting removed summarily from the simulation, the first 6 generations are granted perfect fitness.
+## C-based epitope
 
-After the simulation is completed, two datasets are generated from each simulation:
-The first dataset is constructed by removing all the unfit individuals and all the individuals that have an unfit ancestor from the dataset. The remaining members of the last generation are then taken to be the dataset.
-A second dataset is made by sampling a random number of individuals from the last generation of the simulation irrespective of any fitness consideration. The number sampled is that same at the number of individuals in the first dataset.
+This resulted in no pressure. This is a parameter choice failure. As for the A based epitope, if only three positions contains non-Cs, then the sequence is seen as fit.
 
-This same process was repeated, but using an epitope in which each 5th letter is a C, thus the original ancestor does not match this epitope at all.
+Thus the simulations based on the C-based epitope contains no information.
 
-The datasets based on the every 5th is an A epitope show large differences. The average pairwise HD in the restricted datasets was 43 (out of 500) and 48 on the unrestricted datasets.
+# Interpretation
 
-No difference was observed for the C-based epitopes. But this is a side effect of the way the fitness cutoffs were chosen.
+This report highlights two points:
 
-The same pattern was observed for the deciles.
+1. Immune pressure can cut out certain parts of the evolutionary landscape which translates to a reduction in the diversity metric (for the 13 generation version)
+2. This fitness scheme is inadequate.
 
-In the final table in the report you can see that no sequecnes were removed in any of the simulations for the c-based epitopes - so poor parameter choices on my part.
+# Designs for more a more useful version of fitness
+
+How to modify the fitness computation to be more useful in such a way that it is easy to implement with the current tools?
+
+What if we add in a more realistic epitope: Just 20 positions with some mismatches to the ancestor.
+Then, together with this we need to constrict the space of viable sequences. To do this, add another 'epitope' consisting of about 200 positions and let a match on this yield a positive fitness. Thus the fitness computation becomes: The percentage of matches to the positive epitope less the percentage of matches to the negative epitope.
+
+Then, should fitness be interpreted probabilistically? Does a fitness of 50% give you a 50% chance of surviving? Or do we use a cutoff?
+
+Obviously this is still simplifications. Ideally, this will be based on amino acids and the 'positivie fitness epitope' will allow different, but not all, letters at certain positions. However, this is a bit more work to implement, so hold off on this for now.
+
+# Other questions
 
 Here are many next steps to explore:
 1) Run it for more generations
@@ -82,10 +88,9 @@ Here are many next steps to explore:
 6) Carefully state the hypotheses we want to test (I think this should be the first next step)
 7) Set up a readme file for the project that links to the report files (and store the primary results in the repo itself also) - just make the results more reachable.
 
-
 ```{r, include=FALSE}
 chunk_seed <- 2000000
-n_gen <- 14
+n_gen <- 18
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
@@ -138,67 +143,6 @@ all_sim_results <- data.frame(sim_id = numeric(0),
                               recomb_partner = numeric(0), 
                               recomb_muts = numeric(0), 
                               fitness_score = numeric(0))
-
-#sim_fit_unfit_pairs <- function(args, n_of_pairs,
-#                                group1_label, group2_label, 
-#                                group1_id, group2_id, 
-#                                all_sim_results, group_membership,
-#                                seed_offset,
-#                                req_fitness = 0.02, n_perfect_fit = 15, 
-#                                cacheName = NULL, verbose = FALSE){
-#  ptm <- proc.time()
-#  ltm <- proc.time()
-#  if (nrow(all_sim_results) == 0){
-#    index_offset <- 0
-#  } else {
-#    index_offset <- max(all_sim_results$sim_id)
-#  }
-#  for (i in 1:n_of_pairs){
-#    if (verbose){
-#      print('===============================')
-#      print(paste(i * 2 + index_offset - 1,
-#                  " and ",
-#                  i * 2 + index_offset,
-#                  sep = ''))
-#      print(proc.time() - ptm)
-#      print(proc.time() - ltm)
-#      ltm <- proc.time()
-#    }
-#    suppressMessages({
-#      x <- memoiseCache(fun = 'sim_pop', args = args, cacheName = cacheName, 
-#                        seed = seed_offset + i + index_offset/2)
-#    })
-#    x$fitness_score[1:n_perfect_fit] <- 1
-#    y <- get_fit_offspring(x, req_fitness)
-#    
-#    original_col <- names(y)
-#    y$sim_id <- (i*2+index_offset)-1
-#
-#    y$group_label <- group1_label
-#    y <- y %>% select(sim_id, group_label, original_col)
-#
-#    y_last_gen_size <- nrow(y %>% filter(gen_num == max(gen_num)))
-#    x_last_gen_size <- nrow(x %>% filter(gen_num == max(gen_num)))
-#    x1 <- (x %>% filter(gen_num == max(gen_num)))[sample(1:x_last_gen_size, y_last_gen_size),]
-#    x2 <- rbind((x %>% filter(gen_num != max(gen_num))), x1)
-#    x2_last_gen_size <- nrow(x2 %>% filter(gen_num == max(gen_num)))
-#    stopifnot(x2_last_gen_size == y_last_gen_size)
-#  
-#    x2$sim_id <- (i * 2 + index_offset)
-#    x2$group_label <- group2_label
-#    x2 <- x2 %>% select(sim_id, group_label, original_col)
-#
-#    all_sim_results <- rbind(all_sim_results,
-#                             rbind(y, x2))
-#    
-#    group_membership <- rbind(group_membership,
-#      data.frame(sim_id = c(i * 2 + index_offset-1, i*2+index_offset), 
-#                 group_id = c(group1_id, group2_id))
-#      )
-#  }
-#  return(list(all_sim_results = all_sim_results,
-#              group_membership = group_membership))
-#}
 
 sim_result <- sim_fit_unfit_pairs(args = arg_sets[[1]]$args, 
                                   n_of_pairs = 10,
