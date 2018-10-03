@@ -90,7 +90,7 @@ Here are many next steps to explore:
 
 ```{r, include=FALSE}
 chunk_seed <- 2000000
-n_gen <- 18
+n_gen <- 11
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
