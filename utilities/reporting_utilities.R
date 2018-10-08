@@ -66,6 +66,7 @@ sim_fit_unfit_pairs <- function(args, n_of_pairs,
   } else {
     index_offset <- max(all_sim_results$sim_id)
   }
+  new_sim_results <- list()
   for (i in 1:n_of_pairs){
     if (verbose){
       print('===============================')
@@ -101,14 +102,19 @@ sim_fit_unfit_pairs <- function(args, n_of_pairs,
     x2$group_label <- group2_label
     x2 <- x2 %>% select(sim_id, group_label, original_col)
 
-    all_sim_results <- rbind(all_sim_results,
-                             rbind(y, x2))
+#    all_sim_results <- rbind(all_sim_results,
+#                             rbind(y, x2))
+    new_sim_results[[2*i - 1]] <- y
+    new_sim_results[[2*i]] <- x2
     
     group_membership <- rbind(group_membership,
       data.frame(sim_id = c(i * 2 + index_offset-1, i*2+index_offset), 
                  group_id = c(group1_id, group2_id))
       )
   }
+  new_sim_results[[length(new_sim_results)+1]] <- all_sim_results
+  all_sim_results <- rbindlist(new_sim_results)
+  all_sim_results <- as.data.frame(all_sim_results)
   return(list(all_sim_results = all_sim_results,
               group_membership = group_membership))
 }
