@@ -82,7 +82,7 @@ sim_fit_unfit_pairs <- function(args, n_of_pairs,
                         seed = seed_offset + i + index_offset/2)
     })
     x$fitness_score[1:n_perfect_fit] <- 1
-    y <- get_fit_offspring(x, req_fitness)
+    y <- get_fit_offspring(x, req_fitness, implementation = 'Rvec')
     
     original_col <- names(y)
     y$sim_id <- (i*2+index_offset)-1
