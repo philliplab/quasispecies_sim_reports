@@ -93,7 +93,7 @@ Here are many next steps to explore:
 
 ```{r, include=FALSE}
 chunk_seed <- 2000000
-n_gen <- 13
+n_gen <- 10
 args1 <- list(
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
@@ -147,7 +147,6 @@ all_sim_results <- data.frame(sim_id = numeric(0),
                               recomb_muts = numeric(0), 
                               fitness_score = numeric(0))
 
-profvis({
 sim_result <- sim_fit_unfit_pairs(args = arg_sets[[1]]$args, 
                                   n_of_pairs = 10,
                                   group1_label = arg_sets[[1]]$group_label,
@@ -160,7 +159,7 @@ sim_result <- sim_fit_unfit_pairs(args = arg_sets[[1]]$args,
                                   n_perfect_fit = 255,
                                   cacheName = 'basic_homolo',
                                   verbose = TRUE)
-})
+
 all_sim_results <- sim_result$all_sim_results
 group_membership <- sim_result$group_membership
 
@@ -172,7 +171,7 @@ sim_result <- sim_fit_unfit_pairs(args = arg_sets[[3]]$args,
                                   all_sim_results = all_sim_results,
                                   group_membership = group_membership,
                                   seed_offset = report_seed + chunk_seed,
-                                  req_fitness = 0.02, 
+                                  req_fitness = 0.97, 
                                   n_perfect_fit = 255,
                                   cacheName = 'basic_homolo',
                                   verbose = TRUE)
@@ -189,4 +188,8 @@ group_membership <- sim_result$group_membership
 # Total Running Time
 ```{r}
 print(proc.time() - report_start_time)
+```
+
+```{r, eval = FALSE, include = FALSE}
+save.image('/tmp/basic_homolo.RData')
 ```
