@@ -60,11 +60,8 @@ arg_set1 <- list(
 )
 
 many_pops <- sim_proc_many_pops(list(arg_set1), output_genealogy = 'full', output_dmat = TRUE)
-names(many_pops)
 x <- many_pops$all_genealogies[[1]]
 
-#x <- do.call(sim_pop, args)
-#
 kable(
   sim_pop_arg_formatter(arg_set1),
   booktabs = TRUE,
@@ -109,7 +106,11 @@ dvec <- as.numeric(dmat)/min(nchar(last_gen$the_seq))
 dd.f <- data.frame(dists = dvec)
 ```
 
-The average pairwise HD is **`r round(avg_hd, 2)`** and normalized by the length of the sequence it is **`r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`**. The distribution is shown in the figure below and the deciles are listed in a table below the figure. Note that the bandwidth has to be tweaked because mutations are rare events thus the distribution is fairly discrete.
+The average pairwise HD is **`r round(avg_hd, 2)`** and normalized by the
+length of the sequence it is **`r round(avg_hd/min(nchar(last_gen$the_seq)),
+3)`**. The distribution is shown in the figure below and the deciles are
+listed in a table below the figure. Note that the bandwidth has to be tweaked
+because mutations are rare events thus the distribution is fairly discrete.
 
 ```{r first-density-plot, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
 n_uniq <- nrow(unique(dd.f))
@@ -130,3 +131,29 @@ kable(
 )
 ```
 
+# More realistic mu
+
+Note that the extremely high value of mu (0.1) produces sequences that rapidly diverge radically from the ancestor. To make the simulation a little more realistic, drop the mutation rate down to 1 in 1000 and try again.
+
+```{r sim-mu-1-1000, results = 'asis'}
+arg_set2 <- list(
+  label = 'A',
+  ancestors = paste(rep("A", 500), collapse = ''),
+  r0 = 2,
+  n_gen = 9,
+  n_pop = Inf,
+  mutator = list(fun = "mutator_uniform_fun",
+                 args = list(mu = 1/1e3)),
+  fitness_evaluator = list(fun = "fitness_evaluator_uniform_fun",
+                           args = NULL),
+  required_fitness = 0
+)
+
+many_pops <- sim_proc_many_pops(list(arg_set2), output_genealogy = 'full', output_dmat = TRUE)
+names(many_pops)
+sim_result <- list()
+sim_result$genealogy <- many_pops$all_genealogies[[1]]
+```
+
+```{r test-child, child = '../utilities/single_sim_chunk.Rmd'}
+```
