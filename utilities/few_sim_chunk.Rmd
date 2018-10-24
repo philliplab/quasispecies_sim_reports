@@ -3,9 +3,9 @@ The following tables show some summary metrics for `r length(unique(all_sim_resu
 ```{r, include = FALSE}
 seq_length <- nchar(all_sim_results[1,'the_seq'])
 
-last_gens <-
-all_sim_results %>%
-  filter(gen_num == max(gen_num))
+max_gen_num <- max(all_sim_results[,'gen_num'])
+
+last_gens <- all_sim_results[all_sim_results[,'gen_num'] == max_gen_num,]
 
 dd.f <- NULL
 for (i in unique(all_sim_results$sim_id)){
@@ -17,7 +17,9 @@ for (i in unique(all_sim_results$sim_id)){
                dists = dvec)
   )
 }
+```
 
+```{r}
 kable(
   dd.f %>%
     group_by(sim_id) %>%
@@ -59,14 +61,14 @@ kable(
 
 ```{r, results = 'asis'}
 kable(
-  sim_pop_arg_formatter(sim_result$args),
+  sim_pop_arg_formatter(c_arg_set),
   booktabs = TRUE,
   caption = "Configuration with which sim_pop was called."
 )
 ```
 
 ```{r, results = 'asis'}
-g_sum_tab <- genealogy_summary_table(all_sim_results[all_sim_results$sim_id == 1, -1])
+g_sum_tab <- genealogy_summary_table(all_sim_results[all_sim_results$sim_id == 1,])
 
 kable(
   g_sum_tab,
@@ -74,4 +76,8 @@ kable(
   caption = "Individuals per generation and the average distance to the original ancestor for the generation in the first simulation only."
 )
 ```
+
+
+
+
 
