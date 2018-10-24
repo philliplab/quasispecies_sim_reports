@@ -42,9 +42,9 @@ Assign perfect fitness to the first 5 generations to prevent massive parts of th
 
 Then, do a fitness based selection with a score of 0.05.
 
-Assign that as sim_id n to group 1.
+Assign that as `sim_id` n to group 1.
 
-Next select that same number of individuals from the last generation completely ignoring the fitness score and assign that as sim_id n+1 to group 2.
+Next select that same number of individuals from the last generation completely ignoring the fitness score and assign that as `sim_id` `n+1` to group 2.
 
 Repeat until 10 simulations in each dataset.
 
@@ -64,8 +64,10 @@ arg_set1 <- list(
   required_fitness = 0.1
 )
 
+arg_collection <- list(arg_set1)
+
 many_pops <-
-sim_proc_many_pops(list(arg_set1), n_sims = 10, fitness_processing =
+sim_proc_many_pops(arg_collection, n_sims = 10, fitness_processing =
                    'fit_unfit_pair')
 
 
