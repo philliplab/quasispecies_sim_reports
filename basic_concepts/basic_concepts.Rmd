@@ -185,21 +185,8 @@ many_pops <- sim_proc_many_pops(list(arg_set3), output_genealogy = 'full', outpu
 c_arg_set <- arg_set3
 x <- rbindlist(many_pops$all_genealogies)
 all_sim_results <- data.frame(x)
-
-
-#all_sim_results <- NULL
-#
-#i <- 1
-#for (i in 1:10){
-#  x <- do.call(sim_pop, args)
-#  original_cols <- names(x)
-#  x$sim_id <- i
-#  x <- x %>% select(sim_id, original_cols)
-#  all_sim_results <- rbind(all_sim_results, x)
-#}
 ```
 
 ```{r test-child, child = '../utilities/few_sim_chunk.Rmd'}
 ```
-
 
