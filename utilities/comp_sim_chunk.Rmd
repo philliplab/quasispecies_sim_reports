@@ -17,7 +17,6 @@ The following graphs and tables present a summary of a set of simulations that c
 
 
 ```{r avg-hd-summary-table, results = 'asis'}
-
 seq_length <- nchar(many_pops$arg_collection[[1]]$ancestor[1])
 
 dcollection_to_df <- function(dcollection){
@@ -32,9 +31,9 @@ dcollection_to_df <- function(dcollection){
     c_dsum <- dcollection[[i]]
 
     decile_labels <- paste((0:10)*10, '%', sep = '')
-    metric_vector <- c('avg_hd', decile_labels)
+    metric_vector <- c('avg_hd', 'sd_hd', decile_labels)
 
-    value_vector <- c(c_dsum$avg_hd, c_dsum$perc[decile_labels])
+    value_vector <- c(c_dsum$avg_hd, c_dsum$sd_hd, c_dsum$perc[decile_labels])
 
     dmat_metrics <- rbind(dmat_metrics,
       data.frame(sim_id = c_dsum$sim_id,
@@ -67,17 +66,37 @@ dmat_distribution_df = x$dmat_distribution_df
 avg_hd_summary_table <- dmat_metrics %>% 
     filter(metric == 'avg_hd') %>%
     group_by(group_label) %>%
-    summarize(avg_hd = mean(value),
-              n_avg_hd = mean(value) / seq_length)
+    summarize(avg_avg_hd = mean(value),
+              sd_avg_hd = sd(value),
+              n_avg_hd = mean(value) / seq_length,
+              n_sd_avg_hd = sd(value/seq_length))
+
+sd_hd_summary_table <- dmat_metrics %>% 
+    filter(metric == 'sd_hd') %>%
+    group_by(group_label) %>%
+    summarize(avg_sd_hd = mean(value),
+              sd_sd_hd = sd(value))
 
 names(avg_hd_summary_table) <- c(
   "Label",
-  "Average Pairwise HD.",
-  "Normalized Average Pairwise HD.")
+  "Avg. Avg. Pairwise HD.",
+  "SD of Avg. Pairw. HD.",
+  "Norm. Avg. Avg. Pairwise HD.",
+  "SD of Norm. Avg. Pairw. HD.")
+
+names(sd_hd_summary_table) <- c(
+  "Label",
+  "Avg. of SD of Pairw. HD.",
+  "SD of SD of Pairw. HD.")
 
 kable(avg_hd_summary_table,
   booktabs = TRUE,
   caption = "The average pairwise HD in each group of simulations"
+)
+
+kable(sd_hd_summary_table,
+  booktabs = TRUE,
+  caption = "The Standard Deviation of the pairwise HD in each group of simulations"
 )
 ```
 
@@ -87,6 +106,20 @@ ggplot(dmat_distribution_df, aes(x = x, y = y, group = uniq_id, color = group_la
   guides(color = guide_legend(title = "Group Label")) +
   ylab("Density") +
   xlab("Pairwise Hamming Distance")
+```
+
+```{r density-plots-sep, results = 'asis'}
+for (i in unique(dmat_distribution_df$label)){
+  print(i)
+  print(
+    ggplot(subset(dmat_distribution_df, label == i), 
+           aes(x = x, y = y, group = uniq_id, color = group_label)) +
+      geom_smooth(se = FALSE, size = 0.75, span = 0.1, method = 'loess') + 
+      guides(color = guide_legend(title = "Group Label")) +
+      ylab("Density") +
+      xlab("Pairwise Hamming Distance")
+  )
+}
 ```
 
 ```{r deciles, results = 'asis'}
@@ -112,6 +145,21 @@ kable(
 ```
 
 ```{r arguments-table, results = 'asis'}
+#i <- 1
+#for (i in 1:length(arg_collection)){
+#  c_arg_set <- arg_collection[[i]]
+#  c_arg_tab <- sim_pop_arg_formatter(c_arg_set)
+#
+#}
+#
+#for (label in levels(dmat_metrics$label)){
+#  for (samp in levels(dmat_metrics$sampling)){
+#
+#  }
+#}
+
+
+
 #arg_tab <- NULL
 #for (c_group_id in names(arg_sets)){
 #  c_arg_tab <- sim_pop_arg_formatter(arg_sets[[c_group_id]]$args)

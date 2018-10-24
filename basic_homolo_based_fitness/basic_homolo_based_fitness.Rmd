@@ -93,8 +93,9 @@ Here are many next steps to explore:
 
 ```{r, include=FALSE}
 chunk_seed <- 2000000
-n_gen <- 10
-args1 <- list(
+n_gen <- 17
+arg_set1 <- list(
+  label = 'A',
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
   n_gen = n_gen,
@@ -103,10 +104,12 @@ args1 <- list(
                  args = list(mu = 1/250)),
   fitness_evaluator = list(fun = "fitness_evaluator_homology_fun",
                            args = list(comparators = paste(rep('XXXXA', 100), collapse = ''),
-                                       h2fs = "h2fs_univariate_linear_fun"))
+                                       h2fs = "h2fs_univariate_linear_fun")),
+  required_fitness = 0.02
 )
 
-args2 <- list(
+arg_set2 <- list(
+  label = 'C',
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
   n_gen = n_gen,
@@ -115,69 +118,16 @@ args2 <- list(
                  args = list(mu = 1/250)),
   fitness_evaluator = list(fun = "fitness_evaluator_homology_fun",
                            args = list(comparators = paste(rep('XXXXC', 100), collapse = ''),
-                                       h2fs = "h2fs_univariate_linear_fun"))
+                                       h2fs = "h2fs_univariate_linear_fun")),
+  required_fitness = 0.97
 )
 
-arg_sets <- list(`1` = list(group_label = "restricted_A",
-                            group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and required fitness of 0.03 vs A",
-                            args = args1),
-                 `2` = list(group_label = "unrestricted_A",
-                            group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and a random sample to match the size of the fitness restricted version vs A",
-                            args = args1),
-                 `3` = list(group_label = "restricted_C",
-                            group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and required fitness of 0.03 vs C",
-                            args = args2),
-                 `4` = list(group_label = "unrestricted_C",
-                            group_desc = "with r0 = 2, 10 generations and mu equal to 1/500 and a random sample to match the size of the fitness restricted version vs C",
-                            args = args2))
+arg_collection <- list(arg_set1, arg_set2)
 
-group_membership <- data.frame(sim_id = numeric(0), 
-                               group_id = integer(0))
-
-all_sim_results <- data.frame(sim_id = numeric(0), 
-                              group_label = character(0), 
-                              gen_num = numeric(0), 
-                              id = numeric(0), 
-                              parent_id = numeric(0), 
-                              the_seq = character(0), 
-                              n_mut = numeric(0), 
-                              recomb_pos = numeric(0), 
-                              recomb_replaced = character(0), 
-                              recomb_partner = numeric(0), 
-                              recomb_muts = numeric(0), 
-                              fitness_score = numeric(0))
-
-sim_result <- sim_fit_unfit_pairs(args = arg_sets[[1]]$args, 
-                                  n_of_pairs = 10,
-                                  group1_label = arg_sets[[1]]$group_label,
-                                  group2_label = arg_sets[[2]]$group_label,
-                                  group1_id = 1, group2_id = 2,
-                                  all_sim_results = all_sim_results,
-                                  group_membership = group_membership,
-                                  seed_offset = report_seed + chunk_seed,
-                                  req_fitness = 0.02, 
-                                  n_perfect_fit = 255,
-                                  cacheName = 'basic_homolo',
-                                  verbose = TRUE)
-
-all_sim_results <- sim_result$all_sim_results
-group_membership <- sim_result$group_membership
-
-sim_result <- sim_fit_unfit_pairs(args = arg_sets[[3]]$args, 
-                                  n_of_pairs = 10,
-                                  group1_label = arg_sets[[3]]$group_label,
-                                  group2_label = arg_sets[[4]]$group_label,
-                                  group1_id = 3, group2_id = 4,
-                                  all_sim_results = all_sim_results,
-                                  group_membership = group_membership,
-                                  seed_offset = report_seed + chunk_seed,
-                                  req_fitness = 0.97, 
-                                  n_perfect_fit = 255,
-                                  cacheName = 'basic_homolo',
-                                  verbose = TRUE)
-
-all_sim_results <- sim_result$all_sim_results
-group_membership <- sim_result$group_membership
+many_pops <- sim_proc_many_pops(arg_collection, n_sims=100, 
+                                fitness_processing = 'fit_unfit_pair', 
+                                n_gen_with_perfect_fitness = 5,
+                                max_dmat_size = 5000, verbose = TRUE)
 ```
 
 # Simulation Results
@@ -193,3 +143,4 @@ print(proc.time() - report_start_time)
 ```{r, eval = FALSE, include = FALSE}
 save.image('/tmp/basic_homolo.RData')
 ```
+
