@@ -182,6 +182,7 @@ arg_set3 <- list(
 
 many_pops <- sim_proc_many_pops(list(arg_set3), output_genealogy = 'full', output_dmat = TRUE,
                                 n_sims = 10)
+c_arg_set <- arg_set3
 x <- rbindlist(many_pops$all_genealogies)
 all_sim_results <- data.frame(x)
 
