@@ -1,0 +1,284 @@
+The following graphs and tables present a summary of a set of simulations that can be divided into `r length(unique(group_membership$group_id))` groups. 
+
+
+```{r, eval = FALSE}
+#sim_result <- sim_fit_unfit_pairs(args = arg_sets[[1]]$args, 
+#                                  n_of_pairs = 50,
+#                                  group1_label = arg_sets[[1]]$group_label,
+#                                  group2_label = arg_sets[[2]]$group_label,
+#                                  group1_id = 1, group2_id = 2,
+#                                  all_sim_results = all_sim_results,
+#                                  group_membership = group_membership,
+#                                  seed_offset = report_seed + chunk_seed,
+#                                  req_fitness = 0.02, 
+#                                  n_perfect_fit = 255,
+#                                  cacheName = 'basic_homolo',
+#                                  verbose = TRUE)
+#
+#all_sim_results <- sim_result$all_sim_results
+#group_membership <- sim_result$group_membership
+
+# setup
+dmat_metrics <- data.frame(sim_id = numeric(0),
+                           group_label = character(0),
+                           metric = character(0),
+                           value = numeric(0))
+
+dmat_distributions <- list()
+
+dmat_calc_times <- data.frame(sim_id = numeric(0),
+                              calc_time = numeric(0))
+
+sim_and_process_a_pair <- function(args, n_of_pairs, group1_label,
+                                   group2_label, group1_id, group2_id,
+                                   seed_offset, req_fitness, n_perfect_fit,
+                                   cacheName, 
+                                   dmat_metrics,
+                                   dmat_distributions,
+                                   dmat_calc_times,
+                                   verbose = TRUE){
+
+  group_membership <- data.frame(sim_id = numeric(0), 
+                                 group_id = integer(0))
+  
+  all_sim_results <- data.frame(sim_id = numeric(0), 
+                                group_label = character(0), 
+                                gen_num = numeric(0), 
+                                id = numeric(0), 
+                                parent_id = numeric(0), 
+                                the_seq = character(0), 
+                                n_mut = numeric(0), 
+                                recomb_pos = numeric(0), 
+                                recomb_replaced = character(0), 
+                                recomb_partner = numeric(0), 
+                                recomb_muts = numeric(0), 
+                                fitness_score = numeric(0))
+
+  x <- sim_fit_unfit_pairs(args = args,
+                           n_of_pairs = 1,
+                           group1_label = group1_label,
+                           group2_label = group2_label,
+                           group1_id = group1_id,
+                           group2_id = group2_id,
+                           all_sim_results = all_sim_results,
+                           group_membership = group_membership,
+                           seed_offset = seed_offset,
+                           req_fitness = req_fitness,
+                           n_perfect_fit = n_perfect_fit,
+                           cacheName = cacheName,
+                           verbose = TRUE)
+  all_sim_results <- x$all_sim_results
+  group_membership <- x$group_membership
+}
+
+
+```
+
+
+
+
+```{r dmat-computation, include = FALSE}
+chunk_seed <- 1000000
+seq_length <- nchar(all_sim_results[1,'the_seq'])
+
+last_gens <-
+all_sim_results %>%
+  filter(gen_num == max(gen_num))
+
+dmat_metrics <- data.frame(sim_id = numeric(0),
+                           group_label = character(0),
+                           metric = character(0),
+                           value = numeric(0))
+
+dmat_distributions <- list()
+
+dmat_calc_times <- data.frame(sim_id = numeric(0),
+                              calc_time = numeric(0))
+
+#dd.f <- NULL
+down_selection_for_dmats <- NULL
+c_sim_id <- unique(all_sim_results$sim_id)[1]
+for (c_sim_id in unique(all_sim_results$sim_id)){
+  dmat_start_time <- proc.time()
+  set.seed(report_seed + chunk_seed + c_sim_id)
+  print(c_sim_id)
+  c_group_label <- unique(last_gens$group_label[last_gens$sim_id == c_sim_id])
+  stopifnot(length(c_group_label) == 1)
+  c_gen <- last_gens$the_seq[last_gens$sim_id == c_sim_id]
+  if (length(c_gen) > 10000){
+    ds_gen <- c_gen[sample(1:length(c_gen), 10000)]
+  } else {
+    ds_gen <- c_gen
+  }
+  down_selection_for_dmats <- rbind(down_selection_for_dmats,
+    data.frame(sim_id = c_sim_id,
+               group_label = c_group_label,
+               true_gen_size = length(c_gen),
+               seqs_used_for_dmat = length(ds_gen)))
+  
+  dmat <- memoiseCache(fun = 'stringdistmatrix',
+                       args = list(a = ds_gen,
+                                   method = 'hamming'),
+                       cacheName = 'dmat')
+
+  avg_hd <- mean(dmat)
+  deciles <- quantile(dmat, (0:10)/10)
+  dmat_metrics <- rbind(dmat_metrics,
+    data.frame(
+      sim_id = c_sim_id,
+      group_label = c_group_label,
+      metric = c("avg_hd", gsub("^", "p", gsub("\\.", "_", gsub("\\%", "", names(deciles))))),
+      value = c(avg_hd, deciles)))
+
+  dmat_distributions[[as.character(c_sim_id)]] <- density(dmat)
+#  dvec <- as.numeric(dmat)/min(nchar(last_gens$the_seq))
+#  dd.f <- rbind(dd.f,
+#    data.frame(sim_id = c_sim_id,
+#               group_label = c_group_label,
+#               dists = dvec)
+#  )
+  dmat_calc_times <- rbind(dmat_calc_times,
+    data.frame(sim_id = c_sim_id,
+               calc_time = as.numeric((proc.time() - dmat_start_time)['elapsed']))
+    )
+}
+```
+
+```{r down-selection-tables, results = 'asis'}
+down_selection_for_dmats_for_kable <- down_selection_for_dmats
+
+names(down_selection_for_dmats_for_kable) <- c(
+  "Sim. ID",
+  "Group Label",
+  "Number of sequences in simulated dataset",
+  "Number of sequences included in distance matrix"
+  )
+
+kable(down_selection_for_dmats_for_kable,
+      booktabs = TRUE,
+      caption = "Number of sequences used to compute distance matrices")
+```
+
+
+```{r avg-hd-summary-table, results = 'asis'}
+avg_hd_summary_table <- dmat_metrics %>% 
+    filter(metric == 'avg_hd') %>%
+    group_by(group_label) %>%
+    summarize(avg_hd = mean(value),
+              n_avg_hd = mean(value) / seq_length)
+
+names(avg_hd_summary_table) <- c(
+  "Group Label",
+  "Average Pairwise HD.",
+  "Normalized Average Pairwise HD.")
+
+kable(avg_hd_summary_table,
+  booktabs = TRUE,
+  caption = "The average pairwise HD in each group of simulations"
+)
+```
+
+```{r density-plots, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
+#  dmat_distributions[[c_sim_id]] <- density(dmat)
+dmat_distributions_df <- NULL
+i <- 1
+for (j in names(dmat_distributions)){
+  i <- as.numeric(j)
+  group_id <- group_membership %>% filter(sim_id == i) %>% select(group_id)
+  group_id <- group_id[1,1]
+  group_label <- arg_sets[[group_id]]$group_label
+  dmat_distributions_df <- rbind(dmat_distributions_df,
+    data.frame(sim_id = i,
+               group_label = group_label,
+               x = dmat_distributions[[i]]$x,
+               y = dmat_distributions[[i]]$y)
+    )
+}
+
+ggplot(dmat_distributions_df, aes(x = x, y = y, group = sim_id, color = group_label)) +
+  geom_smooth(se = FALSE, size = 0.75, span = 0.1, method = 'loess') + 
+  guides(color = guide_legend(title = "Group Label")) +
+  ylab("Density") +
+  xlab("Pairwise Hamming Distance")
+```
+
+```{r deciles, results = 'asis'}
+deciles <-
+dmat_metrics %>% 
+  filter(grepl("^p", metric)) %>%
+  group_by(group_label, metric) %>%
+  summarize(
+    value = mean(value)
+   )
+
+all_deciles <-
+spread(deciles, metric, value)
+
+names(all_deciles) <-
+c("Group Label", paste((0:10)*10, "%", sep = ""))
+
+kable(
+  all_deciles,
+  booktabs = TRUE,
+  caption = "The deciles of the pairwise HDs"
+)
+```
+
+```{r arguments-table, results = 'asis'}
+arg_tab <- NULL
+for (c_group_id in names(arg_sets)){
+  c_arg_tab <- sim_pop_arg_formatter(arg_sets[[c_group_id]]$args)
+  original_cols <- names(c_arg_tab)
+  c_arg_tab$group_label <- arg_sets[[c_group_id]]$group_label
+  c_arg_tab <- c_arg_tab %>% select(group_label, original_cols)
+  if (is.null(arg_tab)){
+    arg_tab <- c_arg_tab
+  } else {
+    arg_tab <- rbind(arg_tab, c_arg_tab)
+  }
+}
+for (i in 1:nrow(arg_tab)){
+  if (nchar(arg_tab$Value[i]) > 50){
+    arg_tab$Value[i] <- paste(substr(arg_tab$Value[i], 1, 50), '...', sep = '')
+  }
+}
+
+names(arg_tab)[1] <- "Group Label"
+
+kable(
+  arg_tab,
+  booktabs = TRUE,
+  caption = "Configuration with which sim_pop was called for the group for each group of simulations."
+)
+```
+
+```{r generation-summary-table, results = 'asis'}
+all_sum_tabs <- NULL
+for (c_group_label in unique(all_sim_results$group_label)){
+  g_sum_tab <- genealogy_summary_table(all_sim_results[all_sim_results$group_label == c_group_label, c(-1,-2)])
+  original_cols <- names(g_sum_tab)
+  g_sum_tab$group_label <- c_group_label
+  g_sum_tab <- g_sum_tab %>% select(group_label, original_cols)
+  if (is.null(all_sum_tabs)){
+    all_sum_tabs <- g_sum_tab
+  } else {
+    all_sum_tabs <- rbind(all_sum_tabs, g_sum_tab)
+  }
+}
+
+names(all_sum_tabs)[1] <- "Group Label"
+
+kable(
+  all_sum_tabs,
+  booktabs = TRUE,
+  caption = "Individuals per generation and the average distance to the original ancestor for the generation for all simulations grouped by simulation group."
+)
+```
+
+```{r dmat-calc-time-table, results = 'asis'}
+kable(dmat_calc_times,
+      booktabs = TRUE,
+      caption = "Computation time of the distance matrices"
+      )
+```
+
