@@ -1,72 +1,5 @@
 The following graphs and tables present a summary of a set of simulations that can be divided into `r 'fix me'` groups. 
 
-```{r dmat-computation, include = FALSE}
-#chunk_seed <- 1000000
-#seq_length <- nchar(all_sim_results[1,'the_seq'])
-#
-#last_gens <-
-#all_sim_results %>%
-#  filter(gen_num == max(gen_num))
-#
-#dmat_metrics <- data.frame(sim_id = numeric(0),
-#                           group_label = character(0),
-#                           metric = character(0),
-#                           value = numeric(0))
-#
-#dmat_distributions <- list()
-#
-#dmat_calc_times <- data.frame(sim_id = numeric(0),
-#                              calc_time = numeric(0))
-#
-##dd.f <- NULL
-#down_selection_for_dmats <- NULL
-#c_sim_id <- unique(all_sim_results$sim_id)[1]
-#for (c_sim_id in unique(all_sim_results$sim_id)){
-#  dmat_start_time <- proc.time()
-#  set.seed(report_seed + chunk_seed + c_sim_id)
-#  print(c_sim_id)
-#  c_group_label <- unique(last_gens$group_label[last_gens$sim_id == c_sim_id])
-#  stopifnot(length(c_group_label) == 1)
-#  c_gen <- last_gens$the_seq[last_gens$sim_id == c_sim_id]
-#  if (length(c_gen) > 10000){
-#    ds_gen <- c_gen[sample(1:length(c_gen), 10000)]
-#  } else {
-#    ds_gen <- c_gen
-#  }
-#  down_selection_for_dmats <- rbind(down_selection_for_dmats,
-#    data.frame(sim_id = c_sim_id,
-#               group_label = c_group_label,
-#               true_gen_size = length(c_gen),
-#               seqs_used_for_dmat = length(ds_gen)))
-#  
-#  dmat <- memoiseCache(fun = 'stringdistmatrix',
-#                       args = list(a = ds_gen,
-#                                   method = 'hamming'),
-#                       cacheName = 'dmat')
-#
-#  avg_hd <- mean(dmat)
-#  deciles <- quantile(dmat, (0:10)/10)
-#  dmat_metrics <- rbind(dmat_metrics,
-#    data.frame(
-#      sim_id = c_sim_id,
-#      group_label = c_group_label,
-#      metric = c("avg_hd", gsub("^", "p", gsub("\\.", "_", gsub("\\%", "", names(deciles))))),
-#      value = c(avg_hd, deciles)))
-#
-#  dmat_distributions[[as.character(c_sim_id)]] <- density(dmat)
-##  dvec <- as.numeric(dmat)/min(nchar(last_gens$the_seq))
-##  dd.f <- rbind(dd.f,
-##    data.frame(sim_id = c_sim_id,
-##               group_label = c_group_label,
-##               dists = dvec)
-##  )
-#  dmat_calc_times <- rbind(dmat_calc_times,
-#    data.frame(sim_id = c_sim_id,
-#               calc_time = as.numeric((proc.time() - dmat_start_time)['elapsed']))
-#    )
-#}
-```
-
 ```{r down-selection-tables, results = 'asis'}
 #down_selection_for_dmats_for_kable <- down_selection_for_dmats
 #
@@ -94,9 +27,6 @@ dcollection_to_df <- function(dcollection){
                              value = numeric(0))
 
   dmat_distribution_df <- NULL
-
-#  dcollection <- many_pops$dcollection
-#  i <- 1
 
   for (i in 1:length(dcollection)){
     c_dsum <- dcollection[[i]]
@@ -130,24 +60,6 @@ dcollection_to_df <- function(dcollection){
               dmat_distribution_df = dmat_distribution_df))
 }
 
-##  dmat_distributions[[c_sim_id]] <- density(dmat)
-#dmat_distributions_df <- NULL
-#i <- 1
-#for (j in names(dmat_distributions)){
-#  i <- as.numeric(j)
-#  group_id <- group_membership %>% filter(sim_id == i) %>% select(group_id)
-#  group_id <- group_id[1,1]
-#  group_label <- arg_sets[[group_id]]$group_label
-#  dmat_distributions_df <- rbind(dmat_distributions_df,
-#    data.frame(sim_id = i,
-#               group_label = group_label,
-#               x = dmat_distributions[[i]]$x,
-#               y = dmat_distributions[[i]]$y)
-#    )
-#}
-#
-#ggplot(dmat_distributions_df, aes(x = x, y = y, group = sim_id, color = group_label)) +
-
 x <- dcollection_to_df(many_pops$dcollection)
 dmat_metrics <- x$dmat_metrics
 dmat_distribution_df = x$dmat_distribution_df
@@ -170,22 +82,6 @@ kable(avg_hd_summary_table,
 ```
 
 ```{r density-plots, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
-##  dmat_distributions[[c_sim_id]] <- density(dmat)
-#dmat_distributions_df <- NULL
-#i <- 1
-#for (j in names(dmat_distributions)){
-#  i <- as.numeric(j)
-#  group_id <- group_membership %>% filter(sim_id == i) %>% select(group_id)
-#  group_id <- group_id[1,1]
-#  group_label <- arg_sets[[group_id]]$group_label
-#  dmat_distributions_df <- rbind(dmat_distributions_df,
-#    data.frame(sim_id = i,
-#               group_label = group_label,
-#               x = dmat_distributions[[i]]$x,
-#               y = dmat_distributions[[i]]$y)
-#    )
-#}
-#
 ggplot(dmat_distribution_df, aes(x = x, y = y, group = uniq_id, color = group_label)) +
   geom_smooth(se = FALSE, size = 0.75, span = 0.1, method = 'loess') + 
   guides(color = guide_legend(title = "Group Label")) +
@@ -194,25 +90,25 @@ ggplot(dmat_distribution_df, aes(x = x, y = y, group = uniq_id, color = group_la
 ```
 
 ```{r deciles, results = 'asis'}
-#deciles <-
-#dmat_metrics %>% 
-#  filter(grepl("^p", metric)) %>%
-#  group_by(group_label, metric) %>%
-#  summarize(
-#    value = mean(value)
-#   )
-#
-#all_deciles <-
-#spread(deciles, metric, value)
-#
-#names(all_deciles) <-
-#c("Group Label", paste((0:10)*10, "%", sep = ""))
-#
-#kable(
-#  all_deciles,
-#  booktabs = TRUE,
-#  caption = "The deciles of the pairwise HDs"
-#)
+deciles <-
+dmat_metrics %>% 
+  filter(grepl("%$", metric)) %>%
+  group_by(group_label, metric) %>%
+  summarize(
+    value = mean(value)
+   )
+
+ordered_perc_labels <- paste((0:10)*10, "%", sep = "")
+deciles$metric <- factor(deciles$metric, ordered_perc_labels)
+
+all_deciles <-
+spread(deciles, metric, value)
+
+kable(
+  all_deciles,
+  booktabs = TRUE,
+  caption = "The deciles of the pairwise HDs"
+)
 ```
 
 ```{r arguments-table, results = 'asis'}
