@@ -24,10 +24,26 @@ source('../utilities/reporting_utilities.R')
 
 # Simple first simulation
 
+In early versions of `yasss`, `sim_pop` was the main simulation function. It
+has been wrapped by the `sim_proc_many_pops` function in later versions. This
+report was originally written for use with the `sim_pop` function. I have just
+updated the code blocks to use `sim_proc_many_pops`. So instead of manually
+stepping through the processing steps in this document, it now just retrieves
+the values from the return value of `sim_proc_many_pops` and presents the
+findings. Thus, this report can be seen as partial documentation of the
+internals of `sim_proc_many_pops`. The writeup in this report was only
+annotated to indicate where it is not really accurate anymore. Such
+annotations are indicated by **NEW:**.
+
 A first simulation to demonstrate the process and the measuring tools. The
 following table shows the configuration that was used to call `sim_pop` from
 the `yasss` package. A high level summary of the entire genealogy is provided
-in the second table.
+in the second table. **NEW:** Such a configuration for a single simulation is
+stored in an `arg_set`, and the results of `sim_pop` are extracted from a
+`sim_proc_many_pops` return value by ensuring that `sim_proc_many_pops` is
+called with the option `output_genealogy = 'full'` and extracting the
+sub-elements of the `all_genealogies` element of `sim_proc_many_pops` return
+value.
 
 ```{r sim-pop-config, results = 'asis'}
 arg_set1 <- list(
@@ -66,15 +82,20 @@ kable(
 )
 ```
 
-Our primary interested is restricted to the final generation which corresponds to the generation that we will obtain from sequencing a sample.
-Hence we need to capture some of the key information about the last generation and figure out ways to compare it to other simulations.
-Three key ways to look at this data is:
+Our primary interested is restricted to the final generation which corresponds
+to the generation that we will obtain from sequencing a sample.  Hence we need
+to capture some of the key information about the last generation and figure
+out ways to compare it to other simulations.  Three key ways to look at this
+data is:
 
 - The average of all the pairwise distances between the sequences.
 - A density plot of the distribution of all the pairwise distances.
-- The deciles / quartiles / some other set of percentiles of the distribution.
+- The percentiles of the distribution.
 
-For now we will present all three. Once we have some solid results to argue about we can look at dropping some of these metrics.
+**NEW:** The distance matrices can be output by `sim_proc_many_pops` by
+setting the `output_dmat = TRUE` option. The summaries of the distance
+matrices can be extracted from the individual `dsum`s stored in the
+`dcollection` element of the return value from `sim_proc_many_pops`.
 
 ```{r, include = FALSE}
 last_gen <-
@@ -83,9 +104,29 @@ x %>%
 
 dmat <- many_pops$all_dmats[[1]]$dmat
 avg_hd <- mean(dmat)
+stopifnot(avg_hd == many_pops$dcollection[[1]]$avg_hd)
 dvec <- as.numeric(dmat)/min(nchar(last_gen$the_seq))
 dd.f <- data.frame(dists = dvec)
 ```
 
-The average pairwise HD is **`r round(avg_hd, 2)`** and normalized by the length of the sequence it is **`r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`**. The distribution is shown in the figure below and the deciles are listed in a table below the figure.
+The average pairwise HD is **`r round(avg_hd, 2)`** and normalized by the length of the sequence it is **`r round(avg_hd/min(nchar(last_gen$the_seq)), 3)`**. The distribution is shown in the figure below and the deciles are listed in a table below the figure. Note that the bandwidth has to be tweaked because mutations are rare events thus the distribution is fairly discrete.
+
+```{r first-density-plot, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
+n_uniq <- nrow(unique(dd.f))
+range_length <- max(dd.f$dists) - min(dd.f$dists)
+bw <- range_length / min((n_uniq*1.75), 200)
+ggplot(dd.f, aes(x = dists)) + geom_density(bw = bw)
+```
+
+```{r first-deciles, results = 'asis'}
+deciles <-
+data.frame(Decile = paste((0:10)*10, "%", sep = ''),
+           Value = quantile(dvec, (0:10)/10))
+row.names(deciles) <- NULL
+kable(
+  deciles,
+  booktabs = TRUE,
+  caption = "The deciles of the pairwise HDs"
+)
+```
 
