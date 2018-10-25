@@ -17,8 +17,6 @@ knitr::opts_chunk$set(echo = FALSE,
 options(scipen = 99)
 setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/builds/basic_homolo_based_fitness/simpleCache")
 source('../utilities/reporting_utilities.R')
-report_seed <- 3000
-set.seed(report_seed)
 
 report_start_time <- proc.time()
 ```
@@ -92,7 +90,6 @@ Here are many next steps to explore:
 7) Set up a readme file for the project that links to the report files (and store the primary results in the repo itself also) - just make the results more reachable.
 
 ```{r, include=FALSE}
-chunk_seed <- 2000000
 n_gen <- 17
 arg_set1 <- list(
   label = 'A',
@@ -124,7 +121,7 @@ arg_set2 <- list(
 
 arg_collection <- list(arg_set1, arg_set2)
 
-many_pops <- sim_proc_many_pops(arg_collection, n_sims=100, 
+many_pops <- sim_proc_many_pops(arg_collection, n_sims=200, 
                                 fitness_processing = 'fit_unfit_pair', 
                                 n_gen_with_perfect_fitness = 5,
                                 max_dmat_size = 5000, verbose = TRUE)
@@ -140,7 +137,7 @@ many_pops <- sim_proc_many_pops(arg_collection, n_sims=100,
 print(proc.time() - report_start_time)
 ```
 
-```{r, eval = FALSE, include = FALSE}
+```{r, eval = TRUE, include = FALSE}
 save.image('/tmp/basic_homolo.RData')
 ```
 

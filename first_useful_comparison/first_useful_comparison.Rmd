@@ -17,8 +17,6 @@ knitr::opts_chunk$set(echo = FALSE)
 #                      base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/figures")
 options(scipen = 99)
 setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/builds/first_useful_comparison/simpleCache")
-report_seed <- 1000
-set.seed(report_seed)
 
 report_start_time <- proc.time()
 ```
@@ -49,7 +47,6 @@ Next select that same number of individuals from the last generation completely 
 Repeat until 10 simulations in each dataset.
 
 ```{r, include=FALSE}
-chunk_seed <- 2000000
 
 arg_set1 <- list(
   label = 'A',
