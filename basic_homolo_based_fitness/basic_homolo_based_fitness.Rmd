@@ -83,14 +83,14 @@ Obviously this is still simplifications. Ideally, this will be based on amino ac
 Here are many next steps to explore:
 1) Run it for more generations
 2) Run it with a larger R0 (more offspring per individual)
-3) Tweak the fitness parameters / implement alternative fitness functions (maybe add a little mroe noise into the process?)
+3) Tweak the fitness parameters / implement alternative fitness functions (maybe add a little more noise into the process?)
 4) Pick more realisitc epitopes? But do we really care about this? We just want to see the effect of any immune pressure?
 5) Play more with the templates used to generate the reports - I just picked the first one from a textbook and it defintely is not the optimal one
 6) Carefully state the hypotheses we want to test (I think this should be the first next step)
 7) Set up a readme file for the project that links to the report files (and store the primary results in the repo itself also) - just make the results more reachable.
 
 ```{r, include=FALSE}
-n_gen <- 17
+n_gen <- 12
 arg_set1 <- list(
   label = 'A',
   ancestors = paste(rep("A", 500), collapse = ''),
@@ -121,10 +121,10 @@ arg_set2 <- list(
 
 arg_collection <- list(arg_set1, arg_set2)
 
-many_pops <- sim_proc_many_pops(arg_collection, n_sims=200, 
+many_pops <- sim_proc_many_pops(arg_collection, n_sims=5, 
                                 fitness_processing = 'fit_unfit_pair', 
                                 n_gen_with_perfect_fitness = 5,
-                                max_dmat_size = 5000, verbose = TRUE)
+                                max_dmat_size = 500, verbose = TRUE)
 ```
 
 # Simulation Results
