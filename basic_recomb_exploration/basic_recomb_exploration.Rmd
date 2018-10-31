@@ -1,0 +1,110 @@
+---
+title: Basic recomb exploration
+output: 
+  html_document:
+    toc: false
+    theme: cerulean
+---
+
+```{r, include=FALSE}
+library(yasss)
+library(knitr)
+library(rmarkdown)
+library(tidyr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/basic_recomb_exploration/figures")
+options(scipen = 99)
+setCacheDir("/home/phillipl/projects/quasispecies_sim_reports/builds/basic_recomb_exploration/simpleCache")
+source('../utilities/reporting_utilities.R')
+
+report_start_time <- proc.time()
+```
+
+```{r debugging-chunk, eval = FALSE}
+getwd()
+yasss:::restart_r()
+setwd('/home/phillipl/projects/quasispecies_sim_reports/repo/quasispecies_sim_reports/basic_recomb_exploration')
+library(profvis)
+```
+
+# Description
+
+## Data generation
+
+A first basic report exploring the effects of recombination and selective pressure where the epitope do not match the ancestor.
+
+The ancestral sequence is specified as a sequence of only As.
+
+A (very unrealistic) epitope is then specified as a sequence in which every 5th character is a C.
+
+The fitness is based on the number of matches between the epitope and the sequence. A fitness of zero is assigned if the sequence perfectly matches the epitope and a fitness of one is assigned if there is no match at any point. For sequences that does neither perfectly match the epitope nor perfectly mismatch the epitope, fitness is assigned linearly beased on the number of matches.
+
+Using this epitope, 10 pairs of datasets were generated.
+
+First the entire quasispecies was simulated without taking fitness into account. Then, a copy is made of this genealogy and all individuals across all generations (excluding the first x generations) that has a fitness score lower than a cutoff were identified. These unfit individuals and ALL their decendents were then removed from the genealogy. The remaining individuals in the last generation of this dataset were then selected as a dataset.
+
+To construct the partner of the dataset described above, a number of individuals are randomly selected from the last generation independent of any fitness considerations so that the same number of sequences are in each dataset.
+
+## C-based epitope
+
+Required fitness is 0.97 to ensure some pressure
+
+# Interpretation
+
+TODO
+
+```{r, include=FALSE}
+n_gen <- 12
+arg_set1 <- list(
+  label = 'A',
+  ancestors = paste(rep("A", 500), collapse = ''),
+  r0 = 2,
+  n_gen = n_gen,
+  n_pop = Inf,
+  mutator = list(fun = "mutator_uniform_fun",
+                 args = list(mu = 1/250)),
+  fitness_evaluator = list(fun = "fitness_evaluator_homology_fun",
+                           args = list(comparators = paste(rep('XXXXC', 100), collapse = ''),
+                                       h2fs = "h2fs_univariate_linear_fun")),
+  required_fitness = 0.97,
+  ps_rate = 0.05
+)
+
+arg_set2 <- list(
+  label = 'C',
+  ancestors = paste(rep("A", 500), collapse = ''),
+  r0 = 2,
+  n_gen = n_gen,
+  n_pop = Inf,
+  mutator = list(fun = "mutator_uniform_fun",
+                 args = list(mu = 1/250)),
+  fitness_evaluator = list(fun = "fitness_evaluator_homology_fun",
+                           args = list(comparators = paste(rep('XXXXC', 100), collapse = ''),
+                                       h2fs = "h2fs_univariate_linear_fun")),
+  required_fitness = 0.97,
+  ps_rate = 0.05
+)
+
+arg_collection <- list(arg_set1, arg_set2)
+
+many_pops <- sim_proc_many_pops(arg_collection, n_sims=5, 
+                                fitness_processing = 'fit_unfit_pair', 
+                                n_gen_with_perfect_fitness = 5,
+                                max_dmat_size = 500, verbose = TRUE)
+```
+
+# Simulation Results
+
+```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
+```
+
+# Total Running Time
+```{r}
+print(proc.time() - report_start_time)
+```
+
+```{r, eval = TRUE, include = FALSE}
+save.image('/tmp/basic_homolo.RData')
+```
+
