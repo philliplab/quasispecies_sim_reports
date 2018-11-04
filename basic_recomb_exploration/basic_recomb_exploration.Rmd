@@ -55,7 +55,7 @@ Required fitness is 0.97 to ensure some pressure
 TODO
 
 ```{r, include=FALSE}
-n_gen <- 12
+n_gen <- 18
 arg_set1 <- list(
   label = 'A',
   ancestors = paste(rep("A", 500), collapse = ''),
@@ -68,7 +68,7 @@ arg_set1 <- list(
                            args = list(comparators = paste(rep('XXXXC', 100), collapse = ''),
                                        h2fs = "h2fs_univariate_linear_fun")),
   required_fitness = 0.97,
-  ps_rate = 0.05
+  ps_rate = 0
 )
 
 arg_set2 <- list(
@@ -88,10 +88,15 @@ arg_set2 <- list(
 
 arg_collection <- list(arg_set1, arg_set2)
 
-many_pops <- sim_proc_many_pops(arg_collection, n_sims=5, 
+many_pops <- sim_proc_many_pops(arg_collection, n_sims=30, 
                                 fitness_processing = 'fit_unfit_pair', 
                                 n_gen_with_perfect_fitness = 5,
-                                max_dmat_size = 500, verbose = TRUE)
+                                max_dmat_size = 5000, verbose = TRUE)
+#many_pops <- sim_proc_many_pops(arg_collection, n_sims=5, 
+#                                fitness_processing = 'fit_unfit_pair', 
+#                                n_gen_with_perfect_fitness = 5,
+#                                max_dmat_size = 500, verbose = TRUE,
+#                                output_genealogy = 'full')
 ```
 
 # Simulation Results
