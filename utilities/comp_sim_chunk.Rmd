@@ -1,4 +1,38 @@
-The following graphs and tables present a summary of a set of simulations that can be divided into `r 'fix me'` groups. 
+The following graphs and tables present a summary of a series of simulations based on `r length(many_pops$arg_collection)` sets of arguments.
+
+Each set of arguments can produce 1 or 2 sets of simulations:
+
+* Either it is just a single simulation each time the argument set is used to
+  produce simulation, or
+* A matched pair is produced each time where one member of the pair had fitness
+  contraints placed on it and the other did not. In most cases, the simulation
+  that was not fitness constrained will be randomly sampled so that it contains
+  the same number of sequences in the last generation as the fitness
+  constrained member of the pair.
+
+The following tables states the full parameter sets that were used to run the
+simulations.
+
+```{r arg-set-tables, results = 'asis'}
+all_dat <- NULL
+for (i in 1:length(many_pops$arg_collection)){
+  all_dat <- rbind(all_dat,
+    data.frame(Argument = paste("Argument Set ", i, sep = ''),
+               Value = '==============================',
+               stringsAsFactors = FALSE))
+  all_dat <- rbind(all_dat,
+    sim_pop_arg_formatter(many_pops$arg_collection[[i]]))
+}
+for (i in 1:nrow(all_dat)){
+  if (nchar(all_dat[i,2]) > 30){
+    all_dat[i,2] <- paste(substr(all_dat[i,2], 1, 28), '...', sep = '')
+  }
+}
+kable(all_dat,
+  booktabs = TRUE,
+  caption = "Details about the argument sets")
+```
+
 
 ```{r down-selection-tables, results = 'asis'}
 #down_selection_for_dmats_for_kable <- down_selection_for_dmats
