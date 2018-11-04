@@ -32,65 +32,101 @@ library(profvis)
 
 ## Data generation
 
-A first basic report exploring the effects of assigning fitness based on homology.
+A first basic report exploring the effects of assigning fitness based on
+homology.
 
 The ancestral sequence is specified as a sequence of only As.
 
-A (very unrealistic) epitope is then specified as a sequence in which every 5th character is an A.
+A (very unrealistic) epitope is then specified as a sequence in which every 5th
+character is an A.
 
-The fitness is based on the number of matches between the epitope and the sequence. A fitness of zero is assigned if the sequence perfectly matches the epitope and a fitness of one is assigned if there is no match at any point. For sequences that does neither perfectly match the epitope nor perfectly mismatch the epitope, fitness is assigned linearly beased on the number of matches.
+The fitness is based on the number of matches between the epitope and the
+sequence. A fitness of zero is assigned if the sequence perfectly matches the
+epitope and a fitness of one is assigned if there is no match at any point. For
+sequences that does neither perfectly match the epitope nor perfectly mismatch
+the epitope, fitness is assigned linearly beased on the number of matches.
 
-Using this epitope, 10 pairs of datasets were generated.
+Using this epitope, multiple pairs of datasets were generated. This number is
+stated below in the tables tracking the number of simulations.
 
-First the entire quasispecies was simulated without taking fitness into account. Then, a copy is made of this genealogy and all individuals across all generations (excluding the first x generations) that has a fitness score lower than a cutoff were identified. These unfit individuals and ALL their decendents were then removed from the genealogy. The remaining individuals in the last generation of this dataset were then selected as a dataset.
+First the entire quasispecies was simulated without taking fitness into
+account. Then, a copy is made of this genealogy and all individuals across all
+generations (excluding the first x generations) that has a fitness score lower
+than a cutoff were identified. These unfit individuals and ALL their decendents
+were then removed from the genealogy. The remaining individuals in the last
+generation of this dataset were then selected as a dataset.
 
-To construct the partner of the dataset described above, a number of individuals are randomly selected from the last generation independent of any fitness considerations so that the same number of sequences are in each dataset.
+To construct the partner of the dataset described above, a number of
+individuals are randomly selected from the last generation independent of any
+fitness considerations so that the same number of sequences are in each
+dataset.
 
-This process was repeated to generate another 10 pairs, but with an epitope based on Cs. In this case instead of letting every 5th letter be an A, we used a C instead.
+This process was repeated to generate the same number of pairs again, but with
+an epitope based on Cs. In this case instead of letting every 5th letter be an
+A, we used a C instead.
 
 ## A-based epitope
 
-Since the ancestor perfectly matches the epitope, this produced a very high level of pressure which can be seen from the small size of the datasets.
+Since the ancestor perfectly matches the epitope, this produced a very high
+level of pressure.
 
-The fitness requirement was set to 0.02. Given that the sequences are of length 500 and every 5th letter was part of the epitope, the epitope contains 100 positions. From the linear nature of the way fitness is computed, the fitness requirement of 0.02 translates to 2 positions. So if the sequence has non-As at more than 2 of the 100 epitope positions, then the sequence will be seen as fit.
+The fitness requirement was set to 0.02. Given that the sequences are of length
+500 and every 5th letter was part of the epitope, the epitope contains 100
+positions. From the linear nature of the way fitness is computed, the fitness
+requirement of 0.02 translates to 2 positions. So if the sequence has non-As at
+more than 2 of the 100 epitope positions, then the sequence will be seen as
+fit.
+
+This mimics a scenario in which the transmitted founder is sensitive to VRC01.
 
 ## C-based epitope
 
-This resulted in no pressure. This is a parameter choice failure. As for the A based epitope, if only three positions contains non-Cs, then the sequence is seen as fit.
+Since the ancestor perfectly mismatches the epitope, this produced a very low
+level of pressure.
 
-Thus the simulations based on the C-based epitope contains no information.
+The fitness requirement was set to 0.97. Given that the sequences are of length
+500 and every 5th letter was part of the epitope, the epitope contains 100
+positions. From the linear nature of the way fitness is computed, the fitness
+requirement of 0.97 translates to 97 positions. So if the sequence has non-As at
+more than 97 of the 100 epitope positions, then the sequence will be seen as
+fit.
+
+This mimics a scenario in which the transmitted founder is resistant to VRC01.
 
 # Interpretation
 
 This report highlights two points:
 
-1. Immune pressure can cut out certain parts of the evolutionary landscape which translates to a reduction in the diversity metric (for the 13 generation version)
-2. This fitness scheme is inadequate.
+##TODO##
 
 # Designs for more a more useful version of fitness
 
-How to modify the fitness computation to be more useful in such a way that it is easy to implement with the current tools?
+How to modify the fitness computation to be more useful in such a way that it
+is easy to implement with the current tools?
 
-What if we add in a more realistic epitope: Just 20 positions with some mismatches to the ancestor.
-Then, together with this we need to constrict the space of viable sequences. To do this, add another 'epitope' consisting of about 200 positions and let a match on this yield a positive fitness. Thus the fitness computation becomes: The percentage of matches to the positive epitope less the percentage of matches to the negative epitope.
+What if we add in a more realistic epitope: Just 20 positions with some
+mismatches to the ancestor.  Then, together with this we need to constrict the
+space of viable sequences. To do this, add another 'epitope' consisting of
+about 200 positions and let a match on this yield a positive fitness. Thus the
+fitness computation becomes: The percentage of matches to the positive epitope
+less the percentage of matches to the negative epitope.
 
-Then, should fitness be interpreted probabilistically? Does a fitness of 50% give you a 50% chance of surviving? Or do we use a cutoff?
+Then, should fitness be interpreted probabilistically? Does a fitness of 50%
+give you a 50% chance of surviving? Or do we use a cutoff?
 
-Obviously this is still simplifications. Ideally, this will be based on amino acids and the 'positivie fitness epitope' will allow different, but not all, letters at certain positions. However, this is a bit more work to implement, so hold off on this for now.
+Obviously this is still simplifications. Ideally, this will be based on amino
+acids and the 'positivie fitness epitope' will allow different, but not all,
+letters at certain positions. However, this is a bit more work to implement, so
+hold off on this for now.
 
-# Other questions
-
-Here are many next steps to explore:
-1) Run it for more generations
-2) Run it with a larger R0 (more offspring per individual)
-3) Tweak the fitness parameters / implement alternative fitness functions (maybe add a little more noise into the process?)
-4) Pick more realisitc epitopes? But do we really care about this? We just want to see the effect of any immune pressure?
-5) Play more with the templates used to generate the reports - I just picked the first one from a textbook and it defintely is not the optimal one
-6) Carefully state the hypotheses we want to test (I think this should be the first next step)
-7) Set up a readme file for the project that links to the report files (and store the primary results in the repo itself also) - just make the results more reachable.
+It will be better to just extract the values from LANL and mimic the real deal.
 
 ```{r, include=FALSE}
 n_gen <- 12
+n_sims <- 5
+n_gen_with_perfect_fitness <- 5
+max_dmat_size <- 500
+
 arg_set1 <- list(
   label = 'A',
   ancestors = paste(rep("A", 500), collapse = ''),
@@ -121,11 +157,22 @@ arg_set2 <- list(
 
 arg_collection <- list(arg_set1, arg_set2)
 
-many_pops <- sim_proc_many_pops(arg_collection, n_sims=5, 
+many_pops <- sim_proc_many_pops(arg_collection, n_sims=n_sims, 
                                 fitness_processing = 'fit_unfit_pair', 
-                                n_gen_with_perfect_fitness = 5,
-                                max_dmat_size = 500, verbose = TRUE)
+                                n_gen_with_perfect_fitness = n_gen_with_perfect_fitness,
+                                max_dmat_size = max_dmat_size, 
+                                verbose = TRUE)
 ```
+
+## Some parameters:
+
+Number of generations: `r n_gen`
+
+Number of pairs simulated for each scenario: `r n_sims`
+
+Number of initial generations with artificially assigned perfect fitness: `r n_gen_with_perfect_fitness`
+
+Maximum number of sequences considered when a distance matrix is produced: `r max_dmat_size`
 
 # Simulation Results
 
