@@ -54,6 +54,16 @@ ggplot(down_selection, aes(x = output_seqs, color = label, fill = label)) +
 
 ### Summary tables of average pairwise distances
 
+Keeping track of the averages is a little tricky because there are two levels of averaging:
+
+* The averaging of the individual pairwise distances of a single distance matrix. **(Avg. Pairw. HD)**
+* The averaging of the already averaged pairwise distances when considering multiple simulations. **(Avg. Avg. Pairw. HD)** and **(SD. Avg. Pairw. HD)**
+
+This also introduces two different levels at which standard deviations can be computed:
+
+* The standard deviation of the pairwise distances in a single distance matrix. **(SD. Pairw. HD)**
+* The standard deviation of the already averaged pairwise distances when considering multiple simulations. **(SD. Avg. Pairw. HD)** and **(SD. SD. Pairw. HD)**
+
 ```{r avg-hd-summary-table, results = 'asis'}
 seq_length <- nchar(many_pops$arg_collection[[1]]$ancestor[1])
 
@@ -77,9 +87,9 @@ sd_hd_summary_table <- dmat_metrics %>%
 
 names(avg_hd_summary_table) <- c(
   "Label",
-  "Avg. Avg. Pairwise HD.",
+  "Avg. Avg. Pairw. HD.",
   "SD of Avg. Pairw. HD.",
-  "Norm. Avg. Avg. Pairwise HD.",
+  "Norm. Avg. Avg. Pairw. HD.",
   "SD of Norm. Avg. Pairw. HD.")
 
 names(sd_hd_summary_table) <- c(
@@ -94,7 +104,7 @@ kable(avg_hd_summary_table,
 
 kable(sd_hd_summary_table,
   booktabs = TRUE,
-  caption = "The Standard Deviation of the pairwise HD in each group of simulations"
+  caption = "The standard deviation of the pairwise HD in each group of simulations"
 )
 ```
 
