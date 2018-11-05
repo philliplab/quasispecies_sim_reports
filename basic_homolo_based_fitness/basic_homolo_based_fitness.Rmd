@@ -125,7 +125,7 @@ It will be better to just extract the values from LANL and mimic the real deal.
 n_gen <- 12
 n_sims <- 20
 n_gen_with_perfect_fitness <- 5
-max_dmat_size <- 500
+max_dmat_size <- 200
 
 arg_set1 <- list(
   label = 'A',
