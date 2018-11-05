@@ -10,6 +10,8 @@ Each set of arguments can produce 1 or 2 sets of simulations:
   the same number of sequences in the last generation as the fitness
   constrained member of the pair.
 
+### Argument Sets
+
 The following tables states the full parameter sets that were used to run the
 simulations.
 
@@ -33,6 +35,7 @@ kable(all_dat,
   caption = "Details about the argument sets")
 ```
 
+### Effects of fitness processing
 
 ```{r fitness-processing-effects, results = 'asis'}
 fpm_df <- fitness_processing_metrics_to_df(many_pops$fitness_processing_metrics)
@@ -45,24 +48,11 @@ ggplot(down_selection, aes(x = output_seqs, color = label, fill = label)) +
   geom_density(alpha = 0.75) +
   scale_x_continuous(limits = c(0, max_input_seqs)) +
   labs(fill = "Label", color = "Label", x = "Number of Output Sequences", y = "Density")
-
-x <- 1
-
-#down_selection_for_dmats_for_kable <- down_selection_for_dmats
-#
-#names(down_selection_for_dmats_for_kable) <- c(
-#  "Sim. ID",
-#  "Group Label",
-#  "Number of sequences in simulated dataset",
-#  "Number of sequences included in distance matrix"
-#  )
-#
-#kable(down_selection_for_dmats_for_kable,
-#      booktabs = TRUE,
-#      caption = "Number of sequences used to compute distance matrices")
 ```
 
 **Figure:** Effects of fitness processing on the number of sequences in the simulations. The largest number of sequences in any last generation was `r max_input_seqs`.
+
+### Summary tables of average pairwise distances
 
 ```{r avg-hd-summary-table, results = 'asis'}
 seq_length <- nchar(many_pops$arg_collection[[1]]$ancestor[1])
@@ -108,6 +98,8 @@ kable(sd_hd_summary_table,
 )
 ```
 
+### Density plots of pairwise distance distributions
+
 ```{r density-plots, fig.cap='Density plot of the pariwise distances in the last generation', results = 'asis'}
 ggplot(dmat_distribution_df, aes(x = x, y = y, group = uniq_id, color = group_label)) +
   geom_smooth(se = FALSE, size = 0.75, span = 0.1, method = 'loess') + 
@@ -129,6 +121,8 @@ for (i in unique(dmat_distribution_df$label)){
   )
 }
 ```
+
+### Tables of average deciles of the distributions
 
 ```{r deciles, results = 'asis'}
 deciles <-

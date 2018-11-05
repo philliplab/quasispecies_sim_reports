@@ -28,9 +28,9 @@ setwd('/home/phillipl/projects/quasispecies_sim_reports/repo/quasispecies_sim_re
 library(profvis)
 ```
 
-# Description
+## Description
 
-## Data generation
+### Data generation
 
 A first basic report exploring the effects of assigning fitness based on
 homology.
@@ -65,7 +65,7 @@ This process was repeated to generate the same number of pairs again, but with
 an epitope based on Cs. In this case instead of letting every 5th letter be an
 A, we used a C instead.
 
-## A-based epitope
+### A-based epitope
 
 Since the ancestor perfectly matches the epitope, this produced a very high
 level of pressure.
@@ -79,7 +79,7 @@ fit.
 
 This mimics a scenario in which the transmitted founder is sensitive to VRC01.
 
-## C-based epitope
+### C-based epitope
 
 Since the ancestor perfectly mismatches the epitope, this produced a very low
 level of pressure.
@@ -93,13 +93,13 @@ fit.
 
 This mimics a scenario in which the transmitted founder is resistant to VRC01.
 
-# Interpretation
+## Interpretation
 
 This report highlights two points:
 
 **TODO**
 
-# Designs for more a more useful version of fitness
+## Designs for more a more useful version of fitness
 
 How to modify the fitness computation to be more useful in such a way that it
 is easy to implement with the current tools?
@@ -164,7 +164,7 @@ many_pops <- sim_proc_many_pops(arg_collection, n_sims=n_sims,
                                 verbose = TRUE)
 ```
 
-## Some parameters:
+### Some parameters:
 
 Number of generations: `r n_gen`
 
@@ -174,12 +174,12 @@ Number of initial generations with artificially assigned perfect fitness: `r n_g
 
 Maximum number of sequences considered when a distance matrix is produced: `r max_dmat_size`
 
-# Simulation Results
+## Simulation Results
 
 ```{r test-child, child = '../utilities/comp_sim_chunk.Rmd'}
 ```
 
-# Total Running Time
+## Total Running Time
 ```{r}
 print(proc.time() - report_start_time)
 ```
