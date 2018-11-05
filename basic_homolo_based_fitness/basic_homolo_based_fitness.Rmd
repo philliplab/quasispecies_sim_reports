@@ -97,7 +97,7 @@ This mimics a scenario in which the transmitted founder is resistant to VRC01.
 
 This report highlights two points:
 
-##TODO##
+**TODO**
 
 # Designs for more a more useful version of fitness
 
@@ -123,7 +123,7 @@ It will be better to just extract the values from LANL and mimic the real deal.
 
 ```{r, include=FALSE}
 n_gen <- 12
-n_sims <- 5
+n_sims <- 20
 n_gen_with_perfect_fitness <- 5
 max_dmat_size <- 500
 

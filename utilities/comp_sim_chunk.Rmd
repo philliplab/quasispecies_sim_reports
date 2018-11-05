@@ -34,7 +34,20 @@ kable(all_dat,
 ```
 
 
-```{r down-selection-tables, results = 'asis'}
+```{r fitness-processing-effects, results = 'asis'}
+fpm_df <- fitness_processing_metrics_to_df(many_pops$fitness_processing_metrics)
+max_input_seqs <- max(fpm_df$input_seqs)
+
+
+down_selection <- unique(fpm_df[,c('sim_id', 'label', 'input_seqs', 'output_seqs')])
+
+ggplot(down_selection, aes(x = output_seqs, color = label, fill = label)) +
+  geom_density(alpha = 0.75) +
+  scale_x_continuous(limits = c(0, max_input_seqs)) +
+  labs(fill = "Label", color = "Label", x = "Number of Output Sequences", y = "Density")
+
+x <- 1
+
 #down_selection_for_dmats_for_kable <- down_selection_for_dmats
 #
 #names(down_selection_for_dmats_for_kable) <- c(
@@ -49,6 +62,7 @@ kable(all_dat,
 #      caption = "Number of sequences used to compute distance matrices")
 ```
 
+**Figure:** Effects of fitness processing on the number of sequences in the simulations. The largest number of sequences in any last generation was `r max_input_seqs`.
 
 ```{r avg-hd-summary-table, results = 'asis'}
 seq_length <- nchar(many_pops$arg_collection[[1]]$ancestor[1])
