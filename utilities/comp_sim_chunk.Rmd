@@ -69,7 +69,8 @@ seq_length <- nchar(many_pops$arg_collection[[1]]$ancestor[1])
 
 x <- dcollection_to_df(many_pops$dcollection)
 dmat_metrics <- x$dmat_metrics
-dmat_distribution_df = x$dmat_distribution_df
+dmat_distribution_df <- x$dmat_distribution_df
+dmat_clara2_df <- x$dmat_clara2_df
 
 avg_hd_summary_table <- dmat_metrics %>% 
     filter(metric == 'avg_hd') %>%
@@ -209,6 +210,48 @@ kable(
   caption = "The deciles of the pairwise HDs"
 )
 ```
+
+## Are there clusters in the datasets?
+
+```{r clusters}
+c_label <- unique(dmat_clara2_df$label)[1]
+for (c_label in unique(dmat_clara2_df$label)){
+  c_clara2 <- dmat_clara2_df %>%
+    filter(label == c_label)
+  w_c_clara2 <- spread(c_clara2, 'metric', 'value')
+
+  dmat_hds <- dmat_metrics %>%
+    filter(metric == 'avg_hd', label == c_label)
+  names(dmat_hds)[names(dmat_hds) == 'value'] <- 'avg_hd'
+
+  x <- merge(w_c_clara2, dmat_hds[,c('uniq_id', 'avg_hd')], by = 'uniq_id')
+
+
+  print(
+    ggplot(x, aes(x = within_between_ratio, 
+                           y = avg_hd,
+                           color = sampling)) +
+        geom_point() +
+        geom_rug() +
+        geom_smooth(se = FALSE, method = 'lm') +
+        labs(color = "Fitness",
+             x = "Within cluster distances over between cluster distances",
+             y = "Avg. Avg. Pairwise HD")
+        )
+
+  c_sampling <- unique(x$sampling)[1]
+  for (c_sampling in unique(x$sampling)){
+    c_x <- x %>% filter(sampling == c_sampling)
+    cat(paste('\n\nModel details for label ', c_label, 
+              ' with fitness processing ', c_sampling,
+              '\n\n', sep = ''))
+    print(summary(lm(c_x$avg_hd ~ c_x$within_between_ratio)))
+    cat('\n\n')
+  }
+}
+
+```
+
 
 ```{r arguments-table, results = 'asis'}
 #i <- 1
