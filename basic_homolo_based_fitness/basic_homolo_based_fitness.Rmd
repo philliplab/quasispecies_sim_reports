@@ -157,12 +157,34 @@ arg_set2 <- list(
 
 arg_collection <- list(arg_set1, arg_set2)
 
+output_dmat <- TRUE
+output_dmat <- FALSE
+
 many_pops <- sim_proc_many_pops(arg_collection, n_sims=n_sims, 
+                                output_dmat = output_dmat,
                                 fitness_processing = 'fit_unfit_pair', 
                                 n_gen_with_perfect_fitness = n_gen_with_perfect_fitness,
                                 max_dmat_size = max_dmat_size, 
                                 verbose = TRUE)
 ```
+
+```{r exploring-clusters, eval = FALSE}
+x <- many_pops$all_dmats[[1]]
+
+z <- as.matrix(x$dmat)
+y <- clara(z, 2)
+cluster1 <- which(y$clustering==1)
+cluster2 <- which(y$clustering==2)
+
+within_cluster <- c(as.vector(z[cluster1, cluster1]), as.vector(z[cluster2, cluster2]))
+between_cluster <- c(as.vector(z[cluster1, cluster2]), as.vector(z[cluster2, cluster1]))
+
+mean(within_cluster)
+mean(between_cluster)
+
+cluster_sizes <- c(length(cluster1), length(cluster2))
+```
+
 
 ### Some parameters:
 
