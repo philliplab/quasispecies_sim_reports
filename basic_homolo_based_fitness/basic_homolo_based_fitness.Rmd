@@ -166,6 +166,7 @@ many_pops <- sim_proc_many_pops(arg_collection, n_sims=n_sims,
                                 n_gen_with_perfect_fitness = n_gen_with_perfect_fitness,
                                 max_dmat_size = max_dmat_size, 
                                 verbose = TRUE)
+
 ```
 
 ```{r exploring-clusters, eval = FALSE}

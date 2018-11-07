@@ -111,13 +111,10 @@ kable(sd_hd_summary_table,
 
 ### Significant differences between the fit/unfit variants?
 
-Note that this section contains a loop that runs once for each unique label.
-
 ```{r}
 c_label <- "A"
+test_table <- NULL
 for (c_label in levels(dmat_metrics$label)){
-  cat('\n---\n')
-  cat(paste('\nConsidering simulations with label ', c_label, '\n', sep = ''))
   c_dmat_metrics <- dmat_metrics %>% 
     filter(label == c_label)
 
@@ -133,15 +130,41 @@ for (c_label in levels(dmat_metrics$label)){
     avg_hd_values[[c_sampling]] <- c_sample$value
   }
 
-  cat(paste('\nSample_1 is ', names(avg_hd_values)[1], '\n', sep = ''))
-  cat(paste('\nSample_2 is ', names(avg_hd_values)[2], '\n', sep = ''))
-
   Sample_1 <- avg_hd_values[[1]]
   Sample_2 <- avg_hd_values[[2]]
 
-  print(t.test(Sample_1, Sample_2))
-  print(var.test(Sample_1, Sample_2))
+  t_test_result <- t.test(Sample_1, Sample_2)
+  f_test_result <- var.test(Sample_1, Sample_2)
+
+  test_table <- rbind(test_table,
+  data.frame(comparison = paste("Label: ", c_label, "; ", 
+                                names(avg_hd_values)[1], ' vs ', names(avg_hd_values)[2],
+                                sep = ''),
+             test = 'T-test',
+             statistic = round(t_test_result$statistic, 3),
+             p.value = round(t_test_result$p.value, 3),
+             lower_95 = round(t_test_result$conf.int[1], 3),
+             upper_95 = round(t_test_result$conf.int[2], 3),
+             stringsAsFactors = FALSE)
+  )
+  test_table <- rbind(test_table,
+  data.frame(comparison = paste("Label: ", c_label, "; ", 
+                                names(avg_hd_values)[1], ' vs ', names(avg_hd_values)[2],
+                                sep = ''),
+             test = 'F-test',
+             statistic = round(f_test_result$statistic, 3),
+             p.value = round(f_test_result$p.value, 3),
+             lower_95 = round(f_test_result$conf.int[1], 3),
+             upper_95 = round(f_test_result$conf.int[2], 3),
+             stringsAsFactors = FALSE)
+  )
 }
+row.names(test_table) <- NULL
+
+kable(test_table,
+  booktabs = TRUE,
+  caption = "T and F tests comparing the effect of fitness")
+
 ```
 
 ### Density plots of pairwise distance distributions
