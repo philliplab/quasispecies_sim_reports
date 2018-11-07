@@ -236,7 +236,7 @@ kable(
 
 ## Are there clusters in the datasets?
 
-```{r clusters}
+```{r clusters, fig.height = 10, fig.width = 10}
 c_label <- unique(dmat_clara2_df$label)[1]
 for (c_label in unique(dmat_clara2_df$label)){
   c_clara2 <- dmat_clara2_df %>%
@@ -249,8 +249,7 @@ for (c_label in unique(dmat_clara2_df$label)){
 
   x <- merge(w_c_clara2, dmat_hds[,c('uniq_id', 'avg_hd')], by = 'uniq_id')
 
-
-  print(
+  g1 <-
     ggplot(x, aes(x = within_between_ratio, 
                            y = avg_hd,
                            color = sampling)) +
@@ -259,8 +258,39 @@ for (c_label in unique(dmat_clara2_df$label)){
         geom_smooth(se = FALSE, method = 'lm') +
         labs(color = "Fitness",
              x = "Within cluster distances over between cluster distances",
-             y = "Avg. Avg. Pairwise HD")
-        )
+             y = "Avg. Avg. Pairwise HD") +
+      theme(legend.position = 'bottom')
+
+  g2 <- 
+    ggplot(x, aes(x = avg_hd,
+                  color = sampling,
+                  fill = sampling)) +
+      geom_density(alpha = 0.5) +
+      labs(fill = 'Fitness',
+           color = 'Fitness',
+           x = "Avg. Avg. Pairwise HD") +
+      scale_x_continuous(position = 'top') +
+      coord_flip() +
+      theme(legend.position = 'bottom')
+
+  g3 <- 
+    ggplot(x, aes(x = within_between_ratio,
+                  color = sampling,
+                  fill = sampling)) +
+      geom_density(alpha = 0.5) +
+      labs(fill = 'Fitness',
+           color = 'Fitness',
+           x = "Within cluster distances over between cluster distances") +
+      scale_x_continuous(position = 'top') +
+      theme(legend.position = 'top')
+
+  g4 <- qplot(1:10, 1:10, geom = 'blank') + 
+    theme_bw() + 
+    theme(line = element_blank(), 
+          text = element_blank(),
+          panel.border = element_blank())
+
+  g_all <- grid.arrange(g3, g4, g1, g2,  ncol = 2, nrow = 2)
 
   c_sampling <- unique(x$sampling)[1]
   for (c_sampling in unique(x$sampling)){
