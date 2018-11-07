@@ -236,7 +236,7 @@ kable(
 
 ## Are there clusters in the datasets?
 
-```{r clusters, fig.height = 10, fig.width = 10}
+```{r clusters, fig.height = 10, fig.width = 10, results = 'asis'}
 c_label <- unique(dmat_clara2_df$label)[1]
 for (c_label in unique(dmat_clara2_df$label)){
   c_clara2 <- dmat_clara2_df %>%
@@ -268,7 +268,8 @@ for (c_label in unique(dmat_clara2_df$label)){
       geom_density(alpha = 0.5) +
       labs(fill = 'Fitness',
            color = 'Fitness',
-           x = "Avg. Avg. Pairwise HD") +
+           x = "Avg. Avg. Pairwise HD",
+           y = 'Density') +
       scale_x_continuous(position = 'top') +
       coord_flip() +
       theme(legend.position = 'bottom')
@@ -280,7 +281,8 @@ for (c_label in unique(dmat_clara2_df$label)){
       geom_density(alpha = 0.5) +
       labs(fill = 'Fitness',
            color = 'Fitness',
-           x = "Within cluster distances over between cluster distances") +
+           x = "Within cluster distances over between cluster distances",
+           y = 'Density') +
       scale_x_continuous(position = 'top') +
       theme(legend.position = 'top')
 
@@ -292,15 +294,41 @@ for (c_label in unique(dmat_clara2_df$label)){
 
   g_all <- grid.arrange(g3, g4, g1, g2,  ncol = 2, nrow = 2)
 
+  stats_table <- NULL
   c_sampling <- unique(x$sampling)[1]
+  summary_tab <- NULL
   for (c_sampling in unique(x$sampling)){
     c_x <- x %>% filter(sampling == c_sampling)
-    cat(paste('\n\nModel details for label ', c_label, 
-              ' with fitness processing ', c_sampling,
-              '\n\n', sep = ''))
-    print(summary(lm(c_x$avg_hd ~ c_x$within_between_ratio)))
-    cat('\n\n')
+
+    mod <- lm(c_x$avg_hd ~ c_x$within_between_ratio)
+    smod <- summary(mod)
+
+    summary_tab <- rbind(summary_tab,
+    data.frame(Data = paste(c_label, ' + ', c_sampling, sep = ''),
+               formula = 'Avg. Avg. HD ~ Within to Between Dist. Ratio',
+               intercept_est = smod$coefficients[1, 1],
+               intercept_p.value = smod$coefficients[1,4],
+               slope_est = smod$coefficients[2, 1],
+               slope_p.value = smod$coefficients[2,4],
+               adj.R.sq = smod$adj.r.squared,
+               stringsAsFactors = FALSE)
+    )
+
+#    cat(paste('\n\nModel details for label ', c_label, 
+#              ' with fitness processing ', c_sampling,
+#              '\n\n', sep = ''))
+#    print(summary())
+#    cat('\n\n')
   }
+  row.names(summary_tab) <- NULL
+  cat('\n\n')
+  print(
+    kable(summary_tab,
+      booktabs = TRUE,
+      caption = "Model summaries"
+    )
+  )
+  cat('\n\n')
 }
 
 ```
