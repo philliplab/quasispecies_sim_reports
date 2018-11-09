@@ -194,6 +194,25 @@ cat('\n\n')
 #**Figure**: Density plots of the pairwise distances in the last generation of each simulation.
 ```
 
+```{r most-clustered, results = 'asis'}
+most_clustered <- dmat_clara2_df %>% 
+  filter(metric == 'within_between_ratio') %>%
+  group_by(group_label) %>%
+  top_n(10, -value)
+
+most_clustered <- most_clustered$uniq_id
+
+c_dmat_distribution_df <- dmat_distribution_df[dmat_distribution_df$uniq_id %in% most_clustered,]
+table(c_dmat_distribution_df$uniq_id)
+                          
+ggplot(c_dmat_distribution_df, aes(x = x, y = y, group = uniq_id)) +
+  geom_smooth(se = FALSE, size = 0.75, span = 0.1, method = 'loess', alpha = 0.5) + 
+  ylab("Density") +
+  xlab("Pairwise Hamming Distance") +
+  facet_grid(vars(label), vars(sampling))
+cat('\n\n**Figure**: Density plots of the pairwise distances of the most clustered generations (lowest within/between ratio)\n\n')
+```
+
 ```{r density-plots-sep, eval = FALSE, results = 'asis'}
 for (i in unique(dmat_distribution_df$label)){
   print(
