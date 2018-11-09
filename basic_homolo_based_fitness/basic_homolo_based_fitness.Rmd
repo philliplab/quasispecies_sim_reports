@@ -123,10 +123,10 @@ hold off on this for now.
 It will be better to just extract the values from LANL and mimic the real deal.
 
 ```{r, include=FALSE}
-n_gen <- 12
-n_sims <- 20
+n_gen <- 17
+n_sims <- 200
 n_gen_with_perfect_fitness <- 5
-max_dmat_size <- 200
+max_dmat_size <- 2000
 
 arg_set1 <- list(
   label = 'A',
@@ -167,8 +167,12 @@ output_dmat <- FALSE
 #                                n_gen_with_perfect_fitness = n_gen_with_perfect_fitness,
 #                                max_dmat_size = max_dmat_size, 
 #                                verbose = TRUE)
-#save(many_pops, file = '/tmp/many_pops1.Rdata')
-load('/tmp/many_pops1.Rdata')
+#save(many_pops, file = '/tmp/many_pops2.Rdata')
+#loading_data <- FALSE
+
+
+
+load('/tmp/many_pops2.Rdata')
 loading_data <- TRUE
 ```
 

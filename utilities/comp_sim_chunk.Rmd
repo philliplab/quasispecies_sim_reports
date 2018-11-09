@@ -41,7 +41,6 @@ kable(all_dat,
 fpm_df <- fitness_processing_metrics_to_df(many_pops$fitness_processing_metrics)
 max_input_seqs <- max(fpm_df$input_seqs)
 
-
 down_selection <- unique(fpm_df[,c('sim_id', 'label', 'input_seqs', 'output_seqs')])
 
 ggplot(down_selection, aes(x = output_seqs, color = label, fill = label)) +
@@ -185,18 +184,17 @@ for (c_label in unique(dmat_metrics$label)){
 ```
 
 
-```{r density-plots, results = 'asis'}
+```{r density-plots, eval = FALSE, results = 'asis'}
 ggplot(dmat_distribution_df, aes(x = x, y = y, group = uniq_id, color = group_label)) +
   geom_smooth(se = FALSE, size = 0.75, span = 0.1, method = 'loess', alpha = 0.5) + 
   guides(color = guide_legend(title = "Group Label")) +
   ylab("Density") +
   xlab("Pairwise Hamming Distance")
 cat('\n\n')
+#**Figure**: Density plots of the pairwise distances in the last generation of each simulation.
 ```
 
-**Figure**: Density plots of the pairwise distances in the last generation of each simulation.
-
-```{r density-plots-sep, results = 'asis'}
+```{r density-plots-sep, eval = FALSE, results = 'asis'}
 for (i in unique(dmat_distribution_df$label)){
   print(
     ggplot(subset(dmat_distribution_df, label == i), 
@@ -288,6 +286,7 @@ for (c_label in unique(dmat_clara2_df$label)){
 
   stats_tab <- NULL
   bot_decile_tab <- NULL
+  size_decile_tab <- NULL
   c_sampling <- unique(x$sampling)[1]
   for (c_sampling in unique(x$sampling)){
     c_x <- x %>% filter(sampling == c_sampling)
@@ -296,7 +295,7 @@ for (c_label in unique(dmat_clara2_df$label)){
     smod <- summary(mod)
 
     stats_tab <- rbind(stats_tab,
-    data.frame(Data = paste(substr(c_sampling, 1, 10), '...', sep = ''),
+    data.frame(Model_Details = paste(substr(c_sampling, 1, 10), '...', sep = ''),
                i_est = round(smod$coefficients[1, 1], 3),
                i_p.val = round(smod$coefficients[1,4],3),
                s_est = round(smod$coefficients[2, 1],3),
@@ -307,24 +306,37 @@ for (c_label in unique(dmat_clara2_df$label)){
 
     bps <- quantile(c_x$within_between_ratio, c(0.05, 0.1, 0.25))
     bot_decile_tab <- rbind(bot_decile_tab,
-      data.frame(Data = paste(substr(c_sampling, 1, 10), '...', sep = ''),
+      data.frame(Within_Between = paste(substr(c_sampling, 1, 10), '...', sep = ''),
                  `5%` = round(bps[1],3),
                  `10%` = round(bps[2],3),
                  `25%` = round(bps[3],3),
                  stringsAsFactors = FALSE))
 
+    min_sizes <- c_clara2 %>% filter(sampling == c_sampling, metric == 'smallest_cluster')
+    size_quantiles <- quantile(min_sizes$value, c(0.1, 0.25, 0.5, 0.75, 0.9))
+    size_decile_tab <- rbind(size_decile_tab,
+      data.frame(Cluster_Size = paste(substr(c_sampling, 1, 10), '...', sep = ''),
+                 `10%` = round(size_quantiles[1],3),
+                 `25%` = round(size_quantiles[2],3),
+                 `50%` = round(size_quantiles[3],3),
+                 `75%` = round(size_quantiles[4],3),
+                 `90%` = round(size_quantiles[5],3),
+                 stringsAsFactors = FALSE))
 
   }
-  names(bot_decile_tab) <- c('Data', '5%', '10%', '25%')
+  names(bot_decile_tab) <- c('Within_Between', '5%', '10%', '25%')
+  names(size_decile_tab) <- c('Cluster_Size', '10%', '25%', '50%', '75%', '90%')
   row.names(bot_decile_tab) <- NULL
+  row.names(size_decile_tab) <- NULL
   row.names(stats_tab) <- NULL
   g4 <- qplot(1:10, 1:10, geom = 'blank') + 
     theme_bw() + 
     theme(line = element_blank(), 
           text = element_blank(),
           panel.border = element_blank()) +
-      annotation_custom(grob = tableGrob(stats_tab), ymin = -4) +
-      annotation_custom(grob = tableGrob(bot_decile_tab), ymin = 4)
+      annotation_custom(grob = tableGrob(stats_tab), ymin = -6) +
+      annotation_custom(grob = tableGrob(size_decile_tab), ymin = 0) +
+      annotation_custom(grob = tableGrob(bot_decile_tab), ymin =5)
 
   g_all <- grid.arrange(g3, g4, g1, g2,  ncol = 2, nrow = 2)
 
