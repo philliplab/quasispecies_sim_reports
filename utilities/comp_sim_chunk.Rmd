@@ -163,7 +163,6 @@ row.names(test_table) <- NULL
 kable(test_table,
   booktabs = TRUE,
   caption = "T and F tests comparing the effect of fitness")
-
 ```
 
 ### Density plots of pairwise distance distributions
@@ -182,7 +181,6 @@ for (c_label in unique(dmat_metrics$label)){
   cat(paste('\n\n**Figure:** Density plots of average pairwise distances for all simulations with the label ', c_label, sep = ''))
 }
 ```
-
 
 ```{r density-plots, eval = FALSE, results = 'asis'}
 ggplot(dmat_distribution_df, aes(x = x, y = y, group = uniq_id, color = group_label)) +
@@ -251,7 +249,27 @@ kable(
 )
 ```
 
-## Are there clusters in the datasets?
+## Sub-clusters and their effect on the Average Pairwise Hamming Distances
+
+A possible mechanism that can affect the average hamming distances is that the
+fitness pressure can cause multiple sub-clusters to form in the datasets.
+Theoretically, this should increase the average distance between the sequences
+since it implies that the clusters are separated by a space where sequences are
+unfit and die out. If fitness was not taken into account, then that space
+should have been populated by sequences, reducing the overall average pairwise
+hamming distances between the sequences.
+
+A first rudimentary approach to investigate this is to just divide the dataset
+into two clusters, and to compute the ratio of the within cluster distances
+over the between cluster distances. The clustering is performed with
+`cluster::clara`. A low within over between ratio indicates well separated
+clusters.
+
+To explore this relationship, a scatterplot of the within/between ratio and the
+average pairwise hamming distances are provided. The marginal distributions are
+also shown as well as some statistics related to cluster size, the
+within/between ratio and models relating the within/between ratios to the
+average pairwise hamming distances.
 
 ```{r clusters, fig.height = 10, fig.width = 10, results = 'asis'}
 c_label <- unique(dmat_clara2_df$label)[1]
@@ -358,19 +376,8 @@ for (c_label in unique(dmat_clara2_df$label)){
       annotation_custom(grob = tableGrob(bot_decile_tab), ymin =5)
 
   g_all <- grid.arrange(g3, g4, g1, g2,  ncol = 2, nrow = 2)
-
-#  cat('\n\n')
-#  print(
-#    kable(stats_tab,
-#      booktabs = TRUE,
-#      caption = "Model summaries"
-#    )
-#  )
-#  cat('\n\n')
 }
-
 ```
-
 
 ```{r arguments-table, results = 'asis'}
 #i <- 1
