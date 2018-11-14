@@ -12,6 +12,8 @@ library(knitr)
 library(rmarkdown)
 library(tidyr)
 library(gridExtra)
+library(ggridges)
+library(purrr)
 
 knitr::opts_chunk$set(echo = FALSE,
                       base.dir = "/home/phillipl/projects/quasispecies_sim_reports/builds/basic_homolo_based_fitness/figures")

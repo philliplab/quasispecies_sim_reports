@@ -372,13 +372,33 @@ most_clustered <- most_clustered$uniq_id
 
 c_dmat_distribution_df <- dmat_distribution_df[dmat_distribution_df$uniq_id %in% most_clustered,]
                           
+print(
 ggplot(c_dmat_distribution_df, aes(x = x, y = y, group = uniq_id)) +
   geom_smooth(se = FALSE, size = 0.75, span = 0.1, method = 'loess', alpha = 0.5) + 
   ylab("Density") +
   xlab("Pairwise Hamming Distance") +
   facet_grid(vars(label), vars(sampling))
+)
 cat('\n\n**Figure**: Density plots of the pairwise distances of the most clustered generations (lowest within/between ratio)\n\n')
 ```
+
+A systematic investigation of the variation of the average pairwise hamming distances by the within/between ratio. Note this plot only works if there are > 100 simulations for each category.
+
+```{r ridge-densities}
+dmat_metrics_char  <- dmat_metrics %>% map_if(is.factor, as.character) %>% as.data.frame(stringsAsFactors = FALSE)
+dmat_clara2_df_char  <- dmat_clara2_df %>% map_if(is.factor, as.character) %>% as.data.frame(stringsAsFactors = FALSE)
+
+for_ridges <- rbind(dmat_metrics_char, dmat_clara2_df_char)
+
+tmp_dat <- spread(for_ridges, metric, value)
+tmp_dat$avg_ratio_cat <- cut(tmp_dat$within_between_ratio, 5)
+tmp_dat$avg_ratio_cat <- as.character(tmp_dat$avg_ratio_cat)
+
+ggplot(tmp_dat, aes(x = avg_hd, y = avg_ratio_cat)) +
+  geom_density_ridges_gradient()
+
+```
+
 
 ```{r arguments-table, results = 'asis'}
 #i <- 1
