@@ -131,7 +131,7 @@ n_gen_with_perfect_fitness <- 5
 max_dmat_size <- 2000
 
 arg_set1 <- list(
-  label = 'A',
+  label = 'Sen',
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
   n_gen = n_gen,
@@ -145,7 +145,7 @@ arg_set1 <- list(
 )
 
 arg_set2 <- list(
-  label = 'C',
+  label = 'Res',
   ancestors = paste(rep("A", 500), collapse = ''),
   r0 = 2,
   n_gen = n_gen,
@@ -169,12 +169,12 @@ output_dmat <- FALSE
 #                                n_gen_with_perfect_fitness = n_gen_with_perfect_fitness,
 #                                max_dmat_size = max_dmat_size, 
 #                                verbose = TRUE)
-#save(many_pops, file = '/tmp/many_pops2.Rdata')
+#save(many_pops, file = '/tmp/many_pops1.Rdata')
 #loading_data <- FALSE
 
 
 
-load('/tmp/many_pops2.Rdata')
+load('/tmp/many_pops.Rdata')
 loading_data <- TRUE
 ```
 
