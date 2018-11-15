@@ -174,7 +174,7 @@ output_dmat <- FALSE
 
 
 
-load('/tmp/many_pops.Rdata')
+load('/tmp/many_pops1.Rdata')
 loading_data <- TRUE
 ```
 

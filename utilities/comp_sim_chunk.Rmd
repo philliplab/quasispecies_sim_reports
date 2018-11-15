@@ -1,4 +1,5 @@
-The following graphs and tables present a summary of a series of simulations based on `r length(many_pops$arg_collection)` sets of arguments.
+The following graphs and tables present a summary of a series of simulations
+based on `r length(many_pops$arg_collection)` sets of arguments.
 
 Each set of arguments can produce 1 or 2 sets of simulations:
 
@@ -111,7 +112,7 @@ kable(sd_hd_summary_table,
 ### Significant differences between the fit/unfit variants?
 
 ```{r}
-c_label <- "A"
+c_label <- unique(dmat_metrics$label)[1]
 test_table <- NULL
 for (c_label in levels(dmat_metrics$label)){
   c_dmat_metrics <- dmat_metrics %>% 
@@ -363,10 +364,11 @@ for (c_label in unique(dmat_clara2_df$label)){
 Is there anything special about the distributions of the pairwise distances in the samples with the best separation between the two clusters? Is the distribution bimodal indicating the presence of multiple clusters?
 
 ```{r most-clustered, results = 'asis'}
+number_to_consider <- 10
 most_clustered <- dmat_clara2_df %>% 
   filter(metric == 'within_between_ratio') %>%
   group_by(group_label) %>%
-  top_n(10, -value)
+  top_n(number_to_consider, -value)
 
 most_clustered <- most_clustered$uniq_id
 
@@ -379,7 +381,13 @@ ggplot(c_dmat_distribution_df, aes(x = x, y = y, group = uniq_id)) +
   xlab("Pairwise Hamming Distance") +
   facet_grid(vars(label), vars(sampling))
 )
-cat('\n\n**Figure**: Density plots of the pairwise distances of the most clustered generations (lowest within/between ratio)\n\n')
+cat(
+  paste('\n\n**Figure**: Density plots of the pairwise distances of the ', 
+        number_to_consider, 
+        ' most clustered generations for each epitope type and fitness',
+        ' consideration (lowest within/between ratio)\n\n', 
+        sep = '')
+  )
 ```
 
 A systematic investigation of the variation of the average pairwise hamming distances by the within/between ratio. Note this plot only works if there are > 100 simulations for each category.
