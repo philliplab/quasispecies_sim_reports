@@ -390,9 +390,7 @@ cat(
   )
 ```
 
-A systematic investigation of the variation of the average pairwise hamming distances by the within/between ratio. Note this plot only works if there are > 100 simulations for each category.
-
-```{r ridge-densities}
+```{r ridge-densities-comp, include = FALSE}
 dmat_metrics_char  <- dmat_metrics %>% map_if(is.factor, as.character) %>% as.data.frame(stringsAsFactors = FALSE)
 dmat_clara2_df_char  <- dmat_clara2_df %>% map_if(is.factor, as.character) %>% as.data.frame(stringsAsFactors = FALSE)
 
@@ -402,9 +400,16 @@ tmp_dat <- spread(for_ridges, metric, value)
 tmp_dat$avg_ratio_cat <- cut(tmp_dat$within_between_ratio, 5)
 tmp_dat$avg_ratio_cat <- as.character(tmp_dat$avg_ratio_cat)
 
+x <-
 ggplot(tmp_dat, aes(x = avg_hd, y = avg_ratio_cat)) +
-  geom_density_ridges_gradient()
-
+  geom_density_ridges_gradient() +
+  facet_grid(vars(label), vars(sampling)) +
+  labs(y = 'Within / Between Ratio - Categorized',
+       x = 'Average Average Pairwise Hamming Distance')
+```
+```{r ridge-densities-print}
+print(x)
+cat('\n\n**Figure**: A systematic investigation of the variation of the average pairwise hamming distances by the within/between ratio.\n\n')
 ```
 
 
