@@ -401,11 +401,13 @@ tmp_dat$avg_ratio_cat <- cut(tmp_dat$within_between_ratio, 5)
 tmp_dat$avg_ratio_cat <- as.character(tmp_dat$avg_ratio_cat)
 
 x <-
-ggplot(tmp_dat, aes(x = avg_hd, y = avg_ratio_cat)) +
+ggplot(tmp_dat, aes(x = avg_hd, y = avg_ratio_cat, fill = ..x..)) +
   geom_density_ridges_gradient() +
   facet_grid(vars(label), vars(sampling)) +
+  scale_fill_viridis(name = 'Avg. Avg. HD', option = 'C') +
   labs(y = 'Within / Between Ratio - Categorized',
-       x = 'Average Average Pairwise Hamming Distance')
+       x = 'Average Average Pairwise Hamming Distance') +
+  theme(legend.position = 'top')
 ```
 ```{r ridge-densities-print}
 print(x)
